@@ -1,0 +1,3307 @@
+{
+  "source": {
+    "workbook": "docs/data-toolor.xlsx",
+    "sha256": "d742bdfc14b2d3011d4bc302cecc163e60a9a2217c9186111d4f358cf763e2e6",
+    "generatedAt": "2026-07-16T15:16:26.153Z",
+    "worksheetCount": 30,
+    "productWorksheetCount": 29
+  },
+  "products": [
+    {
+      "id": "product-ta-26-1",
+      "name": "Кепка бейсболка Toolor ASKA винтажная из 100% хлопка с вышивкой",
+      "slug": "toolor-ta-26-1",
+      "description": "Кепка Toolor ASKA - универсальный аксессуар на каждый день. Выполнена из 100% хлопка, поэтому комфортна даже в жаркую погоду и хорошо пропускает воздух. Благодаря продуманной посадке кепка удобно сидит на голове и сохраняет форму при носке. Эффект винтажной стирки и объемная вышивка делают модель стильным акцентом любого образа — от спортивного до повседневного. Подходит женщинам и мужчинам, легко сочетается с базовым гардеробом и защищает от солнца во время прогулок, путешествий и активного отдыха.",
+      "categoryId": "category-accessories",
+      "productType": "Головные уборы",
+      "gender": "unknown",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TA-26-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/f815e1e5-fbc6-4b50-bb50-0ad9ae358d20.webp",
+          "alt": "Кепка бейсболка Toolor ASKA винтажная из 100% хлопка с вышивкой, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TA-26-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/6cb2f1b3-f06e-4601-a87e-0b77e403660e.webp",
+          "alt": "Кепка бейсболка Toolor ASKA винтажная из 100% хлопка с вышивкой, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TA-26-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/c6c93c35-5a16-4908-8e6e-6391b6a786e1.webp",
+          "alt": "Кепка бейсболка Toolor ASKA винтажная из 100% хлопка с вышивкой, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TA-26-1-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/691afaf7-5231-42f7-ba73-2ca2e5feafdc.webp",
+          "alt": "Кепка бейсболка Toolor ASKA винтажная из 100% хлопка с вышивкой, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TA-26-1-image-5",
+          "url": "https://s3.m-market.kg/media/products_images/f552e9aa-aafe-4fb1-a289-4c90f1598777.webp",
+          "alt": "Кепка бейсболка Toolor ASKA винтажная из 100% хлопка с вышивкой, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-ta-26-1",
+          "title": "Универсальный",
+          "sku": "TA-26-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "Универсальный"
+          },
+          "price": {
+            "amount": 129000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 129000,
+        "currencyCode": "KGS"
+      },
+      "featured": true,
+      "tags": ["Головные уборы"],
+      "colors": [],
+      "sizes": ["Универсальный"],
+      "material": "Хлопок",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown", "gender-unknown", "color-missing"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3731 Головные уборы",
+        "rows": [4],
+        "originalSkus": ["TA-26-1"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-t-12-1",
+      "name": "Косынка шелковая треугольная женская платок на голову и шею",
+      "slug": "toolor-t-12-1",
+      "description": "Платок из коллекции «Умай» — это сочетание смысла и продуманного дизайна: вдохновлённый символом рода и женской силы, он выполнен в удобной треугольной форме, поэтому не требует сложного складывания и сразу красиво ложится, подчёркивая линии лица. Лёгкий, мягкий и приятный к коже материал комфортен в носке в любое время года. \n\nЕго можно носить как косынку на голову, повязывать на шею, накидывать на плечи или добавлять как акцент на сумку. Это не просто аксессуар, а вещь со смыслом - со стилем, уверенностью и связью с корнями.",
+      "categoryId": "category-accessories",
+      "productType": "Шарфы и платки",
+      "gender": "women",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TА-12-1-image-1",
+          "url": "https://i.postimg.cc/xd6Srnp7/1slide1.png",
+          "alt": "Косынка шелковая треугольная женская платок на голову и шею, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TА-12-1-image-2",
+          "url": "https://i.postimg.cc/Njpgt6Ks/Chat-GPT-Image-23-apr-2026-g-18-33-22.png",
+          "alt": "Косынка шелковая треугольная женская платок на голову и шею, изображение 2",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TА-12-1-image-3",
+          "url": "https://i.postimg.cc/j5hc3S8n/3slide1.png",
+          "alt": "Косынка шелковая треугольная женская платок на голову и шею, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-t-12-1",
+          "title": "[Fallback] Вариант TА-12-1",
+          "sku": "TА-12-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {},
+          "price": {
+            "amount": 100000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 100000,
+        "currencyCode": "KGS"
+      },
+      "featured": true,
+      "tags": ["Шарфы и платки"],
+      "colors": [],
+      "sizes": [],
+      "material": "Шелк",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown", "size-missing", "color-missing"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3730 Шарфы и платки",
+        "rows": [2],
+        "originalSkus": ["TА-12-1"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product--317-1",
+      "name": "Мужские брюки",
+      "slug": "toolor-317-1",
+      "description": "Мужские флисовые брюки от бренда product_base_56095f4c в темно-синем цвете и размере XL — это идеальное сочетание стиля, комфорта и практичности для активного образа жизни. Изготовленные из эластичного флиса с составом 88% нейлон и 12% спандекс, эти брюки обеспечивают исключительную мягкость, отличную теплоизоляцию и полную свободу движений благодаря высокой эластичности ткани. Теплый флисовый начес внутри нежно облегает тело, создавая эффект второго слоя кожи, который сохраняет тепло даже в прохладную погоду.\n\nОсобенности, которые выделяют эти брюки: комфортный пояс на резинке идеально регулируется по фигуре, не сдавливая и не сползая; прямой фасон подчеркивает мужественные линии силуэта, подходя для любого телосложения; удобные боковые карманы позволяют легко хранить необходимые мелочи, такие как ключи или телефон. Темно-синий цвет добавляет элегантности, делая брюки универсальными для повседневных прогулок, отдыха на природе, домашних вечеров или легких тренировок.\n\nЭти брюки — ваш надежный спутник в любое время года, подчеркивающий уверенность и вкус владельца. Сочетайте их с любимой рубашкой или свитером для стильного casual-образа или надевайте под верхнюю одежду для тепла. Выбирая product_base_56095f4c, вы получаете премиум-качество, которое радует долговечностью и комфортом день за днем!",
+      "categoryId": "category-men",
+      "productType": "Брюки",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "ТМ-317-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/f40e6d1d-f604-4f90-b836-67ef3de2a458.jpeg",
+          "alt": "Мужские брюки, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/d83f0046-f306-4e14-87d4-ae1a27274d05.jpeg",
+          "alt": "Мужские брюки, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/85a76b0b-2ff3-4e46-bd91-2ffbc13c18eb.jpeg",
+          "alt": "Мужские брюки, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/a6252bda-9db3-4fbf-9223-03e05d48ab19.jpeg",
+          "alt": "Мужские брюки, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-5",
+          "url": "https://s3.m-market.kg/media/products_images/0a6e10e2-fb22-4441-a0a7-44099dbccdc2.jpeg",
+          "alt": "Мужские брюки, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-6",
+          "url": "https://s3.m-market.kg/media/products_images/20d0b34d-616e-4d28-b8fb-da115dd4b573.jpeg",
+          "alt": "Мужские брюки, изображение 6",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-7",
+          "url": "https://s3.m-market.kg/media/products_images/ce129d82-77db-4079-94bb-129935917055.jpeg",
+          "alt": "Мужские брюки, изображение 7",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-8",
+          "url": "https://s3.m-market.kg/media/products_images/e36d5be6-3f67-4347-b2be-950de9a37260.jpeg",
+          "alt": "Мужские брюки, изображение 8",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-9",
+          "url": "https://s3.m-market.kg/media/products_images/859ef689-49a6-4098-a97c-d00f5dd6919c.jpeg",
+          "alt": "Мужские брюки, изображение 9",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-10",
+          "url": "https://s3.m-market.kg/media/products_images/b647f004-88d3-43d4-962e-ef28fb028f5e.jpeg",
+          "alt": "Мужские брюки, изображение 10",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-11",
+          "url": "https://s3.m-market.kg/media/products_images/ea6df2d4-38d0-4303-b11d-1246a25fdf9f.jpeg",
+          "alt": "Мужские брюки, изображение 11",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-12",
+          "url": "https://s3.m-market.kg/media/products_images/d4068a2d-24d5-4760-8343-591f8a4ae0ab.jpeg",
+          "alt": "Мужские брюки, изображение 12",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-13",
+          "url": "https://s3.m-market.kg/media/products_images/ad15f7d4-61ed-4d13-b841-a34f37880da4.jpeg",
+          "alt": "Мужские брюки, изображение 13",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-14",
+          "url": "https://s3.m-market.kg/media/products_images/8c000011-852d-4b63-923a-be43f061d9df.jpeg",
+          "alt": "Мужские брюки, изображение 14",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-15",
+          "url": "https://s3.m-market.kg/media/products_images/9251c872-3c03-4137-bf1e-857163944e63.jpeg",
+          "alt": "Мужские брюки, изображение 15",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-16",
+          "url": "https://s3.m-market.kg/media/products_images/9ebc38d5-76f9-4757-bbba-d2158edd54c3.jpeg",
+          "alt": "Мужские брюки, изображение 16",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-17",
+          "url": "https://s3.m-market.kg/media/products_images/e310a94e-426d-4924-9ee8-72f811cd77ea.jpeg",
+          "alt": "Мужские брюки, изображение 17",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-18",
+          "url": "https://s3.m-market.kg/media/products_images/7774bcfd-011c-42d9-ae70-2d6f34e0333e.jpeg",
+          "alt": "Мужские брюки, изображение 18",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-19",
+          "url": "https://s3.m-market.kg/media/products_images/3894962f-0ffe-4aec-bbe6-01f38f7db691.jpeg",
+          "alt": "Мужские брюки, изображение 19",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-317-1-image-20",
+          "url": "https://s3.m-market.kg/media/products_images/421fa037-113e-4180-84f4-04a6539ff488.jpeg",
+          "alt": "Мужские брюки, изображение 20",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant--317-1",
+          "title": "Темно-синий / M",
+          "sku": "ТМ-317-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Темно-синий"
+          },
+          "price": {
+            "amount": 279900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--317-2",
+          "title": "Темно-синий / L",
+          "sku": "ТМ-317-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Темно-синий"
+          },
+          "price": {
+            "amount": 279900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--317-3",
+          "title": "Темно-синий / XL",
+          "sku": "ТМ-317-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Темно-синий"
+          },
+          "price": {
+            "amount": 279900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--317-4",
+          "title": "Темно-синий",
+          "sku": "ТМ-317-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "color": "Темно-синий"
+          },
+          "price": {
+            "amount": 279900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--317-5",
+          "title": "Темно-синий / 3XL",
+          "sku": "ТМ-317-5",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "3XL",
+            "color": "Темно-синий"
+          },
+          "price": {
+            "amount": 279900,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 279900,
+        "currencyCode": "KGS"
+      },
+      "featured": true,
+      "tags": ["Брюки", "Темно-синий"],
+      "colors": ["Темно-синий"],
+      "sizes": ["XL", "3XL", "M", "L"],
+      "material": "Флис",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3443 Брюки",
+        "rows": [6, 7, 8, 9, 24],
+        "originalSkus": [
+          "ТМ-317-1",
+          "ТМ-317-2",
+          "ТМ-317-3",
+          "ТМ-317-4",
+          "ТМ-317-5"
+        ],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product--316-1",
+      "name": "Мужской полузамок",
+      "slug": "toolor-316-1",
+      "description": "Мужской полузамок темно‑синий от бренда product_base_b024f8ab — это сочетание современного дизайна, продуманной функциональности и комфорта, созданное для активного городского ритма и стильной повседневной носки. В изысканном темно‑синем цвете изделие выглядит строго и одновременно элегантно, легко вписывается в деловой и кэжуал гардероб, служит отличной базой для многослойных образов и выгодно подчеркивает мужской силуэт.\n\nМатериалы и комфорт\nБлагодаря сочетанию 88% нейлона и 12% спандекса полузамок обладает превосходной эластичностью и мягкостью. Нейлон придаёт изделию прочность, лёгкость и устойчивость к износу, а спандекс обеспечивает идеальную посадку и свободу движений. Эластичный флис внутри сохраняет тепло, дарит ощущение уюта и одновременно эффективно отводит влагу, что делает модель универсальной для прохладной погоды и активного отдыха.\n\nПосадка и конструктивные особенности\nРазмер L обеспечивает комфортную посадку большинству мужчин, предлагая оптимальный баланс свободы движений и аккуратного силуэта. Конструкция полузамка продумана для удобства: молния средней длины позволяет легко регулировать вентиляцию и быстроту снятия/надевания, при этом не нарушая чистых линий изделия. Эргономичный крой подчёркивает форму плеч и торса, оставаясь при этом универсальным для разных стилей и образов.\n\nПреимущества и сценарии использования\n- Универсальность: идеально подходит для повседневной носки, деловых событий в стиле smart casual, поездок и путешествий. \n- Активный отдых: лёгкий и тёплый материал делает полузамок отличным выбором для прогулок, пробежек в прохладную погоду и занятий на свежем воздухе.\n- Сохранение внешнего вида: нейлоновая основа обеспечивает стойкость цвета и форму изделия даже при частой носке.\n- Простота сочетания: темно‑синий оттенок легко комбинируется с джинсами, брюками чинос, кроссовками и классической обувью, позволяя создавать как сдержанные, так и яркие образы.\n\nЭстетика и статус\nСтильный темно‑синий тон придаёт изделию солидность и универсальную привлекательность, что делает его отличным выбором для тех, кто ценит лаконичность и функциональность без компромиссов. Бренд product_base_b024f8ab подчёркивает внимание к деталям и качественным материалам, что отражается в каждом шве и посадке.\n\nИтог\nМужской полузамок темно‑синий — это практичное и стильное решение для современного мужчины, стремящегося к комфорту и эстетике. Он сочетает в себе лёгкость, тёплую подкладку из эластичного флиса, прочность нейлона и удобство спандекса, что делает его универсальным спутником в городе, путешествиях и активном отдыхе. Выбирая этот полузамок, вы получаете модный, долговечный и функциональный элемент гардероба, который будет радовать своей посадкой и внешним видом долгие сезоны.",
+      "categoryId": "category-men",
+      "productType": "Свитеры и джемперы",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "ТМ-316-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/dfc74c7d-6ace-49bf-b729-c998631c6a14.jpeg",
+          "alt": "Мужской полузамок, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-316-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/edab9fdb-f540-4314-bbcf-9bc8f52a3d3c.jpeg",
+          "alt": "Мужской полузамок, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-316-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/9ffff233-2e0b-408f-b589-42e092a26c49.jpeg",
+          "alt": "Мужской полузамок, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-316-1-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/3b616528-ba0b-4d82-beec-93f87241300d.jpeg",
+          "alt": "Мужской полузамок, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-316-1-image-5",
+          "url": "https://s3.m-market.kg/media/products_images/736679bb-5f40-47f6-93f9-524b03950337.jpeg",
+          "alt": "Мужской полузамок, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-316-1-image-6",
+          "url": "https://s3.m-market.kg/media/products_images/13ab9c32-5fcd-4ea8-a3c4-6b69c25f031a.jpeg",
+          "alt": "Мужской полузамок, изображение 6",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-316-1-image-7",
+          "url": "https://s3.m-market.kg/media/products_images/d06e074a-fc10-448d-83a9-ef93a5d85b42.jpeg",
+          "alt": "Мужской полузамок, изображение 7",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-316-1-image-8",
+          "url": "https://s3.m-market.kg/media/products_images/02afe4e8-39bc-4317-b8ea-2ed04aa658d8.jpeg",
+          "alt": "Мужской полузамок, изображение 8",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-316-1-image-9",
+          "url": "https://s3.m-market.kg/media/products_images/88466300-f709-45c3-a53d-fd0ca316b949.jpeg",
+          "alt": "Мужской полузамок, изображение 9",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-316-1-image-10",
+          "url": "https://s3.m-market.kg/media/products_images/7e2f7dc3-aae9-4a8e-9ace-afb92acf5c50.jpeg",
+          "alt": "Мужской полузамок, изображение 10",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant--316-1",
+          "title": "Синий / M",
+          "sku": "ТМ-316-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--316-2",
+          "title": "Синий / L",
+          "sku": "ТМ-316-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--316-3",
+          "title": "Синий / XL",
+          "sku": "ТМ-316-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--316-4",
+          "title": "Синий",
+          "sku": "ТМ-316-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--316-5",
+          "title": "Синий",
+          "sku": "ТМ-316-5",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 309900,
+        "currencyCode": "KGS"
+      },
+      "featured": true,
+      "tags": ["Свитеры и джемперы", "Синий"],
+      "colors": ["Синий"],
+      "sizes": ["XL", "M", "L"],
+      "material": "Нейлон",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3456 Свитеры и джемперы",
+        "rows": [2, 3, 4, 5, 6],
+        "originalSkus": [
+          "ТМ-316-1",
+          "ТМ-316-2",
+          "ТМ-316-3",
+          "ТМ-316-4",
+          "ТМ-316-5"
+        ],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product--135-1",
+      "name": "Чапан \"Ала-Тоо\" мужской комлпект",
+      "slug": "toolor-135-1",
+      "description": "Куртка-Чапан \"Ала-Тоо\" мужской комплект (Белый, S) от бренда product_base_81128db5 — это современная интерпретация национальной одежды, созданная для тех, кто ценит сочетание утончённой эстетики и продуманной функциональности. Изделие выполнено в чистом белом цвете, который подчёркивает благородство силуэта и универсальность в гардеробе, делая чапан идеальным выбором как для городских образов, так и для загородных прогулок. \n\nМатериал верха — качественная плащевая ткань с влагозащитной пропиткой, которая надёжно защищает от дождя и снега, сохраняет форму и при этом остаётся тактильно мягкой; ткань обладает плотным переплетением волокон и специальной обработкой, благодаря чему эффективно защищает от ветра, сохраняя спокойный матовый внешний вид. \n\nУтеплитель — современный тенсулейт (Tinsulate) обеспечивает выдающиеся теплоизоляционные свойства при минимальном весе: куртка сохраняет объёмный, стильный силуэт, не утяжеляя образ, не сплющивается со временем и надёжно сохраняет форму. Подкладка из полиэстера гарантирует комфорт при носке и долговечность изделия. \n\nДекоративное решение — принт «Ала-Тоо», основанный на силуэтах горных хребтов Кыргызстана, добавляет изделию смысловой глубины и визуальной индивидуальности; спокойная естественная палитра орнамента делает куртку чрезвычайно универсальной и лёгкой в комбинировании с базовым гардеробом, джинсами и трикотажем. \n\nКрой в размере S обеспечивает аккуратную посадку, подчёркивающую линию плеч и силуэт тела, при этом сохраняет свободу движений и комфорт в повседневном использовании. Чапан «Ала-Тоо» уместен в самых разных ситуациях: от деловых и городских образов до уютных выходов на природу — он одинаково хорошо смотрится в сочетании с классическими и повседневными вещами. \n\nКонцепция бренда соединяет память традиции и её бережную адаптацию к современному ритму жизни: чапан не просто вещь, а образ, который хранит культурную отсылку и делает её частью актуального гардероба. Этот вариант особенно подойдёт ценителям сдержанной роскоши, практичности и выразительной, но ненавязчивой эстетики — изделие подчёркивает статус и вкус, оставаясь при этом максимально функциональным и удобным в носке.",
+      "categoryId": "category-men",
+      "productType": "Комплекты",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "ТМ-135-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/9ad93882-d9c3-4f73-aa95-dae060fef3b2.jpeg",
+          "alt": "Чапан \"Ала-Тоо\" мужской комлпект, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-135-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/443edb8a-e77b-4024-9c99-7b8e27d5ee09.jpeg",
+          "alt": "Чапан \"Ала-Тоо\" мужской комлпект, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-135-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/af04bba5-e9cb-4b09-8140-c325c8309be2.jpeg",
+          "alt": "Чапан \"Ала-Тоо\" мужской комлпект, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-135-1-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/8e1a4553-8a21-49e1-a36f-e452927184a3.jpeg",
+          "alt": "Чапан \"Ала-Тоо\" мужской комлпект, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-135-1-image-5",
+          "url": "https://s3.m-market.kg/media/products_images/16626ad0-802c-40ce-854c-f3a8ac8a368f.jpeg",
+          "alt": "Чапан \"Ала-Тоо\" мужской комлпект, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-135-1-image-6",
+          "url": "https://s3.m-market.kg/media/products_images/b0bdfe2c-f367-4916-a5d1-0a56aed5e7d8.jpeg",
+          "alt": "Чапан \"Ала-Тоо\" мужской комлпект, изображение 6",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-135-1-image-7",
+          "url": "https://s3.m-market.kg/media/products_images/196dbacb-bb8c-4bc1-a0b1-467bbd7ae594.jpeg",
+          "alt": "Чапан \"Ала-Тоо\" мужской комлпект, изображение 7",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-135-1-image-8",
+          "url": "https://s3.m-market.kg/media/products_images/3088e07f-1b22-4e48-9b22-909e9d73e273.jpeg",
+          "alt": "Чапан \"Ала-Тоо\" мужской комлпект, изображение 8",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-135-1-image-9",
+          "url": "https://s3.m-market.kg/media/products_images/838e2853-4888-4633-8524-42c77289fc4b.jpeg",
+          "alt": "Чапан \"Ала-Тоо\" мужской комлпект, изображение 9",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-135-1-image-10",
+          "url": "https://s3.m-market.kg/media/products_images/e1853b42-eba1-4fcc-acaa-33036fd1365f.jpeg",
+          "alt": "Чапан \"Ала-Тоо\" мужской комлпект, изображение 10",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant--135-1",
+          "title": "Белый / S",
+          "sku": "ТМ-135-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "S",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 699000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--135-2",
+          "title": "Белый / M",
+          "sku": "ТМ-135-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 699000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 699000,
+        "currencyCode": "KGS"
+      },
+      "featured": true,
+      "tags": ["Комплекты", "Белый"],
+      "colors": ["Белый"],
+      "sizes": ["M", "S"],
+      "material": "Полиэстер",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3462 Комплекты",
+        "rows": [18, 19],
+        "originalSkus": ["ТМ-135-1", "ТМ-135-2"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tw-231-16",
+      "name": "Женская футболка на обтачке",
+      "slug": "toolor-tw-231-16",
+      "description": "Футболка выполнена из мягкого трикотажа с приталенным силуэтом. Материал комфортно прилегает к телу и не ограничивает движения.\n\nГорловина с обтачкой подчёркивает чистоту линий. Авторский принт добавляет акцент и завершает образ.\n\nМодель представлена в трёх базовых оттенках, легко интегрируется в гардероб и подходит для многослойных сочетаний.",
+      "categoryId": "category-women",
+      "productType": "Футболки",
+      "gender": "women",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TW-231-16-image-1",
+          "url": "https://i.postimg.cc/j5ggrYNV/4.jpg",
+          "alt": "Женская футболка на обтачке, изображение 1",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TW-231-16-image-2",
+          "url": "https://i.postimg.cc/mgfd4wP5/1.jpg",
+          "alt": "Женская футболка на обтачке, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-231-16-image-3",
+          "url": "https://i.postimg.cc/V66ggZhH/2.jpg",
+          "alt": "Женская футболка на обтачке, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-231-16-image-4",
+          "url": "https://i.postimg.cc/xjkDT6dR/3.jpg",
+          "alt": "Женская футболка на обтачке, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-231-16-image-5",
+          "url": "https://i.postimg.cc/8CgxyGdj/6.jpg",
+          "alt": "Женская футболка на обтачке, изображение 5",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TW-231-16-image-6",
+          "url": "https://i.postimg.cc/SNwPs4vt/5.jpg",
+          "alt": "Женская футболка на обтачке, изображение 6",
+          "status": "unreachable",
+          "httpStatus": null
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tw-231-16",
+          "title": "Красный / S",
+          "sku": "TW-231-16",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "S",
+            "color": "Красный"
+          },
+          "price": {
+            "amount": 219900,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 40000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-231-17",
+          "title": "Красный / M",
+          "sku": "TW-231-17",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Красный"
+          },
+          "price": {
+            "amount": 219900,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 40000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-231-18",
+          "title": "Красный / L",
+          "sku": "TW-231-18",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Красный"
+          },
+          "price": {
+            "amount": 219900,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 40000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-231-19",
+          "title": "Красный / XL",
+          "sku": "TW-231-19",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Красный"
+          },
+          "price": {
+            "amount": 219900,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 40000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-231-20",
+          "title": "Красный / 2XL",
+          "sku": "TW-231-20",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "2XL",
+            "color": "Красный"
+          },
+          "price": {
+            "amount": 219900,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 40000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 219900,
+        "currencyCode": "KGS"
+      },
+      "discountAmount": {
+        "amount": 40000,
+        "currencyCode": "KGS"
+      },
+      "featured": true,
+      "tags": ["Футболки", "Красный"],
+      "colors": ["Красный"],
+      "sizes": ["XL", "S", "L", "2XL", "M"],
+      "material": "Трикотаж",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3493 Футболки",
+        "rows": [8, 14, 15, 16, 24],
+        "originalSkus": [
+          "TW-231-16",
+          "TW-231-17",
+          "TW-231-18",
+          "TW-231-19",
+          "TW-231-20"
+        ],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tw-306-4",
+      "name": "Жен. рубашка Wellness",
+      "slug": "toolor-tw-306-4",
+      "description": "Женская рубашка Wellness от бренда product_base_1bf691f7 в размере XL и чистом белом цвете — это воплощение комфорта, стиля и натуральности. Изготовленная на 100% из премиального хлопка, она дарит непревзойденную мягкость и приятную текстуру, которая нежно облегает тело, обеспечивая полную свободу движений в течение всего дня. Идеальный выбор для женщин, ценящих wellness-подход к гардеробу: легкая, дышащая ткань регулирует температуру, сохраняя свежесть и комфорт даже в динамичном ритме жизни.\n\nЭта рубашка выделяется универсальным кроем, который подчеркивает женственные формы, создавая элегантный силуэт для любого случая — от повседневных прогулок и встреч с друзьями до офисных будней и романтических ужинов. Белый цвет добавляет образу свежести и утонченности, легко комбинируясь с джинсами, брюками или юбками, становясь основой стильных многослойных луков. Размер XL гарантирует идеальную посадку для пышных форм, подчеркивая достоинства фигуры и давая ощущение уверенности.\n\nWellness-рубашка — это не просто одежда, а инвестиция в ваше благополучие: хлопок натурального происхождения гипоаллергенен, впитывает влагу и быстро сохнет, поддерживая здоровую кожу. Легко стирается, сохраняет форму и цвет после многочисленных циклов, радуя долговечностью. Откройте для себя гармонию стиля и комфорта с этой рубашкой — она станет вашим любимым фаворитом в гардеробе, вдохновляя на новые образы и подчеркивая вашу естественную красоту!",
+      "categoryId": "category-women",
+      "productType": "Рубашки",
+      "gender": "women",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TW-306-4-image-1",
+          "url": "https://i.postimg.cc/x13MDbhd/slide1.png",
+          "alt": "Жен. рубашка Wellness, изображение 1",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TW-306-4-image-2",
+          "url": "https://i.postimg.cc/T3JgMWF1/slide2.png",
+          "alt": "Жен. рубашка Wellness, изображение 2",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TW-306-4-image-3",
+          "url": "https://i.postimg.cc/qvxyVCSR/slide3.png",
+          "alt": "Жен. рубашка Wellness, изображение 3",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TW-306-4-image-4",
+          "url": "https://i.postimg.cc/8cGTSsqh/Kopia-IMG-4115.jpg",
+          "alt": "Жен. рубашка Wellness, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-306-4-image-5",
+          "url": "https://i.postimg.cc/g2jmdCBS/Kopia-IMG-4118.jpg",
+          "alt": "Жен. рубашка Wellness, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-306-4-image-6",
+          "url": "https://i.postimg.cc/hjqkJ6MC/Kopia-IMG-4123.jpg",
+          "alt": "Жен. рубашка Wellness, изображение 6",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tw-306-1",
+          "title": "Белый / S",
+          "sku": "TW-306-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "S",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 280000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 30000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-306-2",
+          "title": "Белый / M",
+          "sku": "TW-306-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 280000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 30000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-306-3",
+          "title": "Белый / L",
+          "sku": "TW-306-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 280000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 30000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-306-4",
+          "title": "Белый / XL",
+          "sku": "TW-306-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 280000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 30000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 280000,
+        "currencyCode": "KGS"
+      },
+      "discountAmount": {
+        "amount": 30000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Рубашки", "Белый"],
+      "colors": ["Белый"],
+      "sizes": ["XL", "M", "S", "L"],
+      "material": "Хлопок",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3507 Рубашки",
+        "rows": [2, 6, 7, 8],
+        "originalSkus": ["TW-306-1", "TW-306-2", "TW-306-3", "TW-306-4"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tm-103-1",
+      "name": "Муж. ветровка",
+      "slug": "toolor-tm-103-1",
+      "description": "Мужская ветровка (Т синий / Черный, размер M) от бренда product_base_8d6078eb — это современная и функциональная верхняя одежда, созданная для активной городской жизни и динамичных путешествий. Продуманная конструкция и качественные материалы обеспечивают идеальное сочетание легкости, защиты и стиля. \n\nМатериал и защита: Ветровка выполнена из 100% полиэстера с мембранной плащевкой, что гарантирует надежную защиту от ветра и влаги при сохранении воздухопроницаемости. Мембрана эффективно отводит излишнюю влагу и поддерживает комфортный микроклимат под одеждой, позволяя оставаться сухим и спокойным в переменчивую погоду. Полиэстер обеспечивает износостойкость, простоту ухода и длительный срок службы изделия.\n\nДизайн и удобство: Строгая комбинированная расцветка Т синий и черный придает ветровке универсальный и современный вид, который легко сочетается с городским гардеробом и спортивными образами. Анатомический крой в размере M обеспечивает свободу движений и аккуратную посадку без утяжеления. Легкая и компактная структура позволяет удобно складывать ветровку в рюкзак или сумку, делая ее незаменимым спутником в поездках и активном отдыхе.\n\nФункциональные преимущества: Ветровка прекрасно подходит для утренних пробежек, велосипедных прогулок, прогулок по городу и путешествий благодаря быстрому высыханию и защите от порывов ветра. Эргономичные карманы, регулируемый капюшон и ветрозащитные вставки (если предусмотрены конструкцией) добавляют практичности и удобства в повседневном использовании. Материал не линяет и сохраняет насыщенность цвета даже при регулярной носке.\n\nСтиль и универсальность: Комбинация Т синего и черного делает модель максимально универсальной — она легко впишется в деловой кэжуал, спортивный лук или расслабленный городской стиль. Эстетика ветровки подчеркивает уверенность и современность образа, делая ее отличным выбором для мужчин, ценящих функциональность и дизайн.\n\nРезюме: Эта мужская ветровка — идеальное решение для тех, кто ищет практичную, долговечную и стильную верхнюю одежду. Легкая, защищающая от ветра и влаги, она станет надежной защитой в непредсказуемую погоду и подчеркнет ваш индивидуальный стиль в любой ситуации.",
+      "categoryId": "category-men",
+      "productType": "Куртки и пуховики",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TM-103-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/27d521f0-c891-4819-a574-646f15d7088f.jpeg",
+          "alt": "Муж. ветровка, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-103-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/6a4b45a9-6cde-42c7-b658-89e8e4fbfb5e.jpeg",
+          "alt": "Муж. ветровка, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-103-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/5f7c46bf-8fe2-4d23-b095-3c9ac70d725e.jpeg",
+          "alt": "Муж. ветровка, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-103-1-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/10079c6e-378d-45d2-8611-7da1574e6937.jpeg",
+          "alt": "Муж. ветровка, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-103-1-image-5",
+          "url": "https://s3.m-market.kg/media/products_images/4394c0c9-3fc9-4450-a311-5d6b3538f11c.jpeg",
+          "alt": "Муж. ветровка, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tm-103-1",
+          "title": "Черный / M",
+          "sku": "TM-103-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Черный"
+          },
+          "price": {
+            "amount": 650000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-103-2",
+          "title": "Темно-синий / L",
+          "sku": "TM-103-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Темно-синий"
+          },
+          "price": {
+            "amount": 650000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-103-3",
+          "title": "Темно-синий / XL",
+          "sku": "TM-103-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Темно-синий"
+          },
+          "price": {
+            "amount": 650000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-103-4",
+          "title": "Черный / 2XL",
+          "sku": "TM-103-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "2XL",
+            "color": "Черный"
+          },
+          "price": {
+            "amount": 650000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-103-5",
+          "title": "Темно-синий / 3XL",
+          "sku": "TM-103-5",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "3XL",
+            "color": "Темно-синий"
+          },
+          "price": {
+            "amount": 650000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 650000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Куртки и пуховики", "Темно-синий", "Черный"],
+      "colors": ["Темно-синий", "Черный"],
+      "sizes": ["3XL", "2XL", "XL", "L", "M"],
+      "material": "Полиэстер",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3437 Куртки и пуховики",
+        "rows": [4, 5, 6, 7, 14],
+        "originalSkus": [
+          "TM-103-1",
+          "TM-103-2",
+          "TM-103-3",
+          "TM-103-4",
+          "TM-103-5"
+        ],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tw-198-5",
+      "name": "Жен. брюки трубы",
+      "slug": "toolor-tw-198-5",
+      "description": "Женские брюки-трубы бордового цвета от бренда product_base_3b863060 — это эффектное сочетание городской эстетики и комфорта, созданное для современных женщин, которые ценят стиль, универсальность и продуманную посадку. Благородный бордовый оттенок делает модель выразительным акцентом в гардеробе: брюки легко комбинируются с нейтральными базовыми вещами и яркими аксессуарами, идеально подходя как для повседневных образов, так и для выходов в свет.\n\nФасон «трубы» обеспечивает стройный силуэт и визуальное удлинение ног, придавая образу женственности и уверенности. Посадка продумана таким образом, чтобы подчеркнуть достоинства фигуры и обеспечить свободу движений на каждом шаге. Брюки отлично подходят для создания луков в деловом стиле с блузой и жакетом, для кэжуал-сочетаний с трикотажем и кроссовками, а также для вечерних образов с туфлями на каблуке.\n\nМатериал изделия — качественная трехнитка плотностью 320 г/м², в составе — 52% хлопка и 48% полиэстера. Такая комбинация обеспечивает приятную на ощупь текстуру, долговечность и аккуратную драпировку. Хлопок отвечает за естественную мягкость и комфорт при соприкосновении с кожей, а полиэстер добавляет износостойкости, сохраняет форму и облегчает уход. Плотность ткани делает брюки устойчивыми к деформации и подходящими для круглогодичного ношения в сочетании с соответствующей верхней одеждой.\n\nДетали кроя и качество исполнения подчеркивают отношение бренда product_base_3b863060 к эстетике и комфорту: аккуратные швы, продуманная длина и качественная обработка краев создают безупречный внешний вид. Модель доступна в размере L, что позволяет создать гармоничный образ на женщину, ценящую стильные, практичные и легко сочетаемые вещи.\n\nЭти брюки — универсальное решение для тех, кто хочет выглядеть современно и элегантно каждый день. Бордовый цвет придаёт образу характер и глубину, а фактура трехнитки и состав ткани гарантируют комфорт и превосходную посадку. Выбирая эту модель, вы получаете стильный элемент гардероба, который станет надежной базой для множества модных сочетаний и подчеркнёт вашу индивидуальность.",
+      "categoryId": "category-women",
+      "productType": "Брюки",
+      "gender": "women",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TW-198-5-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/eabe7249-1581-4ca0-9ddb-d1789274f5d9.jpeg",
+          "alt": "Жен. брюки трубы, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-198-5-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/534e7a49-c278-4203-afae-f4f4dff96d1b.jpeg",
+          "alt": "Жен. брюки трубы, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-198-5-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/4b625916-6d51-459f-a201-6ff60eea6ad4.jpeg",
+          "alt": "Жен. брюки трубы, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-198-5-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/cb790d78-f9d9-4d4c-b940-30a7477345f3.jpeg",
+          "alt": "Жен. брюки трубы, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-198-5-image-5",
+          "url": "https://s3.m-market.kg/media/products_images/a3424a8c-afb7-4684-ba22-10d831aef49c.jpeg",
+          "alt": "Жен. брюки трубы, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tw-198-1",
+          "title": "[Fallback] Вариант TW-198-1",
+          "sku": "TW-198-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {},
+          "price": {
+            "amount": 360000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-198-2",
+          "title": "[Fallback] Вариант TW-198-2",
+          "sku": "TW-198-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {},
+          "price": {
+            "amount": 360000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-198-3",
+          "title": "[Fallback] Вариант TW-198-3",
+          "sku": "TW-198-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {},
+          "price": {
+            "amount": 360000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-198-4",
+          "title": "[Fallback] Вариант TW-198-4",
+          "sku": "TW-198-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {},
+          "price": {
+            "amount": 360000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-198-5",
+          "title": "Бордовый / 2XL",
+          "sku": "TW-198-5",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "2XL",
+            "color": "Бордовый"
+          },
+          "price": {
+            "amount": 360000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 360000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Брюки", "Бордовый"],
+      "colors": ["Бордовый"],
+      "sizes": ["2XL"],
+      "material": "Хлопок",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3486 Брюки",
+        "rows": [29, 30, 31, 32, 33],
+        "originalSkus": [
+          "TW-198-1",
+          "TW-198-2",
+          "TW-198-3",
+          "TW-198-4",
+          "TW-198-5"
+        ],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tm-0310-4",
+      "name": "Белая футболка Алексея",
+      "slug": "toolor-tm-0310-4",
+      "description": "Та самая футболка на 10 лет. Купил - и больше не ищешь. Минималистичный дизайн, который легко становится базой гардероба. Особенности: Прямой фасон, Втачные рукава, Дышащий материал (95% хлопок, 5% лайкра). Комфорт на каждый день и универсальный стиль",
+      "categoryId": "category-men",
+      "productType": "Футболки",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TM-0310-4-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/707a9e83-86b3-48a1-bcec-09f5b9790f70.webp",
+          "alt": "Белая футболка Алексея, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-0310-4-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/c09350a1-b164-4faa-ac07-e489622245de.webp",
+          "alt": "Белая футболка Алексея, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-0310-4-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/e52fb4dc-6eaa-4aae-966b-dcb3da3abb25.webp",
+          "alt": "Белая футболка Алексея, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-0310-4-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/75280d79-9ea6-4df2-8c7e-202ff18485c6.webp",
+          "alt": "Белая футболка Алексея, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tm-0310-1",
+          "title": "Белый / XL",
+          "sku": "TM-0310-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 199000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-0310-2",
+          "title": "Белый / M",
+          "sku": "TM-0310-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 199000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-0310-3",
+          "title": "Белый / L",
+          "sku": "TM-0310-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 199000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-0310-4",
+          "title": "Белый / 3XL",
+          "sku": "TM-0310-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "3XL",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 199000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 199000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Футболки", "Белый"],
+      "colors": ["Белый"],
+      "sizes": ["XL", "M", "L", "3XL"],
+      "material": "Хлопок",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown", "gender-inferred-from-sheet-group"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3447 Футболки",
+        "rows": [2, 3, 4, 5],
+        "originalSkus": ["TM-0310-1", "TM-0310-2", "TM-0310-3", "TM-0310-4"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tw-202-1",
+      "name": "Жен. шерстенная куртка",
+      "slug": "toolor-tw-202-1",
+      "description": "Женская шерстяная куртка от бренда product_base_dd092baf в стильном темно-сером оттенке и размере S — это воплощение идеального сочетания элегантности, комфорта и практичности. Изготовленная из премиального трикотажного полотна с 15% натуральной шерсти и 85% полиэстера, она дарит непревзойденную мягкость и тепло, обволакивая тело как нежное объятие. Темно-серый цвет добавляет уни��ерсальности: эта куртка гармонично дополнит любой образ — от повседневного casual с джинсами и ботинками до офисного шика с юбкой-карандаш и туфлями на каблуке. Шерстяные волокна обеспечивают отличную терморегуляцию, сохраняя тепло в прохладные осенне-зимние дни, а полиэстер усиливает долговечность и легкость ухода. Легкая, но теплая, она идеальна для активного образа жизни: прогулок по городу, встреч с друзьями или поездок за город. Уникальная текстура трикотажа подчеркивает женственные формы, создавая утонченный силуэт, а практичный крой гарантирует свободу движений. Выберите эту куртку — и почувствуйте, как стиль и уют становятся вашими верными спутниками в любой сезон!",
+      "categoryId": "category-women",
+      "productType": "Куртки и пуховики",
+      "gender": "women",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TW-202-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/768ad83c-2db7-4bef-bb2a-7006e32c216f.jpeg",
+          "alt": "Жен. шерстенная куртка, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-202-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/903ef68c-88ea-4f0d-8b28-df7376c9494c.jpeg",
+          "alt": "Жен. шерстенная куртка, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-202-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/40d44aff-6753-49bd-8de2-04c40d48f650.jpeg",
+          "alt": "Жен. шерстенная куртка, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-202-1-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/509dd8f3-e1d7-4334-8869-398bf9095d82.jpeg",
+          "alt": "Жен. шерстенная куртка, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tw-202-1",
+          "title": "Темно-серый / S",
+          "sku": "TW-202-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "S",
+            "color": "Темно-серый"
+          },
+          "price": {
+            "amount": 750000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-202-2",
+          "title": "Темно-серый / M",
+          "sku": "TW-202-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Темно-серый"
+          },
+          "price": {
+            "amount": 750000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-202-3",
+          "title": "Темно-серый / L",
+          "sku": "TW-202-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Темно-серый"
+          },
+          "price": {
+            "amount": 750000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-202-4",
+          "title": "Темно-серый / XL",
+          "sku": "TW-202-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Темно-серый"
+          },
+          "price": {
+            "amount": 750000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 750000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Куртки и пуховики", "Темно-серый"],
+      "colors": ["Темно-серый"],
+      "sizes": ["M", "XL", "L", "S"],
+      "material": "Полиэстер",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3476 Куртки и пуховики",
+        "rows": [2, 3, 4, 5],
+        "originalSkus": ["TW-202-1", "TW-202-2", "TW-202-3", "TW-202-4"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tw-188-1",
+      "name": "Жен. полутренч (Бежевый-(принт) Кофе-(однотон) Т.синий-(однотон), L)",
+      "slug": "toolor-tw-188-1",
+      "description": "Женский полутренч от бренда product_base_35e10c4e — это гармоничное сочетание классического силуэта и современных текстур, созданное для тех, кто ценит стиль, универсальность и комфорт. Модель выполнена в трёх изысканных вариантах: бежевый с принтом, кофе однотонный и тёмно-синий однотонный, что делает полутренч идеальным выбором как для города, так и для деловых встреч или вечерних прогулок.\n\nМатериалы и отделка\n- Верхняя ткань: плащевка — лёгкая, ветро- и влагоотталкивающая, придающая изделию аккуратный, плавный драп и практичность в межсезонье. \n- Вариант с орнаментом выполнен из 100% полиэстера, что обеспечивает стойкость узора и простоту ухода. \n- Однотонные варианты изготовлены из смесовой ткани (50% хлопок, 50% полиэстер), которая сочетает в себе натуральную воздухопроницаемость и приятную на ощупь текстуру хлопка с износостойкостью и формоустойчивостью полиэстера.\n\nКрой и посадка\n- Полутренч средней длины с продуманным кроем подчёркивает силуэт, оставляя свободу движений. \n- Эргономичные линии плеч и аккуратный воротник создают элегантный внешний вид, подходящий для сочетания с деловой и повседневной одеждой. \n- Модель в размере M идеально с��алансирована по посадке — не сковывает движений, но сохраняет структурированную форму.\n\nПреимущества и возможности использования\n- Адаптивность к погоде: плащевка обеспечивает защиту от ветра и лёгкого дождя, благодаря чему полутренч остаётся актуален в межсезонье. \n- Универсальность стиля: бежевый принт добавляет выразительности и подходит для создания модных образов, кофе и тёмно-синий однотон — база для строгих и лаконичных сочетаний. \n- Комфорт и уход: ткани легко стираются и сохраняют форму, что делает полутренч практичным для активного образа жизни. \n- Комбинирование: модель прекрасно сочетается с платьями, костюмами, джинсами и брюками; легко дополняется ремнём, шарфом или сумкой для создания индивидуального образа.\n\nДля кого\nPolutrench станет отличным выбором для женщин, ценящих продуманный городской гардероб: стильных профессионалов, активных мам и всех, кто любит выглядеть современно и ухоженно без лишних усилий.\n\nИтог\nЭтот женский полутренч — гармония практичности и эстетики: качественные материалы, продуманная посадка и универсальная палитра цветов делают его незаменимой вещью в гардеробе. Он легко превращает повседневный образ в продуманный, завершённый лук и служит надежной защитой в переменчивую погоду.",
+      "categoryId": "category-women",
+      "productType": "Плащи и тренчи",
+      "gender": "women",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TW-188-1-image-1",
+          "url": "https://i.postimg.cc/RZQSV2dk/Kopia-DSC05008.jpg",
+          "alt": "Жен. полутренч (Бежевый-(принт) Кофе-(однотон) Т.синий-(однотон), L), изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-188-1-image-2",
+          "url": "https://i.postimg.cc/w3Yz9kmL/Kopia-DSC05025.jpg",
+          "alt": "Жен. полутренч (Бежевый-(принт) Кофе-(однотон) Т.синий-(однотон), L), изображение 2",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TW-188-1-image-3",
+          "url": "https://i.postimg.cc/3r4DJJG2/Kopia-DSC05032.jpg",
+          "alt": "Жен. полутренч (Бежевый-(принт) Кофе-(однотон) Т.синий-(однотон), L), изображение 3",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TW-188-1-image-4",
+          "url": "https://i.postimg.cc/CKxRyFYM/Kopia-DSC05034.jpg",
+          "alt": "Жен. полутренч (Бежевый-(принт) Кофе-(однотон) Т.синий-(однотон), L), изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tw-188-1",
+          "title": "Бежевый / S",
+          "sku": "TW-188-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "S",
+            "color": "Бежевый"
+          },
+          "price": {
+            "amount": 850000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 170000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-188-2",
+          "title": "Бежевый / M",
+          "sku": "TW-188-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Бежевый"
+          },
+          "price": {
+            "amount": 850000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 170000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-188-3",
+          "title": "Бежевый / L",
+          "sku": "TW-188-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Бежевый"
+          },
+          "price": {
+            "amount": 850000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 170000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-188-4",
+          "title": "Бежевый / XL",
+          "sku": "TW-188-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Бежевый"
+          },
+          "price": {
+            "amount": 850000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 170000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 850000,
+        "currencyCode": "KGS"
+      },
+      "discountAmount": {
+        "amount": 170000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Плащи и тренчи", "Бежевый"],
+      "colors": ["Бежевый"],
+      "sizes": ["XL", "L", "S", "M"],
+      "material": "Полиэстер",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3478 Плащи и тренчи",
+        "rows": [2, 3, 4, 9],
+        "originalSkus": ["TW-188-1", "TW-188-2", "TW-188-3", "TW-188-4"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tw-213-1",
+      "name": "Женский рашгард спортивный",
+      "slug": "toolor-tw-213-1",
+      "description": "Женский рашгард (Т синий — Оливковый) в размере M от бренда product_base_a9ea67d6 — это стильный и функциональный элемент гардероба, объединяющий комфорт премиального текстиля и современный спортивный дизайн. Выполненный из высококачественной смеси шелка и нейлона (85% шелк, 15% нейлон), рашгард дарит исключительное ощущение нежности на коже, при этом сохраняя прочность и эластичность, необходимые для активной жизни. Технологичная структура ткани «суплекс» обеспечивает отличную воздухопроницаемость и быстрое отведение влаги, благодаря чему изделие остаётся свежим и комфортным при интенсивных нагрузках и в повседневной носке.\n\nДизайн в сочетании глубокого тёмно-синего и благородного оливкового тонов делает рашгард универсальным — он легко сочетается с одеждой для тренировок, пляжного образа или городского стиля. Обтягивающий, но не сковывающий силуэт подчёркивает фигуру и поддерживает свободу движений, что особенно ценно при занятиях фитнесом, йогой, серфингом, плаванием или уличными тренировками.\n\nПреимущества, которые выгодно выделяют этот рашгард:\n- Натуральный шелк в составе придаёт изделию мягкость и деликатный блеск, создавая ощущение роскоши.\n- Нейлон усиливает износостойкость и эластичность, продлевая срок службы изделия.\n- Суплексная структура гарантирует быстрый отвод влаги и циркуляцию воздуха, поддерживая комфорт при высокой активности.\n- Элегантная цветовая комбинация подчёркивает индивидуальность и делает рашгард подходящим для разных образов.\n- Размер M обеспечивает оптимальную посадку для широкой группы фигур, сочетая поддержку и свободу движений.\n\nЭтот рашгард идеально подойдёт женщинам, которые ценят сочетание эстетики и функциональности: от спортивных тренировок и водных видов спорта до активного отдыха и повседневной городской моды. Он станет надежным спутником как в зале, так и на прогулке, добавляя образу утончённости и подчёркивая стремление к качеству в каждой детали.",
+      "categoryId": "category-women",
+      "productType": "Лонгсливы",
+      "gender": "women",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TW-213-1-image-1",
+          "url": "https://i.postimg.cc/SNj08VDC/1slide66.png",
+          "alt": "Женский рашгард спортивный, изображение 1",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TW-213-1-image-2",
+          "url": "https://i.postimg.cc/WzHHXLXq/2slide66.png",
+          "alt": "Женский рашгард спортивный, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-213-1-image-3",
+          "url": "https://i.postimg.cc/0Q5Xv24C/3slide66.png",
+          "alt": "Женский рашгард спортивный, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-213-1-image-4",
+          "url": "https://i.postimg.cc/mgQmFHfq/4slide66.png",
+          "alt": "Женский рашгард спортивный, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tw-213-1",
+          "title": "Синий / S",
+          "sku": "TW-213-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "S",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-213-2",
+          "title": "Синий",
+          "sku": "TW-213-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-213-4",
+          "title": "Синий / XL",
+          "sku": "TW-213-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 309900,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Лонгсливы", "Синий"],
+      "colors": ["Синий"],
+      "sizes": ["S", "XL"],
+      "material": "Шелк",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3497 Лонгсливы",
+        "rows": [2, 3, 4],
+        "originalSkus": ["TW-213-1", "TW-213-2", "TW-213-4"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tw-0249-1",
+      "name": "Болеро женское с длинным рукавом на запах",
+      "slug": "toolor-tw-0249-1",
+      "description": "Модель имеет длинные рукава и крой на запах с V-образным вырезом, который визуально подчеркивает линию шеи и силуэт. Благодаря укороченной длине болеро гармонично сочетается с платьями, юбками, брюками и топами, дополняя как повседневные, так и более нарядные образы.Болеро подойдет для теплого сезона, вечерних выходов, мероприятий, фотосессий и повседневной носки. Лаконичный дизайн позволяет легко сочетать модель с базовым и праздничным гардеробом.",
+      "categoryId": "category-women",
+      "productType": "Топы и майки",
+      "gender": "women",
+      "collectionIds": [],
+      "collectionName": "Весна-лето 2026",
+      "images": [
+        {
+          "id": "TW-0249-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/51f4d5d3-5829-4346-8486-9b9c5eafefc4.webp",
+          "alt": "Болеро женское с длинным рукавом на запах, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-0249-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/2bc38bf6-778e-47f3-a2c3-e99ed86d8a8a.webp",
+          "alt": "Болеро женское с длинным рукавом на запах, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-0249-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/d41c4255-3e99-4292-94fc-f41dd72c25e9.webp",
+          "alt": "Болеро женское с длинным рукавом на запах, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-0249-1-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/6355a7ab-1646-4424-a1a1-24afce6e2260.webp",
+          "alt": "Болеро женское с длинным рукавом на запах, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tw-0249-1",
+          "title": "Голубой / 44",
+          "sku": "TW-0249-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "44",
+            "color": "Голубой"
+          },
+          "price": {
+            "amount": 299000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 299000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Топы и майки", "Весна-лето 2026", "Голубой"],
+      "colors": ["Голубой"],
+      "sizes": ["44"],
+      "material": "Купро",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3495 Топы и майки",
+        "rows": [3],
+        "originalSkus": ["TW-0249-1"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tm-356-1",
+      "name": "Мужская рубашка с декоративными застежками в азиатском стиле",
+      "slug": "toolor-tm-356-1",
+      "description": "Рубашка лён — сочетание комфорта и выразительного дизайна. Модель выполнена из смесовой ткани с высоким содержанием льна, дополнена воротником-стойкой и декоративными металлическими застежками в восточном стиле. Свободный крой обеспечивает комфортную посадку и делает рубашку универсальным выбором для повседневных и особых образов.",
+      "categoryId": "category-men",
+      "productType": "Рубашки",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TM-356-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/4092554a-a954-42a7-8fd9-27dc9eeca5dd.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/34a9f535-b317-402e-b9f9-6880a48b83e0.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/354888b1-be72-4140-ab51-eca92688b6a5.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/78d0382c-3b7b-44e1-9c0e-341652b38367.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-5",
+          "url": "https://s3.m-market.kg/media/products_images/a6d0b3a4-4298-4abc-ae23-d2659372af11.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-6",
+          "url": "https://s3.m-market.kg/media/products_images/6f69e115-edc0-482a-a83f-cb585a44e93b.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 6",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-7",
+          "url": "https://s3.m-market.kg/media/products_images/f5fdc403-1aa3-4c4c-93b4-fe149fe63853.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 7",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-8",
+          "url": "https://s3.m-market.kg/media/products_images/7fafdf67-9b67-4e82-9f99-422ae37d0c18.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 8",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-9",
+          "url": "https://s3.m-market.kg/media/products_images/649f6176-43e6-4698-b533-288936f10c06.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 9",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-10",
+          "url": "https://s3.m-market.kg/media/products_images/bdee7e6b-8f61-4e51-a8c2-715421469a4e.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 10",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-11",
+          "url": "https://s3.m-market.kg/media/products_images/4b79cd4a-00b1-463a-81e4-4a7c5cea909a.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 11",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-12",
+          "url": "https://s3.m-market.kg/media/products_images/38357a08-0b83-4048-b860-ea741520632e.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 12",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-13",
+          "url": "https://s3.m-market.kg/media/products_images/67575046-a2fc-4113-880f-d540158a6bd6.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 13",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-14",
+          "url": "https://s3.m-market.kg/media/products_images/9370b338-b3a5-4696-b52d-e5a9c8d1316e.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 14",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-15",
+          "url": "https://s3.m-market.kg/media/products_images/9391cba9-1927-4ae0-92f7-e7e4c77990e5.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 15",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-16",
+          "url": "https://s3.m-market.kg/media/products_images/df38cfbf-4953-4688-8052-cf51ba4757bd.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 16",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-17",
+          "url": "https://s3.m-market.kg/media/products_images/d6183653-726f-46ee-abed-01f29348ddb6.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 17",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-18",
+          "url": "https://s3.m-market.kg/media/products_images/727fd332-5161-4daa-8041-2131e1f12783.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 18",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-19",
+          "url": "https://s3.m-market.kg/media/products_images/d52183b6-36d9-4297-9ba5-ace02d0239bf.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 19",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-20",
+          "url": "https://s3.m-market.kg/media/products_images/a1647c69-6cb2-4143-ad2c-fb32d54a23fc.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 20",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-21",
+          "url": "https://s3.m-market.kg/media/products_images/eb5bbc71-3e57-457c-a767-0d09980dd53d.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 21",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-22",
+          "url": "https://s3.m-market.kg/media/products_images/8958cc25-4469-4ca6-adc9-bcfe64fdcf32.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 22",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-23",
+          "url": "https://s3.m-market.kg/media/products_images/da261e5f-ef2a-4717-adcd-27eff7a102b1.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 23",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-24",
+          "url": "https://s3.m-market.kg/media/products_images/8ce6df38-a69a-4c6f-a660-5669d22a13e4.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 24",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-356-1-image-25",
+          "url": "https://s3.m-market.kg/media/products_images/3f5d775e-5a86-455f-8c62-a5be4cc2239d.webp",
+          "alt": "Мужская рубашка с декоративными застежками в азиатском стиле, изображение 25",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tm-356-1",
+          "title": "Графит / 46",
+          "sku": "TM-356-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "46",
+            "color": "Графит"
+          },
+          "price": {
+            "amount": 449000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-356-2",
+          "title": "Графит / 48",
+          "sku": "TM-356-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "48",
+            "color": "Графит"
+          },
+          "price": {
+            "amount": 449000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-356-3",
+          "title": "Графит / 50",
+          "sku": "TM-356-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "50",
+            "color": "Графит"
+          },
+          "price": {
+            "amount": 449000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-356-4",
+          "title": "Графит / 52",
+          "sku": "TM-356-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "52",
+            "color": "Графит"
+          },
+          "price": {
+            "amount": 449000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-356-5",
+          "title": "Графит / 54",
+          "sku": "TM-356-5",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "54",
+            "color": "Графит"
+          },
+          "price": {
+            "amount": 449000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 449000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Рубашки", "Графит"],
+      "colors": ["Графит"],
+      "sizes": ["46", "48", "54", "52", "50"],
+      "modelInformation": "Размер на модели: M",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3458 Рубашки",
+        "rows": [2, 3, 4, 5, 6],
+        "originalSkus": [
+          "TM-356-1",
+          "TM-356-2",
+          "TM-356-3",
+          "TM-356-4",
+          "TM-356-5"
+        ],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tw-79-1-tw-90-1",
+      "name": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго",
+      "slug": "toolor-tw-79-1-tw-90-1",
+      "description": "Женская вафельная рубашка Toolor с классической посадкой и фирменным силуэтом «Юрта». Модель на молнии с отложным воротником, функциональными карманами и регулируемыми манжетами. Стиль и комфорт на каждый день. \\ Женские вафельные брюки карго свободного кроя с эластичным поясом и петлями для ремня. Модель дополнена функциональными карманами в стиле Military и манжетами на резинке для комфортной посадки.",
+      "categoryId": "category-women",
+      "productType": "Комплекты",
+      "gender": "women",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/d21cb8d8-33f3-47d7-a1bf-aaf58d76c5ce.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/95b57de8-c88c-4403-8318-3f30fcae97ad.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/f5c07446-5b94-4336-ade8-922e5e7a6404.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/4fbc3068-6ee9-42fe-9544-1cf81aa10859.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-5",
+          "url": "https://s3.m-market.kg/media/products_images/c9cfdb23-70c5-4966-8987-7ea9e8f0884f.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-6",
+          "url": "https://s3.m-market.kg/media/products_images/2f67582b-0f42-458f-a804-0e229f48557f.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 6",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-7",
+          "url": "https://s3.m-market.kg/media/products_images/bc4e91df-ebed-44e7-bb34-1d9cc385da63.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 7",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-8",
+          "url": "https://s3.m-market.kg/media/products_images/c3461680-752a-4cdc-ac7e-db8b6fcf65b1.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 8",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-9",
+          "url": "https://s3.m-market.kg/media/products_images/3ba25acc-14b1-4718-b55b-cc145f034676.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 9",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-10",
+          "url": "https://s3.m-market.kg/media/products_images/99439c03-2331-4938-b7e2-b19f81dfd831.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 10",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-11",
+          "url": "https://s3.m-market.kg/media/products_images/bb94e609-e0d3-4883-8072-2ab3dd14ab02.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 11",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-12",
+          "url": "https://s3.m-market.kg/media/products_images/7eeb8934-1c34-43cd-b070-ca28443e736f.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 12",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-13",
+          "url": "https://s3.m-market.kg/media/products_images/a9526fbc-9103-433a-a24b-b8cceca0d752.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 13",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-14",
+          "url": "https://s3.m-market.kg/media/products_images/ef464a05-af05-49f2-b3eb-f225766817e7.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 14",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-79-1 \\ TW-90-1-image-15",
+          "url": "https://s3.m-market.kg/media/products_images/623fa2d5-b46b-42e6-91a3-8bf5aa27aa00.webp",
+          "alt": "Женская вафельная рубашка-ветровка \\ Женские вафельные брюки карго, изображение 15",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tw-79-1-tw-90-1",
+          "title": "Оливковый / 46",
+          "sku": "TW-79-1 \\ TW-90-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "46",
+            "color": "Оливковый"
+          },
+          "price": {
+            "amount": 410000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 160000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-79-2-tw-90-2",
+          "title": "Оливковый / 50",
+          "sku": "TW-79-2 \\ TW-90-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "50",
+            "color": "Оливковый"
+          },
+          "price": {
+            "amount": 410000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 160000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-79-3-tw-90-3",
+          "title": "Оливковый / 52",
+          "sku": "TW-79-3 \\ TW-90-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "52",
+            "color": "Оливковый"
+          },
+          "price": {
+            "amount": 410000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 160000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 410000,
+        "currencyCode": "KGS"
+      },
+      "discountAmount": {
+        "amount": 160000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Комплекты", "Оливковый"],
+      "colors": ["Оливковый"],
+      "sizes": ["52", "50", "46"],
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3511 Комплекты",
+        "rows": [2, 3, 4],
+        "originalSkus": [
+          "TW-79-1 \\ TW-90-1",
+          "TW-79-2 \\ TW-90-2",
+          "TW-79-3 \\ TW-90-3"
+        ],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tj-67-11",
+      "name": "Женская двойка свитшот",
+      "slug": "toolor-tj-67-11",
+      "description": "Базовая женская двойка с минималистичным кроем и отделкой в ​​виде вышивки «Кочевники будущего» в виде рунической письменности станет стильным и функциональным элементом вашего гардероба. В конструкцию свитшота встроен силуэт юртыв виде рельефных швов. Практичные карманы, встроенные в рельевные швы и оснащенные оригинальными застежками фирмы YKK, содержат дополнительную функцию, позволяющую надежно хранить личные ваши вещи. Эта двойка идеально подходит для создания стильных и комфортных образов на каждый день, подчеркивая вашу индивидуальность и приверженность сочетанию традиций. Идеально подходит как для прогулок на природе, так и для отдыха на свежем воздухе.",
+      "categoryId": "category-women",
+      "productType": "Свитшоты",
+      "gender": "women",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TJ-67-11-image-1",
+          "url": "https://i.postimg.cc/2SFBnbcR/0F2A0114.jpg",
+          "alt": "Женская двойка свитшот, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TJ-67-11-image-2",
+          "url": "https://i.postimg.cc/zfxbcm1Z/0F2A0115.jpg",
+          "alt": "Женская двойка свитшот, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TJ-67-11-image-3",
+          "url": "https://i.postimg.cc/qq3Nqz6d/0F2A0120.jpg",
+          "alt": "Женская двойка свитшот, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TJ-67-11-image-4",
+          "url": "https://i.postimg.cc/RCypNFbf/0F2A0139.jpg",
+          "alt": "Женская двойка свитшот, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TJ-67-11-image-5",
+          "url": "https://i.postimg.cc/vZL0qv8L/0F2A0158.jpg",
+          "alt": "Женская двойка свитшот, изображение 5",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TJ-67-11-image-6",
+          "url": "https://i.postimg.cc/Y9j8SK6y/0F2A0160.jpg",
+          "alt": "Женская двойка свитшот, изображение 6",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tj-67-11",
+          "title": "Белый / XS",
+          "sku": "TJ-67-11",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XS",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 650000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 450000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tj-67-12",
+          "title": "Белый / S",
+          "sku": "TJ-67-12",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "S",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 650000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 450000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tj-67-13",
+          "title": "Белый / M",
+          "sku": "TJ-67-13",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 650000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 450000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tj-67-14",
+          "title": "Белый / L",
+          "sku": "TJ-67-14",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 650000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 450000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tj-67-15",
+          "title": "Белый / XL",
+          "sku": "TJ-67-15",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Белый"
+          },
+          "price": {
+            "amount": 650000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 450000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 650000,
+        "currencyCode": "KGS"
+      },
+      "discountAmount": {
+        "amount": 450000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Свитшоты", "Белый"],
+      "colors": ["Белый"],
+      "sizes": ["XL", "L", "M", "S", "XS"],
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3501 Свитшоты",
+        "rows": [15, 16, 17, 18, 19],
+        "originalSkus": [
+          "TJ-67-11",
+          "TJ-67-12",
+          "TJ-67-13",
+          "TJ-67-14",
+          "TJ-67-15"
+        ],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product--127-1",
+      "name": "Мужской спортивный зип",
+      "slug": "toolor-127-1",
+      "description": "Мужской спортивный зип от бренда product_base_bab5c3ef — это гармоничное сочетание современного дизайна, функциональности и комфорта, созданное для активного образа жизни. Модель выполнена в элегантной цветовой комбинации Т‑синий и черный, которая универсальна и стильно подчёркивает динамичный силуэт. Крой ориентирован на свободу движений, поэтому изделие идеально подходит для тренировок, пробежек, занятий фитнесом, прогулок и повседневной носки.\n\nМатериалы и комфорт\nСостав ткани — хлопок 35%, полиэстер 62%, спандекс 3% — обеспечивает оптимальный баланс мягкости, прочности и эластичности. Натуральный хлопок дарит приятные тактильные ощущения и воздухопроницаемость, полиэстер отвечает за долговечность, быструю сушку и устойчивость окраски, а спандекс придаёт необходимую растяжимость и комфорт в движении. Лайнинг продуман для дополнительного комфорта и аккуратной посадки по фигуре.\n\nДизайн и функциональность\nСпортивный зип оснащён удобной застёжкой‑молнией, которая позволяет быстро регулировать вентиляцию и уровень утепления. Практичные элементы — прорезные или накладные карманы — дают возможность безопасно хранить ключи, телефон и другие мелочи во время занятий. Актуальный цветовой контраст Т‑синий и черного делает модель универсальной и лёгкой в сочетании с другой спортивной или повседневной одеждой.\n\nПреимущества и возможности использования\n- Универсальность: подходит как для интенсивных тренировок, так и для повседневного городского образа. \n- Комфорт в движении: эластичность ткани и продуманный крой обеспечивают свободу движений при любом виде активности. \n- Долговечность: смешанный состав ткани сохраняет форму и цвет даже при частой эксплуатации. \n- Практичность: функциональные карманы и молния повышают удобство использования в любых условиях. \n- Стиль: современный и сдержанный дизайн подчёркивает уверенный образ и легко комбинируется с остальным гардеробом.\n\nРазмер и посадка\nМодель представлена в размере XXL, что обеспечивает комфортную посадку для мужчин, предпочитающих свободный и удобный силуэт. Конструкция учитывает анатомию и позволяет сохранить аккуратный внешний вид даже при активной эксплуатации.\n\nДля кого подходит\nЭтот спортивный зип станет отличным выбором для тех, кто ценит сочетание спорта и стиля: спортсменов, любителей активного отдыха, городских жителей и всех, кто ищет надёжную и привлекательную верхнюю деталь гардероба.\n\nВывод\nМужской спортивный зип (Т‑синий / черный) от product_base_bab5c3ef — это универсальная, функциональная и стильная вещь, которая обеспечивает комфорт, свободу движений и современный внешний вид. Идеальное решение для тех, кто хочет выглядеть презентабельно и чувствовать себя уверенно в любой активности.",
+      "categoryId": "category-men",
+      "productType": "Толстовки",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "ТМ-127-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/37630b42-fd79-44bf-858e-bbf356331dd8.jpeg",
+          "alt": "Мужской спортивный зип, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-127-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/27e887e9-270e-4e34-ae41-7c674b7907ac.jpeg",
+          "alt": "Мужской спортивный зип, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-127-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/e58409da-303d-47e9-8a06-e179607facd8.jpeg",
+          "alt": "Мужской спортивный зип, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-127-1-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/365575a8-c1a2-40e2-a0d9-4602bc9918d0.jpeg",
+          "alt": "Мужской спортивный зип, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-127-1-image-5",
+          "url": "https://s3.m-market.kg/media/products_images/6bffd82e-0c20-411d-808f-9c90227d7367.jpeg",
+          "alt": "Мужской спортивный зип, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant--127-1",
+          "title": "Синий / M",
+          "sku": "ТМ-127-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--127-2",
+          "title": "Синий / L",
+          "sku": "ТМ-127-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--127-3",
+          "title": "Синий / XL",
+          "sku": "ТМ-127-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--127-4",
+          "title": "Синий",
+          "sku": "ТМ-127-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--127-5",
+          "title": "Синий",
+          "sku": "ТМ-127-5",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 309900,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 309900,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Толстовки", "Синий"],
+      "colors": ["Синий"],
+      "sizes": ["L", "M", "XL"],
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3453 Толстовки",
+        "rows": [2, 3, 4, 5, 6],
+        "originalSkus": [
+          "ТМ-127-1",
+          "ТМ-127-2",
+          "ТМ-127-3",
+          "ТМ-127-4",
+          "ТМ-127-5"
+        ],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tw-312-1",
+      "name": "Жен. леггинсы",
+      "slug": "toolor-tw-312-1",
+      "description": "Женские леггинсы в размере XL из премиальной ткани суплекс (85% шелк, 15% нейлон) в стильных оттенках тёмно-синего и оливкового — это идеальное сочетание роскошного комфорта, высокой эластичности и утончённого дизайна. Облегающий крой идеально подчёркивает естественные изгибы фигуры, создавая визуально подтянутый и изящный силуэт, который выглядит ещё более привлекательно во время активных занятий или повседневных дел. Шелковистая текстура суплекса дарит непревзойдённую мягкость на ощупь, обеспечивает отличную воздухопроницаемость и эффективно отводит влагу, позволяя телу оставаться сухим и комфортным на протяжении всего дня. Широкий пояс с утягивающим эффектом надёжно фиксирует леггинсы, подчёркивая талию и формируя красивые формы. Универсальные цвета тёмно-синий и оливковый гармонично вписываются в любой гардероб — от спортивных образов для фитнеса, йоги и бега до casual-стилей для прогулок и встреч. Эти леггинсы станут вашим любимым выбором для активного образа жизни, подчёркивая уверенность и стиль в каждой детали.",
+      "categoryId": "category-women",
+      "productType": "Леггинсы",
+      "gender": "women",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TW-312-1-image-1",
+          "url": "https://i.postimg.cc/VkSQ2JW2/1slide55.png",
+          "alt": "Жен. леггинсы, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-312-1-image-2",
+          "url": "https://i.postimg.cc/0Q0L7D9v/2slide55.png",
+          "alt": "Жен. леггинсы, изображение 2",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TW-312-1-image-3",
+          "url": "https://i.postimg.cc/3NLVchyt/3slide55.png",
+          "alt": "Жен. леггинсы, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TW-312-1-image-4",
+          "url": "https://i.postimg.cc/sDXtZMqF/4slide55.png",
+          "alt": "Жен. леггинсы, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tw-312-1",
+          "title": "Синий / S",
+          "sku": "TW-312-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "S",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 280000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-312-2",
+          "title": "Синий / M",
+          "sku": "TW-312-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 280000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-312-3",
+          "title": "Синий / L",
+          "sku": "TW-312-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 280000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tw-312-4",
+          "title": "Синий / XL",
+          "sku": "TW-312-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Синий"
+          },
+          "price": {
+            "amount": 280000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 280000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Леггинсы", "Синий"],
+      "colors": ["Синий"],
+      "sizes": ["XL", "L", "M", "S"],
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3487 Леггинсы",
+        "rows": [6, 7, 8, 9],
+        "originalSkus": ["TW-312-1", "TW-312-2", "TW-312-3", "TW-312-4"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product--15-1",
+      "name": "Мужское худи-балаклава",
+      "slug": "toolor-15-1",
+      "description": "Мужское худи-балаклава от бренда product_base_8f1e681c — это одновременно современный городской стиль и продуманная функциональность, объединённые в одной элегантной модели. Изготовленное из премиального смесового материала (55% хлопок, 45% полиэстер), худи обеспечивает идеальное сочетание комфорта, мягкости и практичности: натуральный хлопок дарит приятные тактильные ощущения и хорошую воздухопроницаемость, а полиэстер добавляет износостойкости, формы и быстрого восстановления после стирок. Лайнинг выполнен по технологии «3-х нитка», что гарантирует плотную, тёплую и долговечную структуру ткани, сохраняющую тепло и форму даже при активном использовании. Цветовая палитра модели — глубокий Черный с графитовым оттенком — придаёт изделию универсальную сдержанную эстетiku, которая легко вписывается в любой гардероб и подчёркивает статус владельца. Балаклава-интеграция представляет собой ключевое преимущество: продуманная конструкция капюшона с закрывающей часть лица формой обеспечивает дополнительную защиту от ветра, холода и городских осадков, оставаясь при этом удобной и не стесняющей движений. Такая модель идеально подходит для городских прогулок, поездок на мотоцикле или велосипеде, уличных тренировок в прохладную погоду, а также для тех случаев, когда требуется быстрый переход от активных уличных дел к повседневным задачам без потери стиля. Эргономичный покрой и размер L гарантируют комфортную посадку и свободу движений, а минималистичный силуэт делает худи-балаклаву универсальным элементом как повседневного, так и функционального гардероба. Это изделие выгодно выделяется сочетанием практичности и лаконичного дизайна, предлагая владельцу ощущение защищённости, уверенности и утончённого городского имиджа.",
+      "categoryId": "category-men",
+      "productType": "Худи",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "ТМ-15-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/d3c8d0bd-2a40-4b9e-94b5-11495b25cbfd.jpeg",
+          "alt": "Мужское худи-балаклава, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-15-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/b2a7d59d-06ca-4a55-ad7a-747a6f431fe2.jpeg",
+          "alt": "Мужское худи-балаклава, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "ТМ-15-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/f9d8c541-bf2c-4904-b8a6-08194490e83a.jpeg",
+          "alt": "Мужское худи-балаклава, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant--15-1",
+          "title": "Черный / M",
+          "sku": "ТМ-15-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "M",
+            "color": "Черный"
+          },
+          "price": {
+            "amount": 380000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--15-2",
+          "title": "Черный / L",
+          "sku": "ТМ-15-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "L",
+            "color": "Черный"
+          },
+          "price": {
+            "amount": 380000,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant--15-3",
+          "title": "Черный / XL",
+          "sku": "ТМ-15-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "XL",
+            "color": "Черный"
+          },
+          "price": {
+            "amount": 380000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 380000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Худи", "Черный"],
+      "colors": ["Черный"],
+      "sizes": ["XL", "L", "M"],
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3454 Худи",
+        "rows": [2, 3, 4],
+        "originalSkus": ["ТМ-15-1", "ТМ-15-2", "ТМ-15-3"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tm-113-1-tm-104-1",
+      "name": "Мужской костюм лен джинса летний",
+      "slug": "toolor-tm-113-1-tm-104-1",
+      "description": "Мужской костюм из мягкой льняной ткани, состоящий из рубашки и брюк. Рубашка с коротким рукавом, отложным воротником, супатной застежкой на пуговицах и накладным карманом. Брюки свободного кроя с комфортным поясом. Легкий дышащий материал подходит для теплой погоды и повседневной носки.",
+      "categoryId": "category-men",
+      "productType": "Костюмы",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TM-113-1 / TM-104-1-image-1",
+          "url": "https://s3.m-market.kg/media/products_images/d627ccb7-9556-427d-91f5-36ae989c29be.webp",
+          "alt": "Мужской костюм лен джинса летний, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-113-1 / TM-104-1-image-2",
+          "url": "https://s3.m-market.kg/media/products_images/af964bbd-cb6b-4c48-b16d-db44c9e3034f.webp",
+          "alt": "Мужской костюм лен джинса летний, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-113-1 / TM-104-1-image-3",
+          "url": "https://s3.m-market.kg/media/products_images/61726d45-2488-4df3-88c7-957865409dd5.webp",
+          "alt": "Мужской костюм лен джинса летний, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-113-1 / TM-104-1-image-4",
+          "url": "https://s3.m-market.kg/media/products_images/5c610890-7bd0-4bc1-b5ad-3f5efd50ab1a.webp",
+          "alt": "Мужской костюм лен джинса летний, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-113-1 / TM-104-1-image-5",
+          "url": "https://s3.m-market.kg/media/products_images/09c7bd85-baf1-4aa1-9f63-c5709209f21a.webp",
+          "alt": "Мужской костюм лен джинса летний, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tm-113-1-tm-104-1",
+          "title": "Светло-зеленый / 48",
+          "sku": "TM-113-1 / TM-104-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "48",
+            "color": "Светло-зеленый"
+          },
+          "price": {
+            "amount": 760000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 760000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Костюмы", "Светло-зеленый"],
+      "colors": ["Светло-зеленый"],
+      "sizes": ["48"],
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3461 Костюмы",
+        "rows": [5],
+        "originalSkus": ["TM-113-1 / TM-104-1"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tm-369-7-tm-367-7",
+      "name": "Спортивный костюм мужской с шортами, майка с капюшоном из ткани tesla",
+      "slug": "toolor-tm-369-7-tm-367-7",
+      "description": "Мужской спортивный костюм с шортами - удобный комплект для тренировок, прогулок и активного отдыха. Майка с капюшоном и шорты выполнены из ткани Tesla, которая хорошо пропускает воздух, быстро отводит влагу и обеспечивает комфорт даже в жаркую погоду. Свободный крой не сковывает движения, а современный дизайн делает костюм отличным выбором для спорта и повседневной носки",
+      "categoryId": "category-men",
+      "productType": "Худи",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TM-369-7/TM-367-7-image-1",
+          "url": "https://i.postimg.cc/CKGXkPMP/3589972.png",
+          "alt": "Спортивный костюм мужской с шортами, майка с капюшоном из ткани tesla, изображение 1",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TM-369-7/TM-367-7-image-2",
+          "url": "https://i.postimg.cc/zGVRy67J/color34793-copy.jpg",
+          "alt": "Спортивный костюм мужской с шортами, майка с капюшоном из ткани tesla, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-369-7/TM-367-7-image-3",
+          "url": "https://i.postimg.cc/nrmn8KGn/color34802-copy.jpg",
+          "alt": "Спортивный костюм мужской с шортами, майка с капюшоном из ткани tesla, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-369-7/TM-367-7-image-4",
+          "url": "https://i.postimg.cc/dVwwXykY/color34784-copy.jpg",
+          "alt": "Спортивный костюм мужской с шортами, майка с капюшоном из ткани tesla, изображение 4",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TM-369-7/TM-367-7-image-5",
+          "url": "https://i.postimg.cc/ZRBS3Pg6/color34785-copy.jpg",
+          "alt": "Спортивный костюм мужской с шортами, майка с капюшоном из ткани tesla, изображение 5",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tm-369-7-tm-367-7",
+          "title": "Серый / 44",
+          "sku": "TM-369-7/TM-367-7",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "44",
+            "color": "Серый"
+          },
+          "price": {
+            "amount": 509800,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 509800,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Худи", "Серый"],
+      "colors": ["Серый"],
+      "sizes": ["44"],
+      "care": "Деликатная стирка 30°C",
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3503 Худи",
+        "rows": [19],
+        "originalSkus": ["TM-369-7/TM-367-7"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tm-140-1",
+      "name": "Мужская жилетка с капюшоном",
+      "slug": "toolor-tm-140-1",
+      "description": "Прямой фасон\n*Удобный капюшон с регулятором\n*Центральная застежка на молнии\n*Практиные боковые карманы \n*Мягкий и легкий утеплитель \"Тенсулейт",
+      "categoryId": "category-men",
+      "productType": "Жилеты",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TM-140-1-image-1",
+          "url": "https://i.postimg.cc/9Xx0myPp/Kopia-IMG-9578.jpg",
+          "alt": "Мужская жилетка с капюшоном, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-140-1-image-2",
+          "url": "https://i.postimg.cc/Yqh9hjbS/Kopia-IMG-9581.jpg",
+          "alt": "Мужская жилетка с капюшоном, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-140-1-image-3",
+          "url": "https://i.postimg.cc/wjNjQPCL/Kopia-IMG-9584.jpg",
+          "alt": "Мужская жилетка с капюшоном, изображение 3",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-140-1-image-4",
+          "url": "https://i.postimg.cc/tgHCSkbK/Kopia-IMG-9590.jpg",
+          "alt": "Мужская жилетка с капюшоном, изображение 4",
+          "status": "unreachable",
+          "httpStatus": null
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tm-140-1",
+          "title": "Черный",
+          "sku": "TM-140-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "color": "Черный"
+          },
+          "price": {
+            "amount": 299000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 59800,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-140-2",
+          "title": "Черный",
+          "sku": "TM-140-2",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "color": "Черный"
+          },
+          "price": {
+            "amount": 299000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 59800,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-140-3",
+          "title": "Черный",
+          "sku": "TM-140-3",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "color": "Черный"
+          },
+          "price": {
+            "amount": 299000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 59800,
+            "currencyCode": "KGS"
+          }
+        },
+        {
+          "id": "variant-tm-140-4",
+          "title": "Черный",
+          "sku": "TM-140-4",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "color": "Черный"
+          },
+          "price": {
+            "amount": 299000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 59800,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 299000,
+        "currencyCode": "KGS"
+      },
+      "discountAmount": {
+        "amount": 59800,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Жилеты", "Черный"],
+      "colors": ["Черный"],
+      "sizes": [],
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown", "size-missing"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3441 Жилеты",
+        "rows": [2, 3, 4, 5],
+        "originalSkus": ["TM-140-1", "TM-140-2", "TM-140-3", "TM-140-4"],
+        "productUrl": null
+      }
+    },
+    {
+      "id": "product-tm-0345-1-tm-0346-1",
+      "name": "Костюм мужской летний из купры, рубашка и брюки",
+      "slug": "toolor-tm-0345-1-tm-0346-1",
+      "description": "Мужской летний костюм из купры - идеальный выбор для жаркой погоды. Легкая и приятная к телу ткань хорошо пропускает воздух, помогает чувствовать себя комфортно в течение дня и красиво драпируется. Комплект подходит для прогулок, путешествий, отдыха, города и отпуска. Рубашку и брюки можно носить вместе или сочетать с другими вещами. Состав: вискоза 60%, купра 40%.",
+      "categoryId": "category-men",
+      "productType": "Костюмы",
+      "gender": "men",
+      "collectionIds": [],
+      "images": [
+        {
+          "id": "TM-0345-1/TM-0346-1-image-1",
+          "url": "https://i.postimg.cc/9FQgY0X6/3590025.png",
+          "alt": "Костюм мужской летний из купры, рубашка и брюки, изображение 1",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-0345-1/TM-0346-1-image-2",
+          "url": "https://i.postimg.cc/rsQnLXjW/color35453-copy.jpg",
+          "alt": "Костюм мужской летний из купры, рубашка и брюки, изображение 2",
+          "status": "reachable",
+          "httpStatus": 200
+        },
+        {
+          "id": "TM-0345-1/TM-0346-1-image-3",
+          "url": "https://i.postimg.cc/hPvM7YMH/color35464-copy.jpg",
+          "alt": "Костюм мужской летний из купры, рубашка и брюки, изображение 3",
+          "status": "unreachable",
+          "httpStatus": null
+        },
+        {
+          "id": "TM-0345-1/TM-0346-1-image-4",
+          "url": "https://i.postimg.cc/XqJKdZK8/color35485-copy.jpg",
+          "alt": "Костюм мужской летний из купры, рубашка и брюки, изображение 4",
+          "status": "reachable",
+          "httpStatus": 200
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant-tm-0345-1-tm-0346-1",
+          "title": "Черный / 44",
+          "sku": "TM-0345-1/TM-0346-1",
+          "availableForSale": false,
+          "availabilityStatus": "unknown",
+          "options": {
+            "size": "44",
+            "color": "Черный"
+          },
+          "price": {
+            "amount": 800000,
+            "currencyCode": "KGS"
+          },
+          "discountAmount": {
+            "amount": 50000,
+            "currencyCode": "KGS"
+          }
+        }
+      ],
+      "price": {
+        "amount": 800000,
+        "currencyCode": "KGS"
+      },
+      "discountAmount": {
+        "amount": 50000,
+        "currencyCode": "KGS"
+      },
+      "featured": false,
+      "tags": ["Костюмы", "Черный"],
+      "colors": ["Черный"],
+      "sizes": ["44"],
+      "dataSource": "spreadsheet",
+      "fallbacks": ["availability-unknown"],
+      "source": {
+        "workbook": "docs/data-toolor.xlsx",
+        "sheet": "3510 Костюмы",
+        "rows": [2],
+        "originalSkus": ["TM-0345-1/TM-0346-1"],
+        "productUrl": null
+      }
+    }
+  ]
+}
