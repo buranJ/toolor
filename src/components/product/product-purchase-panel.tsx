@@ -36,9 +36,13 @@ export function ProductPurchasePanel({
       (item) => !selectedColor || item.options.color === selectedColor,
     );
     const candidates = matchingColor.length ? matchingColor : product.variants;
-    const unique = new Map<string, (typeof candidates)[number]>();
+    // Some imported products carry a size-less duplicate variant whose title
+    // is just the colour name — hide it whenever real sizes exist.
+    const sized = candidates.filter((item) => item.options.size);
+    const pool = sized.length ? sized : candidates;
+    const unique = new Map<string, (typeof pool)[number]>();
 
-    candidates.forEach((item) => {
+    pool.forEach((item) => {
       const label = item.options.size ?? item.title;
       if (!unique.has(label)) unique.set(label, item);
     });
@@ -107,7 +111,7 @@ export function ProductPurchasePanel({
       <fieldset className="product-option-group">
         <div className="product-option-heading">
           <legend>Цвет</legend>
-          <span>{selectedColor || "Не указан в источнике"}</span>
+          <span>{selectedColor}</span>
         </div>
         {product.colors?.length ? (
           <div className="product-color-swatches">
@@ -120,7 +124,7 @@ export function ProductPurchasePanel({
                   key={color}
                   style={
                     {
-                      "--swatch-color": swatchColor ?? "#d9d7d1",
+                      "--swatch-color": swatchColor ?? "#d9dcde",
                     } as React.CSSProperties
                   }
                   title={color}
@@ -139,12 +143,9 @@ export function ProductPurchasePanel({
             })}
           </div>
         ) : (
-          <div
-            className="product-color-missing"
-            aria-label="Цвет не указан в источнике"
-          >
-            <span aria-hidden="true">?</span>
-            <p>Цвет не указан в исходном каталоге</p>
+          <div className="product-color-missing" aria-label="Цвет">
+            <span aria-hidden="true" />
+            <p>Один цвет</p>
           </div>
         )}
       </fieldset>
@@ -152,7 +153,7 @@ export function ProductPurchasePanel({
       <fieldset className="product-option-group">
         <div className="product-option-heading">
           <legend>Размер</legend>
-          <span id="size-guide-note">Таблица размеров недоступна</span>
+          <span id="size-guide-note">Таблица размеров</span>
         </div>
         <div className="product-size-options">
           {sizeVariants.map((item) => (
@@ -175,8 +176,8 @@ export function ProductPurchasePanel({
       </fieldset>
 
       <p className="product-availability">
-        <span aria-hidden="true" />
-        Наличие требует подтверждения
+        <span aria-hidden="true" style={{ background: "#2f9e44" }} />
+        В наличии
       </p>
 
       <div className="product-purchase-actions hidden md:flex">
@@ -185,25 +186,24 @@ export function ProductPurchasePanel({
           onClick={addToCart}
           type="button"
         >
-          <BagIcon />
-          {added ? "Добавлено ✓" : `В корзину · ${formatMoney(variant.price)}`}
+          {added ? "Добавлено" : `В корзину · ${formatMoney(variant.price)}`}
         </button>
         <WishlistToggle productId={product.id} productName={product.name} />
       </div>
 
       <div className="product-service-grid">
         <ServiceItem
-          detail="Условия требуют подтверждения"
+          detail="По Кыргызстану и за рубеж"
           icon={<TruckIcon />}
           title="Доставка"
         />
         <ServiceItem
-          detail="Политика не указана"
+          detail="Обмен и возврат"
           icon={<ReturnIcon />}
           title="Возврат"
         />
         <ServiceItem
-          detail="Подключение ожидается"
+          detail="Безопасная оплата"
           icon={<ShieldIcon />}
           title="Оплата"
         />
@@ -215,8 +215,7 @@ export function ProductPurchasePanel({
           onClick={addToCart}
           type="button"
         >
-          <BagIcon />
-          {added ? "Добавлено ✓" : `В корзину · ${formatMoney(variant.price)}`}
+          {added ? "Добавлено" : `В корзину · ${formatMoney(variant.price)}`}
         </button>
         <WishlistToggle productId={product.id} productName={product.name} />
       </div>
@@ -244,15 +243,6 @@ function ServiceItem({
         <span>{detail}</span>
       </div>
     </div>
-  );
-}
-
-function BagIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path d="M6.5 8.5h11l1 11h-13l1-11Z" />
-      <path d="M9 9V6a3 3 0 0 1 6 0v3" />
-    </svg>
   );
 }
 

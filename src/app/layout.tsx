@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Geist_Mono, Manrope } from "next/font/google";
 
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
@@ -8,9 +8,13 @@ import { siteConfig } from "@/lib/config/site";
 
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// Brand typeface is TT Commons Pro (see globals.css @font-face / --font-brand).
+// Manrope is the loaded fallback grotesk — closest geometric match with Cyrillic
+// support — used until TT Commons Pro web files are dropped into /public/fonts.
+const brandFallback = Manrope({
+  variable: "--font-brand-fallback",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -18,16 +22,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-serif",
-  subsets: ["latin", "cyrillic"],
-  style: ["normal", "italic"],
-});
-
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "TOOLOR — Community of modern nomads",
+    default: "TOOLOR — одежда для современных кочевников",
     template: "%s — TOOLOR",
   },
   description: siteConfig.description,
@@ -36,7 +34,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: siteConfig.locale,
     siteName: siteConfig.name,
-    title: "TOOLOR — Community of modern nomads",
+    title: "TOOLOR — одежда для современных кочевников",
     description: siteConfig.description,
   },
   robots: { index: true, follow: true },
@@ -51,7 +49,7 @@ export default function RootLayout({
     <html
       lang="ru"
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
+      className={`${brandFallback.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <a

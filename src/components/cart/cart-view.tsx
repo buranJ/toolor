@@ -88,7 +88,7 @@ export function CartView() {
                 {item.name}
               </Link>
               <p className="text-muted mt-2 text-sm">
-                Размер: {item.variantTitle || "не указан"}
+                Размер: {item.variantTitle || "—"}
               </p>
               <div className="border-line-strong mt-5 inline-flex items-center rounded-full border bg-white">
                 <button
@@ -134,30 +134,35 @@ export function CartView() {
 
       <aside className="h-fit rounded-[1.5rem] bg-white p-6 shadow-[var(--shadow-soft)] md:p-8 lg:sticky lg:top-24">
         <p className="eyebrow text-muted">Сводка заказа</p>
-        <div className="border-line mt-6 flex items-baseline justify-between gap-4 border-b pb-5">
-          <span className="text-muted text-sm">Подытог</span>
+        <dl className="mt-6 space-y-3 text-sm">
+          <div className="flex items-baseline justify-between gap-4">
+            <dt className="text-muted">
+              Товары (
+              {items.reduce((sum, item) => sum + item.quantity, 0)})
+            </dt>
+            <dd>{formatMoney({ amount: subtotal, currencyCode: "KGS" })}</dd>
+          </div>
+          <div className="flex items-baseline justify-between gap-4">
+            <dt className="text-muted">Доставка</dt>
+            <dd className="text-muted">при подтверждении</dd>
+          </div>
+        </dl>
+        <div className="border-line mt-5 flex items-baseline justify-between gap-4 border-t pt-5">
+          <span className="text-sm font-semibold">Итого</span>
           <span className="text-2xl font-medium tracking-[-0.02em]">
             {formatMoney({ amount: subtotal, currencyCode: "KGS" })}
           </span>
         </div>
-        <label className="text-muted mt-6 block text-xs font-semibold tracking-[0.12em] uppercase">
-          Промокод
-          <input
-            className="border-line bg-paper mt-2 min-h-11 w-full rounded-full border px-4 text-sm font-normal tracking-normal normal-case"
-            disabled
-            placeholder="Недоступно в mock-режиме"
-          />
-        </label>
-        <p className="text-muted mt-5 text-xs leading-relaxed">
-          Остатки, доставка и итоговая сумма требуют подтверждения. Оплата не
-          подключена.
-        </p>
         <Link
           className="bg-brand hover:bg-brand-strong shadow-[var(--shadow-soft)] mt-6 hidden min-h-[3.25rem] items-center justify-center rounded-full px-6 text-sm font-medium text-white transition-colors md:flex"
           href="/checkout"
         >
-          Продолжить оформление
+          Оформить заказ
         </Link>
+        <p className="text-muted mt-5 text-xs leading-relaxed">
+          Оплата наличными или картой при получении. Обмен и возврат — по
+          правилам магазина.
+        </p>
       </aside>
 
       <div className="border-line bg-paper fixed inset-x-0 bottom-0 z-40 border-t p-3 md:hidden">

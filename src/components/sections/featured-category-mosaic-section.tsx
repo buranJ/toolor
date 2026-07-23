@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
 import { Container } from "@/components/ui/container";
+import { ScrollRevealMark } from "@/components/ui/scroll-reveal-mark";
 import {
   featuredCategoryMosaicContent,
   featuredCategoryMosaicItems,
@@ -28,11 +29,18 @@ export function FeaturedCategoryMosaicSection({
 
   return (
     <section
-      className="bg-white py-20 md:py-28"
+      className="relative overflow-hidden bg-white py-20 md:py-28"
       data-scroll-anchor="featured-categories"
       data-testid="featured-category-mosaic"
     >
-      <Container>
+      <ScrollRevealMark
+        variant="grey"
+        from="left"
+        rotate={-7}
+        targetOpacity={0.28}
+        className="absolute -top-6 -left-12 z-0 w-40 md:w-56"
+      />
+      <Container className="relative z-10">
         <header className="text-center">
           <p className="eyebrow text-brand">
             {featuredCategoryMosaicContent.kicker}
@@ -70,12 +78,9 @@ export function FeaturedCategoryMosaicSection({
                       aria-hidden="true"
                       className="featured-category-overlay"
                     />
-                    <span className="featured-category-number">
-                      0{(column - 1) * 2 + index + 1}
-                    </span>
                     <span className="featured-category-content">
                       <strong>{item.label}</strong>
-                      <span>Смотреть категорию&nbsp; ↗</span>
+                      <span>Смотреть&nbsp; ↗</span>
                     </span>
                   </Link>
                 ))}

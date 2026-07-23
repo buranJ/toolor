@@ -10,8 +10,9 @@ export const metadata: Metadata = {
 export default function AccountPage() {
   return (
     <EmptyState
-      title="Вход не подключён"
-      description="Здесь появятся приветствие, статусы заказов и быстрые действия после выбора authentication-провайдера."
+      title="Войдите в аккаунт"
+      description="Здесь будут ваши заказы, избранное и данные профиля."
+      action={{ href: "/catalog", label: "Перейти в каталог" }}
     />
   );
 }

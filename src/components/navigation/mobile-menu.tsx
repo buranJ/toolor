@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRef } from "react";
 
+import { BrandLogo } from "@/components/ui/brand-logo";
 import { siteConfig } from "@/lib/config/site";
 
 export function MobileMenu() {
@@ -27,11 +28,9 @@ export function MobileMenu() {
           <div aria-hidden="true" className="mobile-menu-orbit" />
           <header className="relative z-10 flex items-start justify-between">
             <div>
-              <span className="text-[1.7rem] font-bold tracking-[-0.08em]">
-                TOOLOR<span className="text-[#739cff]">/</span>
-              </span>
-              <p className="mt-1.5 font-mono text-[0.55rem] tracking-[0.18em] text-white/45 uppercase">
-                42.87° N / Kyrgyzstan
+              <BrandLogo tone="white" className="h-6" />
+              <p className="mt-2 font-mono text-[0.55rem] tracking-[0.18em] text-white/45 uppercase">
+                Кыргызстан
               </p>
             </div>
             <button

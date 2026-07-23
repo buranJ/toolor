@@ -5,6 +5,34 @@ import { useRef } from "react";
 
 import type { Category, Collection, ProductFilters } from "@/types";
 
+/** Russian plural for «товар»: [1, 2–4, 5+]. */
+function productWord(count: number) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return "товар";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return "товара";
+  return "товаров";
+}
+
+function FilterIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-[1.05rem]"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4 7h9M17 7h3M4 17h7M15 17h5" />
+      <circle cx="15" cy="7" r="2" />
+      <circle cx="13" cy="17" r="2" />
+    </svg>
+  );
+}
+
 interface CatalogControlsProps {
   categories: Category[];
   collections: Collection[];
@@ -40,7 +68,7 @@ function FilterFields({
           <option value="">Все</option>
           <option value="men">Мужской</option>
           <option value="women">Женский</option>
-          <option value="unknown">Не указан</option>
+          <option value="unknown">Унисекс</option>
         </select>
       </label>
       <label className="filter-field">
@@ -151,16 +179,18 @@ export function CatalogControls(props: CatalogControlsProps) {
   return (
     <div className="catalog-toolbar">
       <div className="flex items-center justify-between gap-4">
-        <p className="mono-meta text-muted">
-          {props.resultCount} <span className="hidden sm:inline">изделий</span>
+        <p className="text-sm">
+          <span className="text-ink font-semibold">{props.resultCount}</span>{" "}
+          <span className="text-muted">{productWord(props.resultCount)}</span>
         </p>
 
-        <div className="flex items-end gap-2">
+        <div className="flex items-center gap-2.5">
           <button
-            className="toolbar-button lg:hidden"
+            className="toolbar-button inline-flex items-center gap-2 lg:hidden"
             onClick={() => dialogRef.current?.showModal()}
             type="button"
           >
+            <FilterIcon />
             Фильтры
           </button>
           <div className="lg:hidden">
@@ -168,8 +198,9 @@ export function CatalogControls(props: CatalogControlsProps) {
           </div>
 
           <details className="group relative hidden lg:block">
-            <summary className="toolbar-button cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-              Фильтры <span aria-hidden="true">＋</span>
+            <summary className="toolbar-button inline-flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
+              <FilterIcon />
+              Фильтры
             </summary>
             <form
               action="/catalog"
@@ -192,7 +223,7 @@ export function CatalogControls(props: CatalogControlsProps) {
                   Сбросить
                 </Link>
                 <button
-                  className="toolbar-button bg-brand text-white"
+                  className="toolbar-button toolbar-button-primary"
                   type="submit"
                 >
                   Показать {props.resultCount}

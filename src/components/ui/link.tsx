@@ -14,7 +14,7 @@ export function TextLink({
       <span className="link-underline pb-0.5">{children}</span>
       <span
         aria-hidden="true"
-        className="grid size-5 place-items-center rounded-full border border-current text-[0.65rem] transition-transform duration-200 group-hover/link:translate-x-0.5"
+        className="transition-transform duration-200 group-hover/link:translate-x-0.5"
       >
         →
       </span>

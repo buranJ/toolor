@@ -3,7 +3,7 @@ import { ContentPage } from "@/components/layout/content-page";
 
 export const metadata: Metadata = {
   title: "Доставка",
-  description: "Placeholder условий доставки TOOLOR.",
+  description: "Условия доставки TOOLOR по Кыргызстану и за рубеж.",
   alternates: { canonical: "/delivery" },
 };
 export default function DeliveryPage() {
@@ -11,15 +11,16 @@ export default function DeliveryPage() {
     <ContentPage
       kicker="Customer care"
       title="Доставка"
-      description="Условия, стоимость и география доставки пока не подтверждены."
+      description="Доставляем по всему Кыргызстану и за рубеж."
     >
       <p>
-        Здесь появятся проверенные сроки, регионы, способы получения, стоимость
-        и порядок отслеживания.
+        Доставка по Бишкеку и регионам Кыргызстана, а также международная
+        отправка. Сроки и стоимость зависят от направления и рассчитываются при
+        оформлении заказа.
       </p>
       <p>
-        До интеграции логистики checkout не рассчитывает и не обещает сроки
-        доставки.
+        После отправки мы пришлём номер для отслеживания. По вопросам доставки
+        напишите нам — поможем выбрать удобный способ получения.
       </p>
     </ContentPage>
   );

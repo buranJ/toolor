@@ -10,8 +10,9 @@ export const metadata: Metadata = {
 export default function OrdersPage() {
   return (
     <EmptyState
-      title="Заказов нет"
-      description="История заказов станет доступна после подключения аккаунтов и commerce backend."
+      title="Заказов пока нет"
+      description="Здесь будут ваши заказы и их статусы."
+      action={{ href: "/catalog", label: "Начать покупки" }}
     />
   );
 }

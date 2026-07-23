@@ -14,10 +14,11 @@ export function FeaturedCollectionSection({
     >
       <Container>
         <div className="text-center">
-          <p className="eyebrow text-brand">Toolor edit / 01</p>
-          <h2 className="section-serif mt-4">Featured collection</h2>
+          <p className="eyebrow text-brand"></p>
+          <h2 className="section-serif mt-4">Рекомендуем</h2>
           <p className="text-muted mx-auto mt-4 max-w-lg text-sm leading-6">
-            Редакционная выборка реальных товаров из предоставленного каталога.
+            Вещи, с которых удобно собрать гардероб TOOLOR — от базовых моделей
+            до акцентных.
           </p>
         </div>
       </Container>

@@ -25,12 +25,7 @@ export function ResilientEditorialImage({
     return (
       <div className="editorial-fallback">
         <span className="mono-meta">{fallbackLabel}</span>
-        <span className="flex flex-col gap-3">
-          <span className="bg-brand h-1 w-14" aria-hidden="true" />
-          <span className="mono-meta text-white/55">
-            Source image pending
-          </span>
-        </span>
+        <span className="bg-brand h-1 w-14" aria-hidden="true" />
       </div>
     );
   }

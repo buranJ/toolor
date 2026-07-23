@@ -25,7 +25,7 @@ export default async function SearchPage({
       <PageHeader
         kicker="Search"
         title="Поиск"
-        description="Поиск работает по временному mock-каталогу."
+        description="Найдите модель по названию, типу или материалу."
       />
       <Container className="py-10 md:py-16">
         <form className="flex gap-2" method="get">
@@ -36,7 +36,7 @@ export default async function SearchPage({
             defaultValue={query}
             id="site-search"
             name="q"
-            placeholder="Введите название демо-товара"
+            placeholder="Поиск по каталогу"
             type="search"
           />
           <button

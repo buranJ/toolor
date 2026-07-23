@@ -58,7 +58,7 @@ export function FeaturedCollectionSlider({
 
   return (
     <div
-      aria-label="Featured collection"
+      aria-label="Подборка коллекции"
       aria-roledescription="карусель"
       className="featured-carousel mt-10 md:mt-14"
       data-testid="featured-carousel"
@@ -100,9 +100,6 @@ export function FeaturedCollectionSlider({
                   fallbackLabel={product.productType ?? "TOOLOR"}
                 />
                 <div className="featured-carousel-scrim" />
-                <span className="featured-carousel-index">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
 
                 {isActive ? (
                   <Link
@@ -130,26 +127,22 @@ export function FeaturedCollectionSlider({
         })}
       </div>
 
-      <div className="featured-carousel-controls">
-        <button
-          aria-label="Предыдущий товар"
-          onClick={() => move(-1)}
-          type="button"
-        >
-          ←
-        </button>
-        <p aria-live="polite">
-          <span>{String(activeIndex + 1).padStart(2, "0")}</span>
-          <span aria-hidden="true"> / </span>
-          {String(total).padStart(2, "0")}
-        </p>
-        <button
-          aria-label="Следующий товар"
-          onClick={() => move(1)}
-          type="button"
-        >
-          →
-        </button>
+      <div
+        className="featured-carousel-dots"
+        role="tablist"
+        aria-label="Навигация по подборке"
+      >
+        {products.map((product, index) => (
+          <button
+            key={product.id}
+            className="featured-carousel-dot"
+            data-active={index === activeIndex}
+            aria-label={`Показать: ${product.name}`}
+            aria-current={index === activeIndex}
+            onClick={() => setActiveIndex(index)}
+            type="button"
+          />
+        ))}
       </div>
 
       <p className="sr-only" aria-live="polite">

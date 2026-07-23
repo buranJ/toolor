@@ -63,9 +63,7 @@ export function ProductGallery({
     return (
       <div className="editorial-fallback relative min-h-[30rem]">
         <span className="mono-meta">{productName}</span>
-        <span className="mono-meta text-white/55">
-          Изображения отсутствуют в источнике
-        </span>
+        <span className="mono-meta text-white/55">Фото скоро появятся</span>
       </div>
     );
   }

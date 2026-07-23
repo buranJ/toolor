@@ -1,21 +1,20 @@
 import type { Metadata } from "next";
 
-import { CategoryMarqueeSection } from "@/components/sections/category-marquee-section";
 import { CategorySplitSection } from "@/components/sections/category-split-section";
-import { CommunitySection } from "@/components/sections/community-section";
 import { FeaturedCollectionSection } from "@/components/sections/featured-collection-section";
 import { FeaturedCategoryMosaicSection } from "@/components/sections/featured-category-mosaic-section";
 import { FeaturedProductsSection } from "@/components/sections/featured-products-section";
 import { HeroSection } from "@/components/sections/hero/hero-section";
 import { ModernNomadsSection } from "@/components/sections/modern-nomads-section";
+import { ReviewsSection } from "@/components/sections/reviews-section";
 import { SustainabilitySection } from "@/components/sections/sustainability-section";
 import { commerce } from "@/lib/commerce";
 import type { Product } from "@/types";
 
 export const metadata: Metadata = {
-  title: "TOOLOR — Community of modern nomads",
+  title: "TOOLOR — одежда для современных кочевников",
   description:
-    "Современная одежда из Кыргызстана. Каталог собран из предоставленного TOOLOR workbook.",
+    "Современная одежда из Кыргызстана для города и открытого маршрута.",
   alternates: { canonical: "/" },
 };
 
@@ -64,28 +63,29 @@ export default async function HomePage() {
     <div data-page="home">
       <HeroSection
         content={{
-          kicker: "Kyrgyzstan / Technical fashion",
+          kicker: "Кыргызстан · Технологичная одежда",
           title: "Modern nomads",
           description:
-            "Одежда для движения между городом и открытым маршрутом. Реальные товары и цены импортированы из предоставленного каталога TOOLOR.",
+            "Одежда для движения между городом и открытым маршрутом — для тех, кто не стоит на месте.",
           primaryCta: { href: "/catalog", label: "Смотреть каталог" },
           secondaryCta: { href: "/about", label: "О направлении" },
         }}
         images={heroProduct?.images ?? []}
       />
-      <CategoryMarqueeSection />
+      <FeaturedCategoryMosaicSection products={products} />
       <CategorySplitSection
         menProduct={menProduct}
         womenProduct={womenProduct}
       />
-      <FeaturedCategoryMosaicSection products={products} />
+      
       <FeaturedCollectionSection products={editorialProducts} />
       <FeaturedProductsSection products={productSelection} />
       <ModernNomadsSection images={leadFrom(heroProduct, 1)} />
-      <CommunitySection images={leadFrom(womenProduct, 2)} />
+     
       <SustainabilitySection
         product={products.find((product) => Boolean(product.material))}
       />
+       <ReviewsSection />
     </div>
   );
 }

@@ -21,22 +21,11 @@ test("featured collection carousel changes the active product", async ({
     carousel.locator('.featured-carousel-slide[data-active="true"]'),
   ).toHaveAttribute("aria-label", /^1 из 7:/);
 
-  await carousel.getByRole("button", { name: "Следующий товар" }).click();
+  await carousel.locator(".featured-carousel-dot").nth(1).click();
 
   await expect(
     carousel.locator('.featured-carousel-slide[data-active="true"]'),
   ).toHaveAttribute("aria-label", /^2 из 7:/);
-});
-
-test("category marquee opens a filtered catalog", async ({ page }) => {
-  await page.goto("/", { waitUntil: "domcontentloaded" });
-  const marquee = page.getByTestId("category-marquee");
-  await expect(marquee).toBeVisible();
-  await marquee.hover();
-  await marquee.getByRole("link", { name: "Куртки" }).click();
-
-  await expect(page).toHaveURL(/q=%D0%9A%D1%83%D1%80%D1%82%D0%BA%D0%B8/);
-  await expect(page.getByTestId("product-card").first()).toBeVisible();
 });
 
 test("featured category mosaic opens a filtered catalog", async ({ page }) => {

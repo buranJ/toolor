@@ -3,7 +3,7 @@ import { ContentPage } from "@/components/layout/content-page";
 
 export const metadata: Metadata = {
   title: "Магазины",
-  description: "Будущая страница проверенных адресов TOOLOR.",
+  description: "Как найти TOOLOR — онлайн и офлайн.",
   alternates: { canonical: "/stores" },
 };
 export default function StoresPage() {
@@ -11,15 +11,15 @@ export default function StoresPage() {
     <ContentPage
       kicker="Offline"
       title="Найти TOOLOR"
-      description="Адреса и часы работы ожидают подтверждения."
+      description="Мы работаем онлайн и доставляем по всему Кыргызстану."
     >
       <p>
-        Финальная страница будет содержать только проверенные адреса, контакты,
-        часы работы и доступность услуг.
+        Сейчас TOOLOR доступен онлайн: выбирайте вещи в каталоге и оформляйте
+        доставку в любую точку Кыргызстана и за рубеж.
       </p>
       <p>
-        До подтверждения бизнес-данных карта и контактные сведения намеренно не
-        публикуются.
+        Мы готовим первые офлайн-точки в Бишкеке. Адреса и часы работы появятся
+        здесь — следите за обновлениями и нашими соцсетями.
       </p>
     </ContentPage>
   );

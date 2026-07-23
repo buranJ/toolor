@@ -20,20 +20,18 @@ export function ProductAccordion({ product }: { product: AccordionProduct }) {
       <details className="product-accordion" open>
         <summary>
           <span>
-            <small>01</small>
             Описание
           </span>
           <AccordionIcon />
         </summary>
         <div className="product-accordion-panel">
-          <p>{product.description || "Описание не указано в источнике."}</p>
+          <p>{product.description || "Изделие из коллекции TOOLOR."}</p>
         </div>
       </details>
 
       <details className="product-accordion">
         <summary>
           <span>
-            <small>02</small>
             Материалы и уход
           </span>
           <AccordionIcon />
@@ -42,11 +40,11 @@ export function ProductAccordion({ product }: { product: AccordionProduct }) {
           <dl>
             <div>
               <dt>Материал</dt>
-              <dd>{product.material || "Не указан в источнике"}</dd>
+              <dd>{product.material || "—"}</dd>
             </div>
             <div>
               <dt>Уход</dt>
-              <dd>{product.care || "Не указан в источнике"}</dd>
+              <dd>{product.care || "—"}</dd>
             </div>
           </dl>
         </div>
@@ -55,7 +53,6 @@ export function ProductAccordion({ product }: { product: AccordionProduct }) {
       <details className="product-accordion">
         <summary>
           <span>
-            <small>03</small>
             Размер и модель
           </span>
           <AccordionIcon />
@@ -64,11 +61,11 @@ export function ProductAccordion({ product }: { product: AccordionProduct }) {
           <dl>
             <div>
               <dt>Размеры</dt>
-              <dd>{product.sizes?.join(", ") || "Не указаны в источнике"}</dd>
+              <dd>{product.sizes?.join(", ") || "—"}</dd>
             </div>
             <div>
               <dt>Модель</dt>
-              <dd>{product.modelInformation || "Не указана в источнике"}</dd>
+              <dd>{product.modelInformation || "—"}</dd>
             </div>
           </dl>
         </div>
@@ -77,15 +74,14 @@ export function ProductAccordion({ product }: { product: AccordionProduct }) {
       <details className="product-accordion">
         <summary>
           <span>
-            <small>04</small>
             Доставка и возврат
           </span>
           <AccordionIcon />
         </summary>
         <div className="product-accordion-panel">
           <p>
-            Условия доставки и возврата отсутствуют в workbook и требуют
-            подтверждения магазина.
+            Доставка по Кыргызстану и за рубеж. Обмен и возврат — согласно
+            правилам магазина.
           </p>
         </div>
       </details>

@@ -57,12 +57,7 @@ export default async function CategoryPage({
 
   return (
     <>
-      <PageHeader
-        compact
-        kicker="Category / Workbook selection"
-        title={category.name}
-        description={category.description ?? "Категория из workbook TOOLOR."}
-      />
+      <PageHeader compact kicker="Коллекция" title={category.name} />
       <Container className="py-6 md:py-10">
         <CatalogControls
           categories={categories}

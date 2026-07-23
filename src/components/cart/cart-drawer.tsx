@@ -86,7 +86,7 @@ export function CartDrawer() {
                       {item.name}
                     </Link>
                     <p className="text-muted mt-1.5 text-xs">
-                      {item.variantTitle ?? "Вариант не указан"} · {item.quantity}{" "}
+                      {item.variantTitle ?? "—"} · {item.quantity}{" "}
                       шт.
                     </p>
                     <p className="mt-auto pt-3 text-sm font-medium">
@@ -111,7 +111,7 @@ export function CartDrawer() {
             </span>
           </div>
           <p className="text-muted mt-2 text-xs leading-5">
-            Остатки и доставка требуют подтверждения.
+            Доставка рассчитывается при оформлении заказа.
           </p>
           <Link
             className="bg-brand hover:bg-brand-strong shadow-[var(--shadow-soft)] mt-5 flex min-h-[3.25rem] items-center justify-center rounded-full px-6 text-sm font-medium text-white transition-colors"

@@ -10,7 +10,7 @@ import { parseProductQuery, type RawSearchParams } from "@/lib/validation";
 
 export const metadata: Metadata = {
   title: "Каталог",
-  description: "Каталог TOOLOR, импортированный из предоставленного workbook.",
+  description: "Каталог TOOLOR: куртки, костюмы и аксессуары для города и гор.",
   alternates: { canonical: "/catalog" },
 };
 
@@ -35,12 +35,7 @@ export default async function CatalogPage({
 
   return (
     <>
-      <PageHeader
-        compact
-        kicker="Shop / Workbook selection"
-        title="Каталог"
-        description="24 наиболее полные товарные карточки из предоставленного workbook. Наличие требует подтверждения; фильтры сохраняются в URL."
-      />
+      <PageHeader compact kicker="" title="Каталог" />
       <Container className="py-6 md:py-10">
         <CatalogControls
           categories={categories}

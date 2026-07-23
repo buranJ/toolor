@@ -1,8 +1,8 @@
 export const featuredCategoryMosaicContent = {
-  kicker: "Shop by category / 02",
-  title: "Featured categories",
+  kicker: "",
+  title: "Выберите категорию",
   description:
-    "Категории из предоставленного каталога TOOLOR — выбирайте направление и переходите к товарам.",
+    "От верхней одежды до аксессуаров — соберите образ под свой ритм и маршрут.",
 } as const;
 
 export const featuredCategoryMosaicItems = [

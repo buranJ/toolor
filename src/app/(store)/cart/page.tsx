@@ -17,8 +17,8 @@ export default function CartPage() {
           <h1 className="section-serif mt-5">Корзина</h1>
         </div>
         <p className="text-muted text-sm leading-relaxed">
-          Товары сохраняются локально в этом браузере. Остатки и условия заказа
-          требуют подтверждения.
+          Товары в вашей корзине. Оформите заказ, когда будете готовы —
+          доставка и налоги рассчитываются на следующем шаге.
         </p>
       </header>
       <CartView />

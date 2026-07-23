@@ -47,7 +47,7 @@ export function ProductCard({
               />
             ) : (
               <span className="text-muted absolute inset-0 grid place-items-center px-5 text-center text-xs tracking-[0.14em] uppercase">
-                Изображение отсутствует в источнике
+                Фото скоро появится
               </span>
             )}
             {hoverImage ? (
@@ -117,10 +117,8 @@ export function ProductCard({
           </p>
         </div>
 
-        {!compact ? (
-          <p className="text-muted mt-1 text-sm">
-            {product.material || "Материал не указан"}
-          </p>
+        {!compact && product.material ? (
+          <p className="text-muted mt-1 text-sm">{product.material}</p>
         ) : null}
       </div>
     </article>

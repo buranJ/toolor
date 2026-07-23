@@ -1,24 +1,20 @@
 import type { Metadata } from "next";
 
-import { CheckoutSkeleton } from "@/components/checkout/checkout-skeleton";
+import { CheckoutForm } from "@/components/checkout/checkout-form";
 import { PageHeader } from "@/components/layout/page-header";
 import { Container } from "@/components/ui/container";
 
 export const metadata: Metadata = {
-  title: "Оформление — Demo",
+  title: "Оформление заказа",
   robots: { index: false, follow: false },
 };
 
 export default function CheckoutPage() {
   return (
     <>
-      <PageHeader
-        kicker="Prototype only"
-        title="Оформление"
-        description="Без оплаты, передачи данных и создания заказа."
-      />
-      <Container className="py-10 md:py-16">
-        <CheckoutSkeleton />
+      <PageHeader compact kicker="Корзина" title="Оформление заказа" />
+      <Container className="py-8 md:py-14">
+        <CheckoutForm />
       </Container>
     </>
   );

@@ -10,7 +10,7 @@ const sizes = {
 } as const;
 
 const variants = {
-  primary: "bg-ink text-white hover:bg-brand shadow-[var(--shadow-soft)]",
+  primary: "bg-brand text-white hover:bg-brand-strong shadow-[var(--shadow-soft)]",
   accent: "bg-brand text-white hover:bg-brand-strong shadow-[var(--shadow-soft)]",
   secondary: "border border-ink/85 bg-transparent text-ink hover:bg-ink hover:text-white",
   light: "border border-white/70 bg-transparent text-white hover:bg-white hover:text-ink",
@@ -20,39 +20,37 @@ const variants = {
 type Variant = keyof typeof variants;
 type Size = keyof typeof sizes;
 
-function ArrowBadge() {
-  return (
-    <span
-      aria-hidden="true"
-      className="grid size-6 place-items-center rounded-full border border-current text-xs transition-transform duration-200 group-hover/btn:translate-x-0.5"
-    >
-      →
-    </span>
-  );
-}
-
 export function ButtonLink({
   href,
   children,
   variant = "primary",
   size = "md",
-  arrow = false,
+  external = false,
   className = "",
 }: {
   href: string;
   children: ReactNode;
   variant?: Variant;
   size?: Size;
+  /** Render as a plain external anchor that opens in a new tab. */
+  external?: boolean;
+  /** Deprecated — button arrows removed for a cleaner look. */
   arrow?: boolean;
   className?: string;
 }) {
+  const classes = `${base} ${sizes[size]} ${variants[variant]} ${className}`;
+
+  if (external) {
+    return (
+      <a className={classes} href={href} rel="noreferrer" target="_blank">
+        {children}
+      </a>
+    );
+  }
+
   return (
-    <Link
-      className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}
-      href={href}
-    >
+    <Link className={classes} href={href}>
       {children}
-      {arrow ? <ArrowBadge /> : null}
     </Link>
   );
 }

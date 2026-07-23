@@ -15,29 +15,28 @@ export const mockCategories: Category[] = [
     id: "category-men",
     name: "Мужская одежда",
     slug: "men",
-    description: "Мужские товары, импортированные из workbook TOOLOR.",
+    description: "Мужская коллекция TOOLOR — для города и маршрута.",
   },
   {
     id: "category-women",
     name: "Женская одежда",
     slug: "women",
-    description: "Женские товары, импортированные из workbook TOOLOR.",
+    description: "Женская коллекция TOOLOR — для города и маршрута.",
   },
   {
     id: "category-accessories",
     name: "Аксессуары",
     slug: "accessories",
-    description: "Головные уборы и платки из workbook TOOLOR.",
+    description: "Головные уборы, платки и аксессуары TOOLOR.",
   },
 ];
 
 export const mockCollections: Collection[] = [
   {
     id: "collection-import-selection",
-    name: "Import selection / 01",
+    name: "Toolor edit / 01",
     slug: "import-selection-01",
-    description:
-      "Редакционная выборка наиболее полных записей из исходного workbook.",
+    description: "Редакционная выборка ключевых моделей коллекции TOOLOR.",
     productIds: mockProducts
       .filter((product) => product.featured)
       .map((product) => product.id),

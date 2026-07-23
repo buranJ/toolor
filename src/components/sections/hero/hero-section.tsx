@@ -44,26 +44,12 @@ export function HeroContent({ content }: { content: HeroSectionContent }) {
         {content.description}
       </p>
       <div className="mt-9 flex flex-wrap items-center gap-3">
-        <ButtonLink href={content.primaryCta.href} variant="primary" size="lg" arrow>
+        <ButtonLink href={content.primaryCta.href} variant="primary" size="lg">
           {content.primaryCta.label}
         </ButtonLink>
         <ButtonLink href={content.secondaryCta.href} variant="secondary" size="lg">
           {content.secondaryCta.label}
         </ButtonLink>
-      </div>
-      <div className="mt-12 flex items-center gap-8 border-t border-line pt-6">
-        <div>
-          <p className="section-serif text-[1.75rem] leading-none">24</p>
-          <p className="text-muted mt-1.5 text-xs">изделия из каталога</p>
-        </div>
-        <div>
-          <p className="section-serif text-[1.75rem] leading-none">KG</p>
-          <p className="text-muted mt-1.5 text-xs">Кыргызстан</p>
-        </div>
-        <div className="hidden sm:block">
-          <p className="section-serif text-[1.75rem] leading-none">01</p>
-          <p className="text-muted mt-1.5 text-xs">коллекция</p>
-        </div>
       </div>
     </div>
   );
@@ -89,12 +75,6 @@ export function HeroSection({
         <HeroContent content={content} />
         <div className="relative min-h-[24rem] overflow-hidden rounded-[2rem] bg-frost-deep md:min-h-[calc(100svh-8rem)] lg:mt-8 lg:mb-8">
           <HeroMedia images={images} />
-          <span className="mono-meta absolute top-5 left-5 rounded-full bg-white/85 px-3 py-1.5 text-ink">
-            New collection
-          </span>
-          <span className="absolute right-5 bottom-5 rounded-full bg-white/85 px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.12em] text-ink uppercase">
-            42.87° N / 74.57° E
-          </span>
         </div>
       </Container>
     </section>

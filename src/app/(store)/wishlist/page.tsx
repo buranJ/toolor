@@ -1,28 +1,23 @@
 import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/layout/page-header";
+import { WishlistView } from "@/components/product/wishlist-view";
 import { Container } from "@/components/ui/container";
-import { EmptyState } from "@/components/ui/empty-state";
+import { commerce } from "@/lib/commerce";
 
 export const metadata: Metadata = {
   title: "Избранное",
   robots: { index: false, follow: false },
 };
 
-export default function WishlistPage() {
+export default async function WishlistPage() {
+  const { items } = await commerce.getProducts({ pageSize: 100 });
+
   return (
     <>
-      <PageHeader
-        kicker="Local demo"
-        title="Избранное"
-        description="Временный интерфейс без пользовательского аккаунта и серверной синхронизации."
-      />
-      <Container className="py-10 md:py-16">
-        <EmptyState
-          title="Список пока пуст"
-          description="Сохранение товаров будет подключено вместе с выбранным commerce backend."
-          action={{ href: "/catalog", label: "Смотреть каталог" }}
-        />
+      <PageHeader compact kicker="Ваша подборка" title="Избранное" />
+      <Container className="py-8 md:py-14">
+        <WishlistView products={items} />
       </Container>
     </>
   );

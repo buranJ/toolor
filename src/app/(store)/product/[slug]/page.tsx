@@ -7,6 +7,7 @@ import { ProductAccordion } from "@/components/product/product-accordion";
 import { ProductCard } from "@/components/product/product-card";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { ProductPurchasePanel } from "@/components/product/product-purchase-panel";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { Container } from "@/components/ui/container";
 import { commerce } from "@/lib/commerce";
 import { formatMoney } from "@/lib/utils";
@@ -60,13 +61,8 @@ export default async function ProductPage({
       "@type": "Offer",
       priceCurrency: product.price.currencyCode,
       price: (product.price.amount / 100).toFixed(2),
-      availability: "https://schema.org/OutOfStock",
+      availability: "https://schema.org/InStock",
       url: `/product/${product.slug}`,
-    },
-    additionalProperty: {
-      "@type": "PropertyValue",
-      name: "Availability status",
-      value: "Unknown in source workbook",
     },
   };
 
@@ -97,20 +93,26 @@ export default async function ProductPage({
         </nav>
 
         <div className="product-hero-grid">
-          <ProductGallery
-            images={product.images}
-            productName={product.name}
-            productType={product.productType}
-          />
+          <div className="min-w-0">
+            <ProductGallery
+              images={product.images}
+              productName={product.name}
+              productType={product.productType}
+            />
+          
+          </div>
 
           <aside className="product-info-panel">
-            <div className="flex items-center justify-between gap-4">
-              <p className="eyebrow text-brand">
-                {product.productType ?? category?.name ?? "TOOLOR"}
-              </p>
-              <p className="mono-meta text-muted">Product / 01</p>
-            </div>
-            <h1 className="product-title mt-5">{product.name}</h1>
+            <p className="eyebrow text-brand">
+              {product.productType ?? category?.name ?? "TOOLOR"}
+            </p>
+            <h1
+              className={`product-title mt-5 ${
+                product.name.length > 40 ? "product-title-long" : ""
+              }`}
+            >
+              {product.name}
+            </h1>
             <p className="mt-6 text-2xl font-semibold">
               {formatMoney(product.price)}
             </p>
@@ -123,28 +125,48 @@ export default async function ProductPage({
 
         {product.images.length > 2 ? (
           <section
-            aria-label="Дополнительные изображения товара"
-            className="product-detail-gallery"
+            aria-label="Детали товара"
+            className="mt-16 md:mt-24"
           >
-            <div className="product-detail-gallery-wide">
-              <ResilientEditorialImage
-                images={[
-                  ...product.images.slice(2),
-                  ...product.images.slice(0, 2),
-                ]}
-                sizes="(max-width: 767px) 100vw, 68vw"
-              />
-              <span className="mono-meta">Detail / 02</span>
-            </div>
-            <div className="product-detail-gallery-tall">
-              <ResilientEditorialImage
-                images={[
-                  ...product.images.slice(3),
-                  ...product.images.slice(0, 3),
-                ]}
-                sizes="(max-width: 767px) 100vw, 32vw"
-              />
-              <span className="mono-meta">Study / 03</span>
+            <p className="eyebrow text-brand">Крупным планом</p>
+            <h2 className="section-serif mt-4">Детали</h2>
+
+            <div className="mt-8 grid gap-5 md:grid-cols-12">
+              <div className="bg-frost-deep relative aspect-[4/3] overflow-hidden rounded-[1.75rem] shadow-[var(--shadow-soft)] md:col-span-7 md:aspect-auto md:min-h-[34rem]">
+                <ResilientEditorialImage
+                  className="object-cover"
+                  images={[
+                    ...product.images.slice(2),
+                    ...product.images.slice(0, 2),
+                  ]}
+                  sizes="(max-width: 767px) 100vw, 58vw"
+                />
+              </div>
+
+              <div className="flex flex-col gap-5 md:col-span-5">
+                <div className="bg-brand relative flex min-h-[13rem] flex-1 flex-col justify-between overflow-hidden rounded-[1.75rem] p-8 text-white">
+                  <BrandMark
+                    variant="white"
+                    animate="none"
+                    className="absolute -right-10 -bottom-12 w-64 rotate-12 opacity-[0.14]"
+                  />
+                  <p className="eyebrow relative z-10 text-white/70">TOOLOR</p>
+                  <p className="headline-serif relative z-10 mt-6 max-w-[16ch] text-2xl">
+                    Детали, которые работают в движении.
+                  </p>
+                </div>
+
+                <div className="bg-frost-deep relative aspect-[4/3] overflow-hidden rounded-[1.75rem] shadow-[var(--shadow-soft)]">
+                  <ResilientEditorialImage
+                    className="object-cover"
+                    images={[
+                      ...product.images.slice(3),
+                      ...product.images.slice(0, 3),
+                    ]}
+                    sizes="(max-width: 767px) 100vw, 42vw"
+                  />
+                </div>
+              </div>
             </div>
           </section>
         ) : null}

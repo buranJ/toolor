@@ -32,7 +32,7 @@ export function AddToCartButton({ line }: { line: LocalCartLine }) {
 
   return (
     <Button className="w-full" onClick={add}>
-      {added ? "Добавлено в демо-корзину" : "Добавить в демо-корзину"}
+      {added ? "Добавлено ✓" : "В корзину"}
     </Button>
   );
 }

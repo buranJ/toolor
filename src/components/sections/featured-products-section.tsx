@@ -4,6 +4,7 @@ import { ResilientEditorialImage } from "@/components/media/resilient-editorial-
 import { ProductCard } from "@/components/product/product-card";
 import { Container } from "@/components/ui/container";
 import { TextLink } from "@/components/ui/link";
+import { RuneReveal } from "@/components/ui/rune-reveal";
 import { formatMoney } from "@/lib/utils";
 import type { Product } from "@/types";
 
@@ -16,12 +17,32 @@ export function FeaturedProductsSection({ products }: { products: Product[] }) {
     : [];
 
   return (
-    <section className="bg-paper py-20 md:py-28" data-scroll-anchor="products">
-      <Container>
+    <section
+      className="bg-paper relative overflow-hidden py-20 md:py-28"
+      data-scroll-anchor="products"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      >
+        <RuneReveal
+          variant="grey"
+          from="right"
+          targetOpacity={0.75}
+          className="absolute top-24 right-0 w-[46rem] max-w-none translate-x-1/6 rotate-3"
+        />
+        <RuneReveal
+          variant="grey"
+          from="left"
+          targetOpacity={0.7}
+          className="absolute bottom-6 left-0 w-[42rem] max-w-none -translate-x-1/6 -rotate-3"
+        />
+      </div>
+      <Container className="relative z-10">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <p className="eyebrow text-brand">Selection</p>
-            <h2 className="section-serif mt-4">Любимые модели</h2>
+            <p className="eyebrow text-brand"></p>
+            <h2 className="section-serif mt-4">Из новой коллекции</h2>
           </div>
           <TextLink href="/catalog">Все товары</TextLink>
         </div>
@@ -50,11 +71,6 @@ export function FeaturedProductsSection({ products }: { products: Product[] }) {
                 fallbackLabel="Detail / TOOLOR"
               />
               <div className="dark-media-scrim absolute inset-0" />
-              <div className="absolute inset-x-0 top-0 flex items-center justify-between p-6">
-                <span className="mono-meta rounded-full bg-white/20 px-3 py-1.5 backdrop-blur-sm">
-                  Detail view
-                </span>
-              </div>
               <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 p-6">
                 <div>
                   <p className="text-sm text-white/80">{formatMoney(lead.price)}</p>
