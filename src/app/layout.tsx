@@ -8,9 +8,9 @@ import { siteConfig } from "@/lib/config/site";
 
 import "./globals.css";
 
-// Brand typeface is TT Commons Pro (see globals.css @font-face / --font-brand).
-// Manrope is the loaded fallback grotesk — closest geometric match with Cyrillic
-// support — used until TT Commons Pro web files are dropped into /public/fonts.
+// Brand typeface is TT Commons Pro — self-hosted WOFF2 via @font-face in
+// globals.css (--font-brand). Manrope is the swap fallback grotesk (closest
+// geometric match with Cyrillic support) shown while the brand font loads.
 const brandFallback = Manrope({
   variable: "--font-brand-fallback",
   subsets: ["latin", "cyrillic"],
@@ -51,6 +51,23 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${brandFallback.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* Preload the two most-used brand weights to cut first-paint swap. */}
+        <link
+          rel="preload"
+          href="/fonts/tt-commons-pro-400.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/tt-commons-pro-600.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="flex min-h-full flex-col">
         <a
           href="#main-content"

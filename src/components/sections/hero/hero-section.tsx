@@ -3,6 +3,8 @@ import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import type { ProductImage } from "@/types";
 
+import { HeroScrollVideo } from "./hero-scroll-video";
+
 export interface HeroSectionContent {
   kicker: string;
   title: string;
@@ -11,31 +13,23 @@ export interface HeroSectionContent {
   secondaryCta: { href: string; label: string };
 }
 
-export function HeroMotionSlot({ images }: { images: ProductImage[] }) {
+export function HeroMedia({ images }: { images: ProductImage[] }) {
   return (
-    <div
-      className="absolute inset-0"
-      data-motion-slot="hero-sequence"
-      data-static-poster="true"
-    >
+    <div className="absolute inset-0" data-static-poster="true">
       <ResilientEditorialImage
         className="object-cover object-[center_28%]"
         images={images}
         priority
-        sizes="(max-width: 1024px) 100vw, 52vw"
+        sizes="100vw"
         fallbackLabel="TOOLOR / Modern nomads"
       />
     </div>
   );
 }
 
-export function HeroMedia({ images }: { images: ProductImage[] }) {
-  return <HeroMotionSlot images={images} />;
-}
-
 export function HeroContent({ content }: { content: HeroSectionContent }) {
   return (
-    <div className="flex flex-col justify-center py-12 md:py-0 lg:pr-10">
+    <div className="flex flex-col justify-center py-12">
       <p className="eyebrow text-brand">{content.kicker}</p>
       <h1 className="display-serif mt-6 max-w-[14ch] text-balance">
         {content.title}
@@ -47,11 +41,33 @@ export function HeroContent({ content }: { content: HeroSectionContent }) {
         <ButtonLink href={content.primaryCta.href} variant="primary" size="lg">
           {content.primaryCta.label}
         </ButtonLink>
-        <ButtonLink href={content.secondaryCta.href} variant="secondary" size="lg">
+        <ButtonLink
+          href={content.secondaryCta.href}
+          variant="secondary"
+          size="lg"
+        >
           {content.secondaryCta.label}
         </ButtonLink>
       </div>
     </div>
+  );
+}
+
+/** Static two-part Hero shown below 1024px (no scroll scrubbing). */
+function HeroFallback({
+  content,
+  images,
+}: {
+  content: HeroSectionContent;
+  images: ProductImage[];
+}) {
+  return (
+    <Container className="grid items-stretch gap-8 lg:gap-14">
+      <HeroContent content={content} />
+      <div className="bg-frost-deep relative min-h-[24rem] overflow-hidden rounded-[2rem] md:min-h-[calc(100svh-10rem)]">
+        <HeroMedia images={images} />
+      </div>
+    </Container>
   );
 }
 
@@ -65,18 +81,20 @@ export function HeroSection({
   return (
     <section
       aria-label="TOOLOR — Modern Nomads"
-      className="bg-paper relative overflow-hidden"
-      data-motion-section="hero"
-      data-motion-start="top top"
-      data-motion-end="bottom top"
+      className="relative"
       data-scroll-anchor="hero"
     >
-      <Container className="grid items-stretch gap-8 lg:grid-cols-2 lg:gap-14">
-        <HeroContent content={content} />
-        <div className="relative min-h-[24rem] overflow-hidden rounded-[2rem] bg-frost-deep md:min-h-[calc(100svh-8rem)] lg:mt-8 lg:mb-8">
-          <HeroMedia images={images} />
-        </div>
-      </Container>
+      {/* Desktop: full-bleed scroll-controlled cinematic video.
+          Pulled up under the sticky header so it is flush from scroll 0. */}
+      <HeroScrollVideo
+        content={content}
+        className="hidden lg:-mt-[var(--header-height)] lg:block"
+      />
+
+      {/* Tablet / mobile: static fallback Hero */}
+      <div className="bg-paper overflow-hidden pb-6 lg:hidden">
+        <HeroFallback content={content} images={images} />
+      </div>
     </section>
   );
 }

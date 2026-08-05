@@ -1,7 +1,6 @@
 import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { MountainEdge } from "@/components/ui/mountain-edge";
 import { instagramHandle, socialLinks } from "@/lib/config/social";
 import type { ProductImage } from "@/types";
 
@@ -37,8 +36,6 @@ export function ModernNomadsSection({ images }: { images: ProductImage[] }) {
         fallbackLabel="TOOLOR"
       />
       <div className="frost-scrim absolute inset-0" />
-      <MountainEdge position="top" className="text-paper" />
-      <MountainEdge position="bottom" className="text-paper" />
 
       <Container className="relative z-[3] flex min-h-[80svh] flex-col justify-center py-24 md:py-28">
         <div className="max-w-4xl">

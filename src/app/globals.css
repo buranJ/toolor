@@ -70,26 +70,52 @@
 }
 
 /*
- * TT Commons Pro is the brand typeface. Drop the trial web files into
- * /public/fonts and uncomment the @font-face rules below to serve it to every
- * visitor; until then --font-brand falls back to Manrope (loaded in layout).
- *
- * @font-face {
- *   font-family: "TT Commons Pro";
- *   src: url("/fonts/TTCommonsPro-Regular.woff2") format("woff2");
- *   font-weight: 400; font-display: swap;
- * }
- * @font-face {
- *   font-family: "TT Commons Pro";
- *   src: url("/fonts/TTCommonsPro-DemiBold.woff2") format("woff2");
- *   font-weight: 600; font-display: swap;
- * }
- * @font-face {
- *   font-family: "TT Commons Pro";
- *   src: url("/fonts/TTCommonsPro-Bold.woff2") format("woff2");
- *   font-weight: 700; font-display: swap;
- * }
+ * TT Commons Pro — the brand typeface. Self-hosted WOFF2 (converted from the
+ * trial TTFs in /public/font). Manrope stays as the swap fallback while these
+ * load. Regenerate the WOFF2 with scripts/… if the source files change.
  */
+@font-face {
+  font-family: "TT Commons Pro";
+  src: url("/fonts/tt-commons-pro-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TT Commons Pro";
+  src: url("/fonts/tt-commons-pro-400-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TT Commons Pro";
+  src: url("/fonts/tt-commons-pro-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TT Commons Pro";
+  src: url("/fonts/tt-commons-pro-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TT Commons Pro";
+  src: url("/fonts/tt-commons-pro-600-italic.woff2") format("woff2");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TT Commons Pro";
+  src: url("/fonts/tt-commons-pro-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 * {
   box-sizing: border-box;
@@ -1717,6 +1743,23 @@ body:has([data-page="home"]) .footer-mountain-edge {
 
   100% {
     transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.hero-scroll-dot {
+  animation: hero-scroll-dot 1.6s ease-in-out infinite;
+}
+
+@keyframes hero-scroll-dot {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.85;
+  }
+
+  50% {
+    transform: translateY(0.55rem);
+    opacity: 0.35;
   }
 }
 

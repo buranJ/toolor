@@ -7,10 +7,13 @@ const moneySchema = z.object({
 
 const importedImageSchema = z.object({
   id: z.string().min(1),
-  url: z.url(),
+  // Absolute (imported) or root-relative (self-hosted /imgs/…) paths.
+  url: z.string().min(1),
   alt: z.string().min(1),
-  status: z.enum(["reachable", "unreachable", "unchecked"]),
-  httpStatus: z.number().int().nullable(),
+  status: z
+    .enum(["reachable", "unreachable", "unchecked"])
+    .default("reachable"),
+  httpStatus: z.number().int().nullable().default(null),
 });
 
 const importedVariantSchema = z.object({
