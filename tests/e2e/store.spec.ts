@@ -12,6 +12,43 @@ test("homepage smoke", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("mobile hero uses the portrait video and follows scroll", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+
+  const hero = page.getByTestId("hero-scroll-video");
+  const video = page.getByTestId("hero-scroll-media");
+
+  await expect(video).toHaveAttribute(
+    "src",
+    "/media/hero/hero-scroll-mobile.mp4",
+  );
+  await expect(video).toHaveAttribute("playsinline", "");
+
+  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.4));
+
+  await expect
+    .poll(
+      () =>
+        hero.evaluate((element) =>
+          Number(element.style.getPropertyValue("--hero-progress")),
+        ),
+      { timeout: 10_000 },
+    )
+    .toBeGreaterThan(0.1);
+  await expect
+    .poll(
+      () =>
+        video.evaluate((element) =>
+          element instanceof HTMLVideoElement ? element.currentTime : 0,
+        ),
+      { timeout: 10_000 },
+    )
+    .toBeGreaterThan(0.25);
+});
+
 test("app promotion is available on home and about pages", async ({ page }) => {
   for (const route of ["/", "/about"]) {
     await page.goto(route, { waitUntil: "domcontentloaded" });

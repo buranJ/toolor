@@ -9,6 +9,8 @@ import type { HeroSectionContent } from "./hero-section";
 
 const HERO_VIDEO = "/media/hero/hero-scroll.mp4";
 const HERO_POSTER = "/media/hero/hero-poster.webp";
+const HERO_VIDEO_MOBILE = "/media/hero/hero-scroll-mobile.mp4";
+const HERO_POSTER_MOBILE = "/media/hero/hero-poster-mobile.webp";
 
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
@@ -22,8 +24,6 @@ const SETTLE_EPSILON = 0.0004;
 /** Centre logo fade window (scroll progress) — gone before the garment reveal. */
 const LOGO_FADE_START = 0.42;
 const LOGO_FADE_END = 0.6;
-/** How far up the centre logo is nudged from the middle (viewport height). */
-const LOGO_SHIFT = "-22svh";
 /** Bottom-left copy + CTA reveal window (scroll progress) — after the garment. */
 const REVEAL_START = 0.72;
 const REVEAL_END = 0.86;
@@ -33,15 +33,12 @@ const INDICATOR_END = 0.12;
 type CSSVars = React.CSSProperties & Record<string, string>;
 
 /**
- * Full-bleed, scroll-controlled cinematic Hero (desktop ≥1024px). Page scroll
- * drives `video.currentTime` — the video never plays. A short lerp smooths the
+ * Full-bleed, scroll-controlled cinematic Hero. Page scroll drives
+ * `video.currentTime` — the video never plays. Mobile loads a dedicated 720 ×
+ * 1280 encode while desktop loads the wide master. A short lerp smooths the
  * scrubbing; seeks are throttled to ~1 frame and never queued while the media
- * element is already seeking. Only the video/scroll wiring is client-side; the
- * overlay text is plain, server-friendly HTML.
- *
- * Below 1024px the video is not mounted (the ~11MB file never downloads) and
- * the static fallback in `HeroSection` is shown. `prefers-reduced-motion`
- * collapses the tall scroll area to one screen and disables scrubbing.
+ * element is already seeking. `prefers-reduced-motion` collapses the tall
+ * scroll area to one screen and disables scrubbing.
  */
 export function HeroScrollVideo({
   content,
@@ -52,12 +49,12 @@ export function HeroScrollVideo({
 }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isDesktop, setIsDesktop] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [mediaMode, setMediaMode] = useState<"mobile" | "desktop" | null>(null);
+  const [readyMode, setReadyMode] = useState<"mobile" | "desktop" | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia(DESKTOP_QUERY);
-    const update = () => setIsDesktop(mq.matches);
+    const update = () => setMediaMode(mq.matches ? "desktop" : "mobile");
     update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
@@ -66,7 +63,7 @@ export function HeroScrollVideo({
   useEffect(() => {
     const section = sectionRef.current;
     const video = videoRef.current;
-    if (!isDesktop || !section || !video) return;
+    if (!mediaMode || !section || !video) return;
 
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -94,7 +91,9 @@ export function HeroScrollVideo({
     const readTarget = () => {
       const scrollable = sectionHeight - window.innerHeight;
       targetProgress.current =
-        scrollable <= 0 ? 0 : clamp01((window.scrollY - sectionTop) / scrollable);
+        scrollable <= 0
+          ? 0
+          : clamp01((window.scrollY - sectionTop) / scrollable);
     };
 
     const applyProgress = (p: number) => {
@@ -145,7 +144,10 @@ export function HeroScrollVideo({
     const onSeeked = () => startLoop();
     const onError = () => {
       if (process.env.NODE_ENV !== "production") {
-        console.error("[hero] failed to load", HERO_VIDEO);
+        console.error(
+          "[hero] failed to load",
+          mediaMode === "desktop" ? HERO_VIDEO : HERO_VIDEO_MOBILE,
+        );
       }
     };
     const onLoadedMetadata = () => {
@@ -155,7 +157,7 @@ export function HeroScrollVideo({
       renderedProgress.current = targetProgress.current;
       applyProgress(renderedProgress.current);
     };
-    const onLoadedData = () => setReady(true);
+    const onLoadedData = () => setReadyMode(mediaMode);
 
     // Scrubbed still — never autoplay.
     video.pause();
@@ -200,40 +202,59 @@ export function HeroScrollVideo({
       video.removeEventListener("seeked", onSeeked);
       video.removeEventListener("error", onError);
     };
-  }, [isDesktop]);
+  }, [mediaMode]);
 
   return (
     <div
       ref={sectionRef}
-      className={`relative h-[550svh] motion-reduce:h-[100svh] ${className}`}
-      style={{ "--hero-progress": "0" } as CSSVars}
+      data-testid="hero-scroll-video"
+      className={`relative h-[430svh] motion-reduce:h-[100svh] lg:h-[550svh] ${className}`}
+      style={
+        {
+          "--hero-logo-shift": mediaMode === "desktop" ? "-22svh" : "-15svh",
+          "--hero-progress": "0",
+        } as CSSVars
+      }
     >
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-black">
         {/* Media sits below the pinned header so the garment is never cut. */}
-        <div className="absolute inset-x-0 bottom-0 top-[var(--header-height)]">
+        <div className="absolute inset-x-0 top-[var(--header-height)] bottom-0">
           {/* Poster layer — instant, stays as fallback if the video fails. */}
           <Image
             alt=""
             aria-hidden="true"
-            className="object-cover object-center"
+            className="object-cover object-center lg:hidden"
+            fill
+            priority
+            sizes="100vw"
+            src={HERO_POSTER_MOBILE}
+          />
+          <Image
+            alt=""
+            aria-hidden="true"
+            className="hidden object-cover object-center lg:block"
             fill
             priority
             sizes="100vw"
             src={HERO_POSTER}
           />
 
-          {isDesktop ? (
+          {mediaMode ? (
             <video
+              key={mediaMode}
               ref={videoRef}
               aria-hidden="true"
+              data-testid="hero-scroll-media"
               className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500 ${
-                ready ? "opacity-100" : "opacity-0"
+                readyMode === mediaMode ? "opacity-100" : "opacity-0"
               }`}
               muted
               playsInline
-              poster={HERO_POSTER}
+              poster={
+                mediaMode === "desktop" ? HERO_POSTER : HERO_POSTER_MOBILE
+              }
               preload="auto"
-              src={HERO_VIDEO}
+              src={mediaMode === "desktop" ? HERO_VIDEO : HERO_VIDEO_MOBILE}
             />
           ) : null}
         </div>
@@ -255,7 +276,7 @@ export function HeroScrollVideo({
             {
               opacity:
                 "clamp(0, calc((var(--logo-fade-end) - var(--hero-progress, 0)) / (var(--logo-fade-end) - var(--logo-fade-start))), 1)",
-              transform: `translateY(${LOGO_SHIFT})`,
+              transform: "translateY(var(--hero-logo-shift))",
               "--logo-fade-start": String(LOGO_FADE_START),
               "--logo-fade-end": String(LOGO_FADE_END),
             } as CSSVars

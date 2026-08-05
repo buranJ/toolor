@@ -71,7 +71,6 @@ export default async function HomePage() {
           primaryCta: { href: "/catalog", label: "Смотреть каталог" },
           secondaryCta: { href: "/about", label: "О направлении" },
         }}
-        images={heroProduct?.images ?? []}
       />
       <FeaturedCategoryMosaicSection products={products} />
       <CategorySplitSection
