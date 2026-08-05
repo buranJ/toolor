@@ -12,6 +12,44 @@ test("homepage smoke", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("app promotion is available on home and about pages", async ({ page }) => {
+  for (const route of ["/", "/about"]) {
+    await page.goto(route, { waitUntil: "domcontentloaded" });
+    const section = page.locator("#app");
+
+    await expect(
+      section.getByRole("heading", { name: /TOOLOR всегда с вами/ }),
+    ).toBeVisible();
+    await expect(
+      section.getByRole("link", { name: "Открыть TOOLOR в Google Play" }),
+    ).toHaveAttribute(
+      "href",
+      "https://play.google.com/store/apps/details?id=com.toolor.toolor_app&pcampaignid=web_share",
+    );
+    await expect(
+      section.getByRole("link", { name: "Открыть TOOLOR в App Store" }),
+    ).toHaveAttribute(
+      "href",
+      "https://apps.apple.com/kg/app/toolor/id6761310984",
+    );
+    await expect(section.getByRole("img", { name: /QR-код/ })).toHaveCount(2);
+
+    const footer = page.locator(".site-footer");
+    await expect(
+      footer.getByRole("link", { name: "Скачать TOOLOR в Google Play" }),
+    ).toHaveAttribute(
+      "href",
+      "https://play.google.com/store/apps/details?id=com.toolor.toolor_app&pcampaignid=web_share",
+    );
+    await expect(
+      footer.getByRole("link", { name: "Скачать TOOLOR в App Store" }),
+    ).toHaveAttribute(
+      "href",
+      "https://apps.apple.com/kg/app/toolor/id6761310984",
+    );
+  }
+});
+
 test("featured collection carousel changes the active product", async ({
   page,
 }) => {

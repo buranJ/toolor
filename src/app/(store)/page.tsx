@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { AppPromoSection } from "@/components/sections/app-promo-section";
 import { CategorySplitSection } from "@/components/sections/category-split-section";
 import { FeaturedCollectionSection } from "@/components/sections/featured-collection-section";
 import { FeaturedCategoryMosaicSection } from "@/components/sections/featured-category-mosaic-section";
@@ -77,15 +78,16 @@ export default async function HomePage() {
         menProduct={menProduct}
         womenProduct={womenProduct}
       />
-      
+
       <FeaturedCollectionSection products={editorialProducts} />
       <FeaturedProductsSection products={productSelection} />
       <ModernNomadsSection images={leadFrom(heroProduct, 1)} />
-     
+
       <SustainabilitySection
         product={products.find((product) => Boolean(product.material))}
       />
-       <ReviewsSection />
+      <ReviewsSection />
+      <AppPromoSection />
     </div>
   );
 }

@@ -1,8 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 
-import { Container } from "@/components/ui/container";
 import { BrandLogo } from "@/components/ui/brand-logo";
-import { MountainEdge } from "@/components/ui/mountain-edge";
+import { Container } from "@/components/ui/container";
+import { APP_STORES, StoreIcon } from "@/components/ui/app-store-links";
 import { SocialLinks } from "@/components/ui/social-icons";
 
 const links = [
@@ -14,42 +15,35 @@ const links = [
   ["Возврат", "/returns"],
 ] as const;
 
-/** Layered cold mountain ridges (ref. 5) used as a quiet footer backdrop. */
-function FooterRidges() {
+function FooterMountainCut() {
   return (
-    <div
+    <svg
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%] overflow-hidden"
+      className="footer-mountain-cut"
+      preserveAspectRatio="none"
+      viewBox="0 0 1440 150"
     >
-      <svg
-        className="absolute right-0 bottom-0 left-0 h-full w-full"
-        viewBox="0 0 1440 400"
-        preserveAspectRatio="xMidYMax slice"
-        fill="none"
-      >
-        <path
-          d="M0 400 V250 L210 150 L360 220 L560 120 L760 210 L960 110 L1180 200 L1440 130 V400 Z"
-          fill="#ffffff"
-          opacity="0.04"
-        />
-        <path
-          d="M0 400 V300 L260 210 L470 280 L690 190 L900 270 L1140 180 L1440 250 V400 Z"
-          fill="#ffffff"
-          opacity="0.06"
-        />
-      </svg>
-    </div>
+      <path d="M0 0H1440V75C1402 72 1370 69 1339 77C1310 85 1284 87 1257 80L1219 68L1186 73L1138 32L1105 60L1068 68L1027 82C991 91 953 88 914 78L872 66L839 78L803 88C773 94 744 91 716 82L678 43L643 64L606 60L558 29L524 56L485 75L443 65L407 73C379 82 355 87 332 88L297 78L263 65L220 35L190 60L151 70L111 82L72 77L37 84L0 80Z" />
+    </svg>
   );
 }
 
 export function Footer() {
   return (
-    <footer className="bg-frost-deep relative overflow-hidden text-white">
-      <MountainEdge position="top" className="footer-mountain-edge" />
-      <FooterRidges />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/45" />
+    <footer className="site-footer relative overflow-hidden text-white">
+      <div aria-hidden="true" className="site-footer-media">
+        <Image
+          alt=""
+          className="site-footer-image"
+          fill
+          sizes="100vw"
+          src="/images/toolor-glacier-footer.webp"
+        />
+      </div>
+      <div aria-hidden="true" className="site-footer-atmosphere" />
+      <FooterMountainCut />
 
-      <Container className="relative z-10 pt-24 pb-8 md:pt-28">
+      <Container className="site-footer-content relative z-10 pt-28 pb-8 md:pt-36">
         <div className="grid gap-14 lg:grid-cols-[1.5fr_0.7fr_0.9fr]">
           <div>
             <p className="mono-meta text-white/55">Рассылка</p>
@@ -103,6 +97,27 @@ export function Footer() {
               </li>
             </ul>
             <SocialLinks className="mt-8" />
+            <div
+              className="footer-app-downloads"
+              aria-label="Скачать приложение"
+            >
+              {APP_STORES.map((store) => (
+                <a
+                  aria-label={`Скачать TOOLOR в ${store.name}`}
+                  className="footer-app-download-link"
+                  href={store.href}
+                  key={store.name}
+                  rel="noreferrer noopener"
+                  target="_blank"
+                >
+                  <StoreIcon kind={store.icon} />
+                  <span>
+                    <small>{store.eyebrow}</small>
+                    <strong>{store.name}</strong>
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 

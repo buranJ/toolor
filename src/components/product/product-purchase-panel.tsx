@@ -176,8 +176,7 @@ export function ProductPurchasePanel({
       </fieldset>
 
       <p className="product-availability">
-        <span aria-hidden="true" style={{ background: "#2f9e44" }} />
-        В наличии
+        <span aria-hidden="true" style={{ background: "#2f9e44" }} />В наличии
       </p>
 
       <div className="product-purchase-actions hidden md:flex">
@@ -237,7 +236,7 @@ function ServiceItem({
 }) {
   return (
     <div className="product-service-item">
-      {icon}
+      <span className="product-service-icon">{icon}</span>
       <div>
         <strong>{title}</strong>
         <span>{detail}</span>
@@ -249,9 +248,10 @@ function ServiceItem({
 function TruckIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path d="M3 6h11v10H3zM14 10h4l3 3v3h-7z" />
-      <circle cx="7" cy="18" r="2" />
-      <circle cx="18" cy="18" r="2" />
+      <path d="M3.5 6.5h10.25v9.25H3.5z" />
+      <path d="M13.75 9.75h3.2l3.55 3.55v2.45h-6.75" />
+      <path d="M5.75 18.25a1.75 1.75 0 1 0 3.5 0 1.75 1.75 0 0 0-3.5 0ZM16.25 18.25a1.75 1.75 0 1 0 3.5 0 1.75 1.75 0 0 0-3.5 0Z" />
+      <path d="M9.25 18.25h7" />
     </svg>
   );
 }
@@ -259,9 +259,9 @@ function TruckIcon() {
 function ReturnIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path d="M8 7H5v-3" />
-      <path d="M5 7a8 8 0 1 1-1 8" />
-      <path d="M9 10h7v7H9z" />
+      <path d="M7 7h10l-2.5-2.5M17 7l-2.5 2.5" />
+      <path d="M17 17H7l2.5 2.5M7 17l2.5-2.5" />
+      <path d="M5.25 9.75v4.5M18.75 14.25v-4.5" />
     </svg>
   );
 }
@@ -269,8 +269,8 @@ function ReturnIcon() {
 function ShieldIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6l-7-3Z" />
-      <path d="m9 12 2 2 4-4" />
+      <path d="M12 3.5 5.5 6.25v4.85c0 4.2 2.55 7.3 6.5 9.4 3.95-2.1 6.5-5.2 6.5-9.4V6.25L12 3.5Z" />
+      <path d="m8.9 12.1 2 2 4.35-4.35" />
     </svg>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
+import { AppPromoSection } from "@/components/sections/app-promo-section";
 import { BrandMark } from "@/components/ui/brand-mark";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -213,7 +214,7 @@ export default async function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-paper pb-20 md:pb-28">
+      <section className="bg-paper py-16 md:py-24 lg:py-28">
         <Container>
           <div className="bg-brand relative overflow-hidden rounded-[2rem] px-8 py-14 text-center text-white md:px-12 md:py-20">
             <div
@@ -249,6 +250,8 @@ export default async function AboutPage() {
           </div>
         </Container>
       </section>
+
+      <AppPromoSection />
     </>
   );
 }
