@@ -1,3 +1,4 @@
+import { getDictionary, type Locale } from "@/i18n";
 import type { Product } from "@/types";
 
 type AccordionProduct = Pick<
@@ -14,36 +15,42 @@ function AccordionIcon() {
   );
 }
 
-export function ProductAccordion({ product }: { product: AccordionProduct }) {
+export function ProductAccordion({
+  locale,
+  product,
+}: {
+  locale: Locale;
+  product: AccordionProduct;
+}) {
+  const copy = getDictionary(locale).product.accordion;
+
   return (
     <div className="product-accordions">
       <details className="product-accordion" open>
         <summary>
-          <span>
-            Описание
-          </span>
+          <span>{copy.description}</span>
           <AccordionIcon />
         </summary>
         <div className="product-accordion-panel">
-          <p>{product.description || "Изделие из коллекции TOOLOR."}</p>
+          {/* Product copy comes from the imported workbook and is not
+              translated — only the fallback is. */}
+          <p>{product.description || copy.descriptionFallback}</p>
         </div>
       </details>
 
       <details className="product-accordion">
         <summary>
-          <span>
-            Материалы и уход
-          </span>
+          <span>{copy.materialsCare}</span>
           <AccordionIcon />
         </summary>
         <div className="product-accordion-panel">
           <dl>
             <div>
-              <dt>Материал</dt>
+              <dt>{copy.material}</dt>
               <dd>{product.material || "—"}</dd>
             </div>
             <div>
-              <dt>Уход</dt>
+              <dt>{copy.care}</dt>
               <dd>{product.care || "—"}</dd>
             </div>
           </dl>
@@ -52,19 +59,17 @@ export function ProductAccordion({ product }: { product: AccordionProduct }) {
 
       <details className="product-accordion">
         <summary>
-          <span>
-            Размер и модель
-          </span>
+          <span>{copy.sizeModel}</span>
           <AccordionIcon />
         </summary>
         <div className="product-accordion-panel">
           <dl>
             <div>
-              <dt>Размеры</dt>
+              <dt>{copy.sizes}</dt>
               <dd>{product.sizes?.join(", ") || "—"}</dd>
             </div>
             <div>
-              <dt>Модель</dt>
+              <dt>{copy.model}</dt>
               <dd>{product.modelInformation || "—"}</dd>
             </div>
           </dl>
@@ -73,16 +78,11 @@ export function ProductAccordion({ product }: { product: AccordionProduct }) {
 
       <details className="product-accordion">
         <summary>
-          <span>
-            Доставка и возврат
-          </span>
+          <span>{copy.deliveryReturns}</span>
           <AccordionIcon />
         </summary>
         <div className="product-accordion-panel">
-          <p>
-            Доставка по Кыргызстану и за рубеж. Обмен и возврат — согласно
-            правилам магазина.
-          </p>
+          <p>{copy.deliveryReturnsText}</p>
         </div>
       </details>
     </div>

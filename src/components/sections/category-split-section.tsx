@@ -3,20 +3,23 @@ import Link from "next/link";
 import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
 import { Container } from "@/components/ui/container";
 import { TextLink } from "@/components/ui/link";
+import { getDictionary, localePath, type Locale } from "@/i18n";
 import type { Product } from "@/types";
 
 function CategoryPanel({
   product,
   title,
   href,
+  viewLabel,
 }: {
   product?: Product;
   title: string;
   href: string;
+  viewLabel: string;
 }) {
   return (
     <Link
-      className="category-panel group relative flex min-h-[26rem] flex-1 overflow-hidden rounded-[1.75rem] bg-frost-deep text-white shadow-[var(--shadow-soft)] transition-shadow duration-300 hover:shadow-[var(--shadow-card)] md:min-h-[40rem]"
+      className="category-panel group bg-frost-deep relative flex min-h-[26rem] flex-1 overflow-hidden rounded-[1.75rem] text-white shadow-[var(--shadow-soft)] transition-shadow duration-300 hover:shadow-[var(--shadow-card)] md:min-h-[40rem]"
       href={href}
     >
       <ResilientEditorialImage
@@ -29,7 +32,7 @@ function CategoryPanel({
       <div className="relative z-10 flex w-full flex-col justify-end p-6 md:p-9">
         <h3 className="headline-serif text-4xl md:text-6xl">{title}</h3>
         <span className="mt-3 inline-flex items-center gap-2 text-sm font-medium">
-          Смотреть
+          {viewLabel}
           <span
             aria-hidden="true"
             className="transition-transform duration-200 group-hover:translate-x-0.5"
@@ -43,12 +46,17 @@ function CategoryPanel({
 }
 
 export function CategorySplitSection({
+  locale,
   menProduct,
   womenProduct,
 }: {
+  locale: Locale;
   menProduct?: Product;
   womenProduct?: Product;
 }) {
+  const d = getDictionary(locale);
+  const copy = d.home.categorySplit;
+
   return (
     <section
       className="bg-paper py-20 md:py-28"
@@ -58,23 +66,24 @@ export function CategorySplitSection({
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            {/* <p className="eyebrow text-brand">С чего начать</p> */}
-            <h2 className="section-serif mt-4 max-w-[16ch]">
-              Коллекции для каждого
-            </h2>
+            <h2 className="section-serif mt-4 max-w-[16ch]">{copy.title}</h2>
           </div>
-          <TextLink href="/catalog">Весь каталог</TextLink>
+          <TextLink href={localePath(locale, "/catalog")}>
+            {copy.allCatalog}
+          </TextLink>
         </div>
         <div className="category-split mt-10 flex flex-col gap-5 md:flex-row">
           <CategoryPanel
-            href="/catalog/men"
+            href={localePath(locale, "/catalog/men")}
             product={menProduct}
-            title="Мужчинам"
+            title={copy.men}
+            viewLabel={d.common.view}
           />
           <CategoryPanel
-            href="/catalog/women"
+            href={localePath(locale, "/catalog/women")}
             product={womenProduct}
-            title="Женщинам"
+            title={copy.women}
+            viewLabel={d.common.view}
           />
         </div>
       </Container>

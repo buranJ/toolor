@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useSyncExternalStore } from "react";
 
 import { LOCAL_CART_KEY, readLocalCart } from "@/features/cart/local-cart";
+import { format, getDictionary, localePath, type Locale } from "@/i18n";
 
 function BagIcon() {
   return (
@@ -24,7 +25,14 @@ function BagIcon() {
   );
 }
 
-export function CartLink({ compact = false }: { compact?: boolean }) {
+export function CartLink({
+  compact = false,
+  locale,
+}: {
+  compact?: boolean;
+  locale: Locale;
+}) {
+  const d = getDictionary(locale);
   const snapshot = useSyncExternalStore(
     (onStoreChange) => {
       window.addEventListener("storage", onStoreChange);
@@ -45,11 +53,11 @@ export function CartLink({ compact = false }: { compact?: boolean }) {
 
   return (
     <Link
-      aria-label={`Корзина, ${quantity} товаров`}
+      aria-label={format(d.header.cartAria, { count: quantity })}
       className={compact ? "header-cart-compact" : "summit-service-link"}
-      href="/cart"
+      href={localePath(locale, "/cart")}
     >
-      {compact ? <BagIcon /> : "Корзина"}
+      {compact ? <BagIcon /> : d.nav.cart}
       <span aria-hidden="true" aria-live="polite">
         {compact ? quantity : ` (${quantity})`}
       </span>

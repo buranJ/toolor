@@ -9,8 +9,16 @@ import {
   type LocalCartLine,
   writeLocalCart,
 } from "@/features/cart/local-cart";
+import { getDictionary, type Locale } from "@/i18n";
 
-export function AddToCartButton({ line }: { line: LocalCartLine }) {
+export function AddToCartButton({
+  line,
+  locale,
+}: {
+  line: LocalCartLine;
+  locale: Locale;
+}) {
+  const d = getDictionary(locale);
   const [added, setAdded] = useState(false);
 
   function add() {
@@ -32,7 +40,7 @@ export function AddToCartButton({ line }: { line: LocalCartLine }) {
 
   return (
     <Button className="w-full" onClick={add}>
-      {added ? "Добавлено ✓" : "В корзину"}
+      {added ? d.product.addedCheck : d.product.addToCart}
     </Button>
   );
 }

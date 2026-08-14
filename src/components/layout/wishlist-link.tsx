@@ -7,6 +7,7 @@ import {
   LOCAL_WISHLIST_KEY,
   readLocalWishlist,
 } from "@/features/wishlist/local-wishlist";
+import { format, getDictionary, localePath, type Locale } from "@/i18n";
 
 function subscribe(onStoreChange: () => void) {
   window.addEventListener("storage", onStoreChange);
@@ -17,7 +18,8 @@ function subscribe(onStoreChange: () => void) {
   };
 }
 
-export function WishlistLink() {
+export function WishlistLink({ locale }: { locale: Locale }) {
+  const d = getDictionary(locale);
   const snapshot = useSyncExternalStore(
     subscribe,
     () => window.localStorage.getItem(LOCAL_WISHLIST_KEY) ?? "",
@@ -27,9 +29,13 @@ export function WishlistLink() {
 
   return (
     <Link
-      aria-label={count > 0 ? `Избранное, товаров: ${count}` : "Избранное"}
+      aria-label={
+        count > 0
+          ? format(d.header.wishlistAriaCount, { count })
+          : d.header.wishlistAria
+      }
       className="summit-icon-link relative"
-      href="/wishlist"
+      href={localePath(locale, "/wishlist")}
     >
       ♡
       {count > 0 ? (

@@ -9,7 +9,7 @@ const appStoreUrl = "https://apps.apple.com/kg/app/toolor/id6761310984";
 
 describe("AppPromoSection", () => {
   it("keeps every store button and QR card on the supplied app URL", () => {
-    render(<AppPromoSection />);
+    render(<AppPromoSection locale="ru" />);
 
     const playLinks = screen.getAllByRole("link", { name: /Google Play/ });
     const appLinks = screen.getAllByRole("link", { name: /App Store/ });

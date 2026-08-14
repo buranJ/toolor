@@ -2,14 +2,26 @@ import { ResilientEditorialImage } from "@/components/media/resilient-editorial-
 import { Container } from "@/components/ui/container";
 import { TextLink } from "@/components/ui/link";
 import { ScrollRevealMark } from "@/components/ui/scroll-reveal-mark";
+import { getDictionary, localePath, type Locale } from "@/i18n";
 import type { Product } from "@/types";
 
-export function SustainabilitySection({ product }: { product?: Product }) {
+export function SustainabilitySection({
+  locale,
+  product,
+}: {
+  locale: Locale;
+  product?: Product;
+}) {
+  const d = getDictionary(locale);
+  const copy = d.home.sustainability;
   const images = product ? product.images : [];
+
+  // Material and care come from the imported workbook and stay in their source
+  // language; only the labels and the fallbacks are translated.
   const rows = [
-    ["Материал", product?.material || "Технологичные и натуральные ткани"],
-    ["Уход", product?.care || "Простой уход, долгий срок службы"],
-    ["Подход", "Функциональность и качество на каждый день"],
+    [copy.rowMaterial, product?.material || copy.defaultMaterial],
+    [copy.rowCare, product?.care || copy.defaultCare],
+    [copy.rowApproach, copy.approachValue],
   ] as const;
 
   return (
@@ -34,19 +46,16 @@ export function SustainabilitySection({ product }: { product?: Product }) {
             />
           </div>
           <div>
-            <p className="eyebrow text-brand">Материалы</p>
-            <h2 className="section-serif mt-5 max-w-[11ch]">
-              Сделано, чтобы служить
-            </h2>
+            <p className="eyebrow text-brand">{copy.kicker}</p>
+            <h2 className="section-serif mt-5 max-w-[11ch]">{copy.title}</h2>
             <p className="text-muted mt-6 max-w-lg text-base leading-relaxed">
-              Одежда для движения: продуманные материалы, чистые линии и вещи,
-              которые служат долго — от города до открытого маршрута.
+              {copy.description}
             </p>
-            <dl className="mt-10 overflow-hidden rounded-[1.5rem] bg-surface shadow-[var(--shadow-soft)]">
+            <dl className="bg-surface mt-10 overflow-hidden rounded-[1.5rem] shadow-[var(--shadow-soft)]">
               {rows.map(([term, value], i) => (
                 <div
                   key={term}
-                  className={`grid gap-1 px-6 py-5 md:grid-cols-[10rem_1fr] md:items-baseline md:gap-4 ${i > 0 ? "border-t border-line" : ""}`}
+                  className={`grid gap-1 px-6 py-5 md:grid-cols-[10rem_1fr] md:items-baseline md:gap-4 ${i > 0 ? "border-line border-t" : ""}`}
                 >
                   <dt className="text-muted text-sm">{term}</dt>
                   <dd className="text-sm leading-relaxed md:text-base">
@@ -55,8 +64,11 @@ export function SustainabilitySection({ product }: { product?: Product }) {
                 </div>
               ))}
             </dl>
-            <TextLink className="mt-8" href="/sustainability">
-              Подробнее
+            <TextLink
+              className="mt-8"
+              href={localePath(locale, "/sustainability")}
+            >
+              {d.common.more}
             </TextLink>
           </div>
         </div>

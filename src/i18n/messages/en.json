@@ -1,0 +1,505 @@
+{
+  "language": {
+    "label": "Language",
+    "switch": "Change language"
+  },
+  "common": {
+    "viewCatalog": "View catalogue",
+    "allProducts": "All products",
+    "view": "View",
+    "more": "Learn more",
+    "reset": "Reset",
+    "retry": "Try again",
+    "home": "Back home",
+    "brandCountry": "Kyrgyzstan",
+    "productCount": {
+      "one": "product",
+      "few": "products",
+      "many": "products",
+      "other": "products"
+    },
+    "pieces": "pcs"
+  },
+  "nav": {
+    "catalog": "Catalogue",
+    "men": "Men",
+    "women": "Women",
+    "accessories": "Accessories",
+    "about": "About",
+    "materials": "Materials",
+    "stores": "Stores",
+    "delivery": "Delivery",
+    "returns": "Returns",
+    "search": "Search",
+    "wishlist": "Wishlist",
+    "cart": "Cart"
+  },
+  "header": {
+    "homeAria": "TOOLOR, back to home",
+    "mainNavAria": "Main navigation",
+    "serviceNavAria": "Utility navigation",
+    "skipToContent": "Skip to content",
+    "cartAria": "Cart, {count} items",
+    "wishlistAria": "Wishlist",
+    "wishlistAriaCount": "Wishlist, {count} items"
+  },
+  "mobileMenu": {
+    "open": "Open menu",
+    "close": "Close menu",
+    "trigger": "Menu",
+    "navAria": "Mobile navigation",
+    "chooseDirection": "Choose your direction"
+  },
+  "footer": {
+    "newsletterKicker": "Newsletter",
+    "newsletterTitle": "New collections and stories — first.",
+    "emailPlaceholder": "Your email",
+    "emailAria": "Email address",
+    "subscribe": "Subscribe",
+    "newsletterNote": "One email a month. No spam.",
+    "navAria": "Footer navigation",
+    "navTitle": "Navigation",
+    "contactTitle": "Contact",
+    "address": "Bishkek, Kyrgyzstan",
+    "downloadApp": "Download the app",
+    "downloadAppAria": "Download TOOLOR on {store}",
+    "rights": "© {year} TOOLOR. All rights reserved.",
+    "madeIn": "Made in Kyrgyzstan"
+  },
+  "home": {
+    "hero": {
+      "kicker": "Kyrgyzstan · Technical apparel",
+      "description": "Clothing made for movement between the city and the open trail — for those who never stand still.",
+      "primaryCta": "View catalogue",
+      "secondaryCta": "Our direction",
+      "sectionAria": "TOOLOR — Modern Nomads"
+    },
+    "categoryMosaic": {
+      "kicker": "",
+      "title": "Choose a category",
+      "description": "From outerwear to accessories — build a look that matches your rhythm and your route.",
+      "view": "View",
+      "items": {
+        "hats": "Headwear",
+        "sets": "Sets",
+        "jackets": "Jackets",
+        "scarves": "Scarves",
+        "tshirts": "T-shirts",
+        "trousers": "Trousers"
+      }
+    },
+    "categorySplit": {
+      "title": "Collections for everyone",
+      "allCatalog": "Full catalogue",
+      "men": "Men",
+      "women": "Women"
+    },
+    "featuredCollection": {
+      "title": "Recommended",
+      "description": "The pieces to build a TOOLOR wardrobe around — from essentials to statement styles.",
+      "carouselAria": "Collection selection",
+      "carouselRole": "carousel",
+      "slideAria": "{index} of {total}: {name}",
+      "openProduct": "Open product: {name}",
+      "showProduct": "Show product: {name}",
+      "show": "Show: {name}",
+      "dotsAria": "Selection navigation",
+      "activeProduct": "Active product: {name}"
+    },
+    "featuredProducts": {
+      "title": "From the new collection"
+    },
+    "modernNomads": {
+      "kicker": "We're on Instagram",
+      "titleLine1": "The city ends.",
+      "titleLine2": "The movement continues.",
+      "description": "Routes, mountain shoots and new styles — every week on our Instagram. Follow {handle} and stay close to the movement.",
+      "cta": "Follow on Instagram"
+    },
+    "sustainability": {
+      "kicker": "Materials",
+      "title": "Built to last",
+      "description": "Clothing for movement: considered materials, clean lines and pieces that last — from the city to the open trail.",
+      "rowMaterial": "Material",
+      "rowCare": "Care",
+      "rowApproach": "Approach",
+      "defaultMaterial": "Technical and natural fabrics",
+      "defaultCare": "Simple care, long service life",
+      "approachValue": "Function and quality, every day"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "ratingAria": "Rated 5 out of 5"
+    },
+    "appPromo": {
+      "titleLead": "TOOLOR always",
+      "titleAccent": "with you.",
+      "description": "Download the official TOOLOR app for iOS or Android. Pick your store or point your camera at the QR code.",
+      "linksAria": "App links",
+      "openIn": "Open TOOLOR on {store}",
+      "scanQr": "Scan the QR code for {store}",
+      "qrAlt": "TOOLOR QR code for {store}",
+      "pointCamera": "Point your camera",
+      "phoneCaption": "Stillness in motion"
+    }
+  },
+  "appStores": {
+    "googlePlayEyebrow": "Get it on",
+    "appStoreEyebrow": "Download on the"
+  },
+  "catalog": {
+    "title": "Catalogue",
+    "collectionKicker": "Collection",
+    "emptyTitle": "Nothing found",
+    "emptyDescription": "Adjust your filters or search query.",
+    "resetFilters": "Reset filters",
+    "filters": "Filters",
+    "closeFilters": "Close filters",
+    "show": "Show {count}",
+    "search": "Search",
+    "searchPlaceholder": "Name or description",
+    "category": "Category",
+    "allCategories": "All categories",
+    "gender": "Gender",
+    "all": "All",
+    "genderMen": "Men",
+    "genderWomen": "Women",
+    "genderUnisex": "Unisex",
+    "size": "Size",
+    "color": "Colour",
+    "collection": "Collection",
+    "priceFrom": "Price from",
+    "priceTo": "Price to",
+    "sort": "Sort",
+    "sortFeatured": "Featured",
+    "sortNewest": "Newest",
+    "sortPriceAsc": "Price ↑",
+    "sortPriceDesc": "Price ↓",
+    "categoryNotFound": "Category not found"
+  },
+  "product": {
+    "notFound": "Product not found",
+    "breadcrumbAria": "Breadcrumbs",
+    "galleryAria": "Product gallery",
+    "showImage": "Show image {index}",
+    "previousImage": "Previous image",
+    "nextImage": "Next image",
+    "photosSoon": "Photos coming soon",
+    "photoSoon": "Photo coming soon",
+    "detailsAria": "Product details",
+    "closeUpKicker": "Close up",
+    "detailsTitle": "Details",
+    "detailsStatement": "Details that work in motion.",
+    "relatedKicker": "In this category",
+    "relatedTitle": "You may also like",
+    "colorsAria": "Colours: {colors}",
+    "color": "Colour",
+    "oneColor": "One colour",
+    "sizeGuide": "Size guide",
+    "inStock": "In stock",
+    "addToCart": "Add to cart",
+    "addToCartPrice": "Add to cart · {price}",
+    "added": "Added",
+    "addedCheck": "Added ✓",
+    "addedAnnouncement": "{name} added to cart",
+    "wishlistAdd": "Add {name} to wishlist",
+    "wishlistRemove": "Remove {name} from wishlist",
+    "accordion": {
+      "description": "Description",
+      "descriptionFallback": "A piece from the TOOLOR collection.",
+      "materialsCare": "Materials and care",
+      "material": "Material",
+      "care": "Care",
+      "sizeModel": "Size and model",
+      "sizes": "Sizes",
+      "model": "Model",
+      "deliveryReturns": "Delivery and returns",
+      "deliveryReturnsText": "Delivery across Kyrgyzstan and abroad. Exchange and returns follow our store policy."
+    },
+    "service": {
+      "deliveryTitle": "Delivery",
+      "deliveryDetail": "Across Kyrgyzstan and abroad",
+      "returnsTitle": "Returns",
+      "returnsDetail": "Exchange and returns",
+      "paymentTitle": "Payment",
+      "paymentDetail": "Secure payment"
+    }
+  },
+  "cart": {
+    "title": "Cart",
+    "kicker": "Your selection",
+    "intro": "The items in your cart. Check out when you're ready — delivery and taxes are calculated at the next step.",
+    "emptyTitle": "Your cart is empty",
+    "emptyDescription": "Items you add are stored in this browser only.",
+    "goToCatalog": "Go to catalogue",
+    "size": "Size",
+    "decrease": "Decrease quantity of {name}",
+    "increase": "Increase quantity of {name}",
+    "quantity": "Quantity of {name}",
+    "remove": "Remove",
+    "summary": "Order summary",
+    "itemsCount": "Items ({count})",
+    "delivery": "Delivery",
+    "onConfirmation": "on confirmation",
+    "total": "Total",
+    "checkout": "Check out",
+    "checkoutShort": "Check out",
+    "paymentNote": "Pay by cash or card on delivery. Exchange and returns follow our store policy.",
+    "drawer": {
+      "heading": "Cart / {count}",
+      "close": "Close cart",
+      "empty": "Your cart is empty.",
+      "subtotal": "Subtotal",
+      "deliveryNote": "Delivery is calculated at checkout.",
+      "open": "Open cart",
+      "continue": "Continue shopping"
+    }
+  },
+  "checkout": {
+    "title": "Checkout",
+    "kicker": "Cart",
+    "emptyDescription": "Add items to your cart to place an order.",
+    "contacts": "Contact details",
+    "fullName": "Full name *",
+    "fullNamePlaceholder": "How should we address you",
+    "phone": "Phone *",
+    "email": "Email",
+    "delivery": "Delivery",
+    "city": "City *",
+    "cityPlaceholder": "Bishkek",
+    "address": "Address *",
+    "addressPlaceholder": "Street, building, apartment",
+    "comment": "Order comment",
+    "commentPlaceholder": "Entrance, floor, convenient time — anything we should know",
+    "deliveryNote": "Delivery cost depends on the city and is agreed when we confirm your order.",
+    "payment": "Payment",
+    "submit": "Place order · {price}",
+    "terms": "By placing an order you agree to TOOLOR's delivery and returns terms.",
+    "yourOrder": "Your order",
+    "editOrder": "Edit order items",
+    "successTitle": "Order received",
+    "orderNumber": "No. {number}",
+    "successText": "We'll call you during business hours to confirm your order and arrange delivery and payment.",
+    "continueShopping": "Continue shopping",
+    "errors": {
+      "name": "Enter your name",
+      "phone": "Enter a phone number",
+      "city": "Enter your city",
+      "address": "Enter a delivery address"
+    },
+    "deliveryOptions": {
+      "bishkekTitle": "Courier in Bishkek",
+      "bishkekNote": "Delivered to the address you provide",
+      "regionsTitle": "Across Kyrgyzstan",
+      "regionsNote": "Shipped to your city",
+      "internationalTitle": "International delivery",
+      "internationalNote": "Timing and cost confirmed separately"
+    },
+    "paymentOptions": {
+      "cashTitle": "Cash on delivery",
+      "cashNote": "Pay the courier or at the pickup point",
+      "cardTitle": "Card online",
+      "cardNote": ""
+    }
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "kicker": "Your selection",
+    "emptyTitle": "Nothing saved yet",
+    "emptyDescription": "Tap the heart on a product and it will appear here.",
+    "emptyAction": "View catalogue"
+  },
+  "search": {
+    "title": "Search",
+    "kicker": "Search",
+    "description": "Find a style by name, type or material.",
+    "label": "Search query",
+    "placeholder": "Search the catalogue",
+    "submit": "Search",
+    "noMatchesTitle": "No matches",
+    "noMatchesDescription": "Try a different name.",
+    "emptyTitle": "Enter a query",
+    "emptyDescription": "For example: Nomad, Mountain or Field."
+  },
+  "account": {
+    "kicker": "Account",
+    "title": "Your account",
+    "intro": "Your orders, wishlist and profile details will live here.",
+    "navAria": "Account sections",
+    "overview": "Overview",
+    "orders": "Orders",
+    "profile": "Profile",
+    "addresses": "Addresses",
+    "signInTitle": "Sign in to your account",
+    "signInDescription": "Your orders, wishlist and profile details will live here.",
+    "goToCatalog": "Go to catalogue",
+    "ordersEmptyTitle": "No orders yet",
+    "ordersEmptyDescription": "Your orders and their status will appear here.",
+    "startShopping": "Start shopping",
+    "profileTitle": "Profile",
+    "profileDescription": "Your contact details, delivery addresses and account settings will live here.",
+    "addressesEmptyTitle": "No addresses",
+    "addressesEmptyDescription": "The address book will be added once the checkout flow and personal data requirements are agreed."
+  },
+  "pages": {
+    "about": {
+      "kicker": "About",
+      "title": "TOOLOR — a modern clothing brand from Kyrgyzstan",
+      "philosophyKicker": "Philosophy",
+      "philosophyTitle": "We dress modern nomads",
+      "philosophyP1": "TOOLOR makes clothing for people who never stand still — between the city and the open trail. Function, clean lines and the character of Kyrgyzstan live in every detail.",
+      "philosophyP2": "We dress people who value freedom of movement, quality and things that last. Not about passing trends — about movement you can be yourself in.",
+      "principlesKicker": "Principles",
+      "principlesTitle": "What stands behind every piece",
+      "principles": {
+        "functionTitle": "Function",
+        "functionText": "Every detail is designed for movement — pockets, fit and fabrics that work in real life.",
+        "designTitle": "Clean design",
+        "designText": "Calm lines and a restrained palette. Pieces that are easy to combine and wear every day.",
+        "characterTitle": "The character of Kyrgyzstan",
+        "characterText": "We draw on the mountains, the light and the rhythm of our land — and carry it into the clothing.",
+        "durabilityTitle": "Durability",
+        "durabilityText": "Quality materials and an honest cut with nothing extra. Pieces that last more than one season."
+      },
+      "statementKicker": "Our path",
+      "statementTitleLead": "Every route",
+      "statementTitleAccent": "begins with a step.",
+      "statementText": "We believe good clothing doesn't restrain you — it helps you move further, confidently and without excess.",
+      "ctaTitle": "Find your piece",
+      "ctaText": "The new TOOLOR collection is in the catalogue — for the city and the open trail."
+    },
+    "delivery": {
+      "kicker": "Customer care",
+      "title": "Delivery",
+      "description": "We deliver across Kyrgyzstan and abroad.",
+      "p1": "Delivery across Bishkek and the regions of Kyrgyzstan, plus international shipping. Timing and cost depend on the destination and are calculated at checkout.",
+      "p2": "Once your order ships we'll send a tracking number. For any delivery question, write to us — we'll help you pick the most convenient option."
+    },
+    "returns": {
+      "kicker": "Customer care",
+      "title": "Exchange and returns",
+      "description": "If a piece doesn't fit, we'll help you exchange or return it.",
+      "p1": "You can return or exchange an item within 14 days of receiving it — provided it keeps its original condition, tags and packaging.",
+      "p2": "To start a return, write to info@toolorkg.com with your order number and we'll suggest the easiest way."
+    },
+    "stores": {
+      "kicker": "Offline",
+      "title": "Find TOOLOR",
+      "description": "We work online and deliver across Kyrgyzstan.",
+      "p1": "TOOLOR is currently available online: choose your pieces in the catalogue and have them delivered anywhere in Kyrgyzstan or abroad.",
+      "p2": "We're preparing our first offline points in Bishkek. Addresses and opening hours will appear here — follow us for updates."
+    },
+    "sustainability": {
+      "kicker": "Responsibility",
+      "title": "Built to last",
+      "description": "Considered materials and pieces that live longer.",
+      "p1": "We choose technical and natural fabrics, clean lines and a cut designed for movement — so the clothing lasts and stays comfortable every day.",
+      "p2": "Fewer trends, more meaning: we make pieces you come back to season after season."
+    }
+  },
+  "empty": {
+    "kicker": "Nothing here yet"
+  },
+  "error": {
+    "kicker": "Unexpected error",
+    "title": "Something went wrong.",
+    "description": "Please try that again.",
+    "retry": "Try again"
+  },
+  "notFound": {
+    "kicker": "404 / Route not found",
+    "title": "Route not found.",
+    "description": "This page may have moved or may not exist yet."
+  },
+  "loading": {
+    "label": "Loading"
+  },
+  "categories": {
+    "men": {
+      "name": "Men's clothing",
+      "description": "The TOOLOR men's collection — for the city and the trail."
+    },
+    "women": {
+      "name": "Women's clothing",
+      "description": "The TOOLOR women's collection — for the city and the trail."
+    },
+    "accessories": {
+      "name": "Accessories",
+      "description": "TOOLOR headwear, scarves and accessories."
+    }
+  },
+  "collections": {
+    "importSelection01": {
+      "description": "An editorial selection of key TOOLOR pieces."
+    }
+  },
+  "reviews": {
+    "azamat": {
+      "name": "Azamat Zh.",
+      "initials": "AZ",
+      "quote": "The jacket holds the heat in the mountains and looks right in the city. I've worn it almost every day since October.",
+      "context": "Jackets",
+      "city": "Bishkek"
+    },
+    "aruuzat": {
+      "name": "Aruuzat S.",
+      "initials": "AS",
+      "quote": "The set fits perfectly and the fabric feels good on the skin. Nice that the brand is ours, Kyrgyz.",
+      "context": "Sets",
+      "city": "Osh"
+    },
+    "daniyar": {
+      "name": "Daniyar T.",
+      "initials": "DT",
+      "quote": "The order arrived fast, everything neatly packed. The size chart was accurate — nothing needed changing.",
+      "context": "Delivery",
+      "city": "Bishkek"
+    },
+    "nuray": {
+      "name": "Nuray K.",
+      "initials": "NK",
+      "quote": "I bought a scarf as a gift — the quality is there and the colour matches the photo. I got a second one for myself.",
+      "context": "Scarves",
+      "city": "Karakol"
+    },
+    "emir": {
+      "name": "Emir A.",
+      "initials": "EA",
+      "quote": "A calm cut, nothing excessive — exactly what I was looking for. It goes with everything in my wardrobe.",
+      "context": "T-shirts",
+      "city": "Bishkek"
+    },
+    "aygerim": {
+      "name": "Aygerim B.",
+      "initials": "AB",
+      "quote": "The team helped me pick a size over chat and answered in a couple of minutes. Second winter wearing it.",
+      "context": "Service",
+      "city": "Jalal-Abad"
+    }
+  },
+  "meta": {
+    "siteDescription": "A modern clothing brand from Kyrgyzstan for people moving between the city and the mountains.",
+    "homeTitle": "TOOLOR — clothing for modern nomads",
+    "homeDescription": "Modern clothing from Kyrgyzstan for the city and the open trail.",
+    "catalogTitle": "Catalogue",
+    "catalogDescription": "The TOOLOR catalogue: jackets, sets and accessories for the city and the mountains.",
+    "aboutTitle": "About",
+    "aboutDescription": "TOOLOR is a modern clothing brand from Kyrgyzstan for people living between the city and the open trail.",
+    "deliveryTitle": "Delivery",
+    "deliveryDescription": "TOOLOR delivery terms across Kyrgyzstan and abroad.",
+    "returnsTitle": "Returns",
+    "returnsDescription": "TOOLOR exchange and return terms.",
+    "storesTitle": "Stores",
+    "storesDescription": "How to find TOOLOR — online and offline.",
+    "sustainabilityTitle": "Materials",
+    "sustainabilityDescription": "The TOOLOR approach to materials, quality and durability.",
+    "searchTitle": "Search",
+    "cartTitle": "Cart",
+    "checkoutTitle": "Checkout",
+    "wishlistTitle": "Wishlist",
+    "accountTitle": "Account",
+    "ordersTitle": "Orders",
+    "profileTitle": "Profile",
+    "addressesTitle": "Addresses"
+  }
+}

@@ -2,12 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
+import { format, getDictionary, localePath, type Locale } from "@/i18n";
 import { formatMoney, getProductColorHex } from "@/lib/utils";
 import type { Product } from "@/types";
 
 import { WishlistToggle } from "./wishlist-toggle";
 
 export function ProductCard({
+  locale,
   product,
   className = "",
   imagePriority = false,
@@ -15,6 +17,7 @@ export function ProductCard({
   large = false,
   compact = false,
 }: {
+  locale: Locale;
   product: Product;
   className?: string;
   imagePriority?: boolean;
@@ -22,10 +25,12 @@ export function ProductCard({
   large?: boolean;
   compact?: boolean;
 }) {
+  const d = getDictionary(locale);
   const image = product.images[0];
   const hoverImage = product.images[1];
   const colors = product.colors ?? [];
   const radius = large ? "rounded-[1.75rem]" : "rounded-[1.25rem]";
+  const href = localePath(locale, `/product/${product.slug}`);
 
   return (
     <article
@@ -35,7 +40,7 @@ export function ProductCard({
       <div
         className={`relative overflow-hidden bg-white shadow-[var(--shadow-soft)] transition-shadow duration-300 group-hover:shadow-[var(--shadow-card)] ${radius}`}
       >
-        <Link href={`/product/${product.slug}`} className="block">
+        <Link href={href} className="block">
           <div className="bg-stone relative aspect-[3/4] overflow-hidden">
             {image ? (
               <ResilientEditorialImage
@@ -47,7 +52,7 @@ export function ProductCard({
               />
             ) : (
               <span className="text-muted absolute inset-0 grid place-items-center px-5 text-center text-xs tracking-[0.14em] uppercase">
-                Фото скоро появится
+                {d.product.photoSoon}
               </span>
             )}
             {hoverImage ? (
@@ -63,7 +68,11 @@ export function ProductCard({
           </div>
         </Link>
         <div className="absolute top-3 right-3">
-          <WishlistToggle productId={product.id} productName={product.name} />
+          <WishlistToggle
+            locale={locale}
+            productId={product.id}
+            productName={product.name}
+          />
         </div>
       </div>
 
@@ -75,7 +84,9 @@ export function ProductCard({
           {!compact && colors.length ? (
             <span
               className="flex shrink-0 items-center gap-1"
-              aria-label={`Цвета: ${colors.join(", ")}`}
+              aria-label={format(d.product.colorsAria, {
+                colors: colors.join(", "),
+              })}
             >
               {colors.slice(0, 4).map((color) => (
                 <span
@@ -101,10 +112,7 @@ export function ProductCard({
                   : "text-[0.95rem] md:text-base"
             }`}
           >
-            <Link
-              className="hover:text-brand transition-colors"
-              href={`/product/${product.slug}`}
-            >
+            <Link className="hover:text-brand transition-colors" href={href}>
               {product.name}
             </Link>
           </h3>
@@ -113,7 +121,7 @@ export function ProductCard({
               large ? "text-lg md:text-xl" : "text-[0.95rem] md:text-base"
             }`}
           >
-            {formatMoney(product.price)}
+            {formatMoney(product.price, locale)}
           </p>
         </div>
 

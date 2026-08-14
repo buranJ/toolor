@@ -1,8 +1,18 @@
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import type { NextConfig } from "next";
+
+// Pin the Turbopack root to this file's directory, not the launching shell's
+// cwd. With `process.cwd()` any start from another directory (an IDE task, a
+// parent folder) pointed Turbopack at the wrong root, where it could not
+// resolve the `next` package and panicked on every HMR rebuild — which the
+// browser recovered from by full-reloading in a loop.
+const projectRoot = dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
   turbopack: {
-    root: process.cwd(),
+    root: projectRoot,
   },
   poweredByHeader: false,
   images: {

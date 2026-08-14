@@ -1,7 +1,13 @@
+import type { Dictionary } from "@/i18n";
+
+/**
+ * Store names are brand marks and stay untranslated; only the small lead-in
+ * above them ("Get it on" / "Доступно в") is localised, via `eyebrowKey`.
+ */
 export const APP_STORES = [
   {
     name: "Google Play",
-    eyebrow: "Доступно в",
+    eyebrowKey: "googlePlayEyebrow",
     href: "https://play.google.com/store/apps/details?id=com.toolor.toolor_app&pcampaignid=web_share",
     qr: "/qr/play.png",
     qrSize: 756,
@@ -9,13 +15,20 @@ export const APP_STORES = [
   },
   {
     name: "App Store",
-    eyebrow: "Загрузите в",
+    eyebrowKey: "appStoreEyebrow",
     href: "https://apps.apple.com/kg/app/toolor/id6761310984",
     qr: "/qr/app.png",
     qrSize: 612,
     icon: "apple",
   },
-] as const;
+] as const satisfies ReadonlyArray<{
+  name: string;
+  eyebrowKey: keyof Dictionary["appStores"];
+  href: string;
+  qr: string;
+  qrSize: number;
+  icon: "play" | "apple";
+}>;
 
 export function StoreIcon({ kind }: { kind: "play" | "apple" }) {
   if (kind === "play") {

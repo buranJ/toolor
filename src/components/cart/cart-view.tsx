@@ -11,9 +11,11 @@ import {
   type LocalCartLine,
   writeLocalCart,
 } from "@/features/cart/local-cart";
+import { format, getDictionary, localePath, type Locale } from "@/i18n";
 import { formatMoney } from "@/lib/utils";
 
-export function CartView() {
+export function CartView({ locale }: { locale: Locale }) {
+  const d = getDictionary(locale);
   const snapshot = useSyncExternalStore(
     (onStoreChange) => {
       window.addEventListener("storage", onStoreChange);
@@ -49,9 +51,13 @@ export function CartView() {
   if (items.length === 0) {
     return (
       <EmptyState
-        action={{ href: "/catalog", label: "Перейти в каталог" }}
-        description="Добавленные товары будут храниться только в этом браузере."
-        title="Корзина пуста"
+        action={{
+          href: localePath(locale, "/catalog"),
+          label: d.cart.goToCatalog,
+        }}
+        description={d.cart.emptyDescription}
+        locale={locale}
+        title={d.cart.emptyTitle}
       />
     );
   }
@@ -66,7 +72,7 @@ export function CartView() {
           >
             <Link
               className="bg-stone relative aspect-[3/4] overflow-hidden rounded-[1.25rem]"
-              href={`/product/${item.slug}`}
+              href={localePath(locale, `/product/${item.slug}`)}
             >
               <ResilientEditorialImage
                 images={(
@@ -83,16 +89,16 @@ export function CartView() {
               <p className="mono-meta text-muted">TOOLOR</p>
               <Link
                 className="hover:text-brand mt-2 block text-base font-medium tracking-[-0.01em] md:text-xl"
-                href={`/product/${item.slug}`}
+                href={localePath(locale, `/product/${item.slug}`)}
               >
                 {item.name}
               </Link>
               <p className="text-muted mt-2 text-sm">
-                Размер: {item.variantTitle || "—"}
+                {d.cart.size}: {item.variantTitle || "—"}
               </p>
               <div className="border-line-strong mt-5 inline-flex items-center rounded-full border bg-white">
                 <button
-                  aria-label={`Уменьшить количество ${item.name}`}
+                  aria-label={format(d.cart.decrease, { name: item.name })}
                   className="size-10 rounded-full text-lg"
                   onClick={() => updateQuantity(item, item.quantity - 1)}
                   type="button"
@@ -101,12 +107,12 @@ export function CartView() {
                 </button>
                 <output
                   className="min-w-9 text-center text-sm"
-                  aria-label={`Количество ${item.name}`}
+                  aria-label={format(d.cart.quantity, { name: item.name })}
                 >
                   {item.quantity}
                 </output>
                 <button
-                  aria-label={`Увеличить количество ${item.name}`}
+                  aria-label={format(d.cart.increase, { name: item.name })}
                   className="size-10 rounded-full text-lg"
                   onClick={() => updateQuantity(item, item.quantity + 1)}
                   type="button"
@@ -119,59 +125,66 @@ export function CartView() {
                 onClick={() => updateQuantity(item, 0)}
                 type="button"
               >
-                Удалить
+                {d.cart.remove}
               </button>
             </div>
             <p className="col-start-2 text-base font-medium md:col-start-auto md:text-right">
-              {formatMoney({
-                amount: item.unitAmount * item.quantity,
-                currencyCode: "KGS",
-              })}
+              {formatMoney(
+                {
+                  amount: item.unitAmount * item.quantity,
+                  currencyCode: "KGS",
+                },
+                locale,
+              )}
             </p>
           </li>
         ))}
       </ul>
 
       <aside className="h-fit rounded-[1.5rem] bg-white p-6 shadow-[var(--shadow-soft)] md:p-8 lg:sticky lg:top-24">
-        <p className="eyebrow text-muted">Сводка заказа</p>
+        <p className="eyebrow text-muted">{d.cart.summary}</p>
         <dl className="mt-6 space-y-3 text-sm">
           <div className="flex items-baseline justify-between gap-4">
             <dt className="text-muted">
-              Товары (
-              {items.reduce((sum, item) => sum + item.quantity, 0)})
+              {format(d.cart.itemsCount, {
+                count: items.reduce((sum, item) => sum + item.quantity, 0),
+              })}
             </dt>
-            <dd>{formatMoney({ amount: subtotal, currencyCode: "KGS" })}</dd>
+            <dd>
+              {formatMoney({ amount: subtotal, currencyCode: "KGS" }, locale)}
+            </dd>
           </div>
           <div className="flex items-baseline justify-between gap-4">
-            <dt className="text-muted">Доставка</dt>
-            <dd className="text-muted">при подтверждении</dd>
+            <dt className="text-muted">{d.cart.delivery}</dt>
+            <dd className="text-muted">{d.cart.onConfirmation}</dd>
           </div>
         </dl>
         <div className="border-line mt-5 flex items-baseline justify-between gap-4 border-t pt-5">
-          <span className="text-sm font-semibold">Итого</span>
+          <span className="text-sm font-semibold">{d.cart.total}</span>
           <span className="text-2xl font-medium tracking-[-0.02em]">
-            {formatMoney({ amount: subtotal, currencyCode: "KGS" })}
+            {formatMoney({ amount: subtotal, currencyCode: "KGS" }, locale)}
           </span>
         </div>
         <Link
-          className="bg-brand hover:bg-brand-strong shadow-[var(--shadow-soft)] mt-6 hidden min-h-[3.25rem] items-center justify-center rounded-full px-6 text-sm font-medium text-white transition-colors md:flex"
-          href="/checkout"
+          className="bg-brand hover:bg-brand-strong mt-6 hidden min-h-[3.25rem] items-center justify-center rounded-full px-6 text-sm font-medium text-white shadow-[var(--shadow-soft)] transition-colors md:flex"
+          href={localePath(locale, "/checkout")}
         >
-          Оформить заказ
+          {d.cart.checkout}
         </Link>
         <p className="text-muted mt-5 text-xs leading-relaxed">
-          Оплата наличными или картой при получении. Обмен и возврат — по
-          правилам магазина.
+          {d.cart.paymentNote}
         </p>
       </aside>
 
       <div className="border-line bg-paper fixed inset-x-0 bottom-0 z-40 border-t p-3 md:hidden">
         <Link
           className="bg-brand flex min-h-12 items-center justify-between rounded-full px-6 text-sm font-medium text-white"
-          href="/checkout"
+          href={localePath(locale, "/checkout")}
         >
-          <span>Оформить</span>
-          <span>{formatMoney({ amount: subtotal, currencyCode: "KGS" })}</span>
+          <span>{d.cart.checkoutShort}</span>
+          <span>
+            {formatMoney({ amount: subtotal, currencyCode: "KGS" }, locale)}
+          </span>
         </Link>
       </div>
     </div>

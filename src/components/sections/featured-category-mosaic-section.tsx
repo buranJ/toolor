@@ -3,10 +3,8 @@ import Link from "next/link";
 import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
 import { Container } from "@/components/ui/container";
 import { ScrollRevealMark } from "@/components/ui/scroll-reveal-mark";
-import {
-  featuredCategoryMosaicContent,
-  featuredCategoryMosaicItems,
-} from "@/data/featured-category-mosaic";
+import { featuredCategoryMosaicItems } from "@/data/featured-category-mosaic";
+import { getDictionary, localePath, type Locale } from "@/i18n";
 import type { Product } from "@/types";
 
 function leadImages(product: Product | undefined, offset: number) {
@@ -16,12 +14,18 @@ function leadImages(product: Product | undefined, offset: number) {
 }
 
 export function FeaturedCategoryMosaicSection({
+  locale,
   products,
 }: {
+  locale: Locale;
   products: Product[];
 }) {
+  const d = getDictionary(locale);
+  const copy = d.home.categoryMosaic;
+
   const items = featuredCategoryMosaicItems.map((item) => ({
     ...item,
+    label: copy.items[item.labelKey],
     product: products.find(
       (product) => product.productType === item.productType,
     ),
@@ -42,14 +46,10 @@ export function FeaturedCategoryMosaicSection({
       />
       <Container className="relative z-10">
         <header className="text-center">
-          <p className="eyebrow text-brand">
-            {featuredCategoryMosaicContent.kicker}
-          </p>
-          <h2 className="section-serif mt-4">
-            {featuredCategoryMosaicContent.title}
-          </h2>
+          <p className="eyebrow text-brand">{copy.kicker}</p>
+          <h2 className="section-serif mt-4">{copy.title}</h2>
           <p className="text-muted mx-auto mt-4 max-w-xl text-sm leading-6">
-            {featuredCategoryMosaicContent.description}
+            {copy.description}
           </p>
         </header>
 
@@ -65,7 +65,7 @@ export function FeaturedCategoryMosaicSection({
                   <Link
                     className={`featured-category-tile featured-category-tile-${item.size} group`}
                     data-mosaic-position={(column - 1) * 2 + index + 1}
-                    href={item.href}
+                    href={localePath(locale, item.href)}
                     key={item.href}
                   >
                     <ResilientEditorialImage
@@ -80,7 +80,7 @@ export function FeaturedCategoryMosaicSection({
                     />
                     <span className="featured-category-content">
                       <strong>{item.label}</strong>
-                      <span>Смотреть&nbsp; ↗</span>
+                      <span>{copy.view}&nbsp; ↗</span>
                     </span>
                   </Link>
                 ))}

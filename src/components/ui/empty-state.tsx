@@ -1,19 +1,25 @@
 import type { ReactNode } from "react";
 
+import { getDictionary, type Locale } from "@/i18n";
+
 import { ButtonLink } from "./button";
 
 export function EmptyState({
+  locale,
   title,
   description,
   action,
 }: {
+  locale: Locale;
   title: string;
   description: ReactNode;
   action?: { href: string; label: string };
 }) {
+  const d = getDictionary(locale);
+
   return (
     <div className="rounded-[1.5rem] bg-white px-6 py-16 text-center shadow-[var(--shadow-soft)] md:py-24">
-      <p className="eyebrow text-brand">Пока пусто</p>
+      <p className="eyebrow text-brand">{d.empty.kicker}</p>
       <h2 className="section-serif mt-4 text-3xl">{title}</h2>
       <div className="text-muted mx-auto mt-4 max-w-lg text-sm leading-6">
         {description}

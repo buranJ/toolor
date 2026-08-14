@@ -1,13 +1,15 @@
-export const featuredCategoryMosaicContent = {
-  kicker: "",
-  title: "Выберите категорию",
-  description:
-    "От верхней одежды до аксессуаров — соберите образ под свой ритм и маршрут.",
-} as const;
+import type { Dictionary } from "@/i18n";
 
+/**
+ * Homepage category mosaic.
+ *
+ * `productType` and the `q` search value must keep matching the imported
+ * workbook data, which is Russian — they are data selectors, not copy. Only
+ * `labelKey` resolves to translated text shown to the visitor.
+ */
 export const featuredCategoryMosaicItems = [
   {
-    label: "Головные уборы",
+    labelKey: "hats",
     productType: "Головные уборы",
     href: "/catalog?q=Головные+уборы",
     column: 1,
@@ -15,7 +17,7 @@ export const featuredCategoryMosaicItems = [
     imageOffset: 0,
   },
   {
-    label: "Комплекты",
+    labelKey: "sets",
     productType: "Комплекты",
     href: "/catalog?q=Комплекты",
     column: 1,
@@ -23,7 +25,7 @@ export const featuredCategoryMosaicItems = [
     imageOffset: 0,
   },
   {
-    label: "Куртки",
+    labelKey: "jackets",
     productType: "Куртки и пуховики",
     href: "/catalog?q=Куртки+и+пуховики",
     column: 2,
@@ -31,7 +33,7 @@ export const featuredCategoryMosaicItems = [
     imageOffset: 0,
   },
   {
-    label: "Платки",
+    labelKey: "scarves",
     productType: "Шарфы и платки",
     href: "/catalog?q=Шарфы+и+платки",
     column: 2,
@@ -39,7 +41,7 @@ export const featuredCategoryMosaicItems = [
     imageOffset: 1,
   },
   {
-    label: "Футболки",
+    labelKey: "tshirts",
     productType: "Футболки",
     href: "/catalog?q=Футболки",
     column: 3,
@@ -47,11 +49,18 @@ export const featuredCategoryMosaicItems = [
     imageOffset: 0,
   },
   {
-    label: "Брюки",
+    labelKey: "trousers",
     productType: "Брюки",
     href: "/catalog?q=Брюки",
     column: 3,
     size: "tall",
     imageOffset: 0,
   },
-] as const;
+] as const satisfies ReadonlyArray<{
+  labelKey: keyof Dictionary["home"]["categoryMosaic"]["items"];
+  productType: string;
+  href: string;
+  column: 1 | 2 | 3;
+  size: "compact" | "tall";
+  imageOffset: number;
+}>;

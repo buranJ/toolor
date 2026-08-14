@@ -3,16 +3,15 @@
 import Link from "next/link";
 import { useRef } from "react";
 
+import {
+  format,
+  getDictionary,
+  localePath,
+  plural,
+  type Dictionary,
+  type Locale,
+} from "@/i18n";
 import type { Category, Collection, ProductFilters } from "@/types";
-
-/** Russian plural for «товар»: [1, 2–4, 5+]. */
-function productWord(count: number) {
-  const mod10 = count % 10;
-  const mod100 = count % 100;
-  if (mod10 === 1 && mod100 !== 11) return "товар";
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return "товара";
-  return "товаров";
-}
 
 function FilterIcon() {
   return (
@@ -39,6 +38,7 @@ interface CatalogControlsProps {
   colors: string[];
   sizes: string[];
   filters: ProductFilters;
+  locale: Locale;
   resultCount: number;
 }
 
@@ -48,13 +48,16 @@ function FilterFields({
   colors,
   sizes,
   filters,
-}: Omit<CatalogControlsProps, "resultCount">) {
+  d,
+}: Omit<CatalogControlsProps, "resultCount" | "locale"> & {
+  d: Dictionary;
+}) {
   return (
     <>
       <label className="filter-field">
-        <span>Категория</span>
+        <span>{d.catalog.category}</span>
         <select defaultValue={filters.category ?? ""} name="category">
-          <option value="">Все категории</option>
+          <option value="">{d.catalog.allCategories}</option>
           {categories.map((category) => (
             <option key={category.id} value={category.slug}>
               {category.name}
@@ -63,18 +66,18 @@ function FilterFields({
         </select>
       </label>
       <label className="filter-field">
-        <span>Пол</span>
+        <span>{d.catalog.gender}</span>
         <select defaultValue={filters.gender ?? ""} name="gender">
-          <option value="">Все</option>
-          <option value="men">Мужской</option>
-          <option value="women">Женский</option>
-          <option value="unknown">Унисекс</option>
+          <option value="">{d.catalog.all}</option>
+          <option value="men">{d.catalog.genderMen}</option>
+          <option value="women">{d.catalog.genderWomen}</option>
+          <option value="unknown">{d.catalog.genderUnisex}</option>
         </select>
       </label>
       <label className="filter-field">
-        <span>Размер</span>
+        <span>{d.catalog.size}</span>
         <select defaultValue={filters.size ?? ""} name="size">
-          <option value="">Все</option>
+          <option value="">{d.catalog.all}</option>
           {sizes.map((size) => (
             <option key={size} value={size}>
               {size}
@@ -83,9 +86,9 @@ function FilterFields({
         </select>
       </label>
       <label className="filter-field">
-        <span>Цвет</span>
+        <span>{d.catalog.color}</span>
         <select defaultValue={filters.color ?? ""} name="color">
-          <option value="">Все</option>
+          <option value="">{d.catalog.all}</option>
           {colors.map((color) => (
             <option key={color} value={color}>
               {color}
@@ -94,9 +97,9 @@ function FilterFields({
         </select>
       </label>
       <label className="filter-field">
-        <span>Коллекция</span>
+        <span>{d.catalog.collection}</span>
         <select defaultValue={filters.collection ?? ""} name="collection">
-          <option value="">Все</option>
+          <option value="">{d.catalog.all}</option>
           {collections.map((collection) => (
             <option key={collection.id} value={collection.slug}>
               {collection.name}
@@ -106,7 +109,7 @@ function FilterFields({
       </label>
       <div className="grid grid-cols-2 gap-3">
         <label className="filter-field">
-          <span>Цена от</span>
+          <span>{d.catalog.priceFrom}</span>
           <input
             defaultValue={
               filters.minPrice === undefined ? "" : filters.minPrice / 100
@@ -119,7 +122,7 @@ function FilterFields({
           />
         </label>
         <label className="filter-field">
-          <span>Цена до</span>
+          <span>{d.catalog.priceTo}</span>
           <input
             defaultValue={
               filters.maxPrice === undefined ? "" : filters.maxPrice / 100
@@ -164,24 +167,36 @@ function HiddenFilters({ filters }: { filters: ProductFilters }) {
     ));
 }
 
-function SortForm({ filters }: { filters: ProductFilters }) {
+function SortForm({
+  action,
+  d,
+  filters,
+}: {
+  action: string;
+  d: Dictionary;
+  filters: ProductFilters;
+}) {
   return (
-    <form action="/catalog" method="get">
+    <form action={action} method="get">
       <HiddenFilters filters={filters} />
-      <SortField autoSubmit value={filters.sort} />
+      <SortField autoSubmit d={d} value={filters.sort} />
     </form>
   );
 }
 
 export function CatalogControls(props: CatalogControlsProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const d = getDictionary(props.locale);
+  const catalogHref = localePath(props.locale, "/catalog");
 
   return (
     <div className="catalog-toolbar">
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm">
           <span className="text-ink font-semibold">{props.resultCount}</span>{" "}
-          <span className="text-muted">{productWord(props.resultCount)}</span>
+          <span className="text-muted">
+            {plural(props.locale, props.resultCount, d.common.productCount)}
+          </span>
         </p>
 
         <div className="flex items-center gap-2.5">
@@ -191,62 +206,62 @@ export function CatalogControls(props: CatalogControlsProps) {
             type="button"
           >
             <FilterIcon />
-            Фильтры
+            {d.catalog.filters}
           </button>
           <div className="lg:hidden">
-            <SortForm filters={props.filters} />
+            <SortForm action={catalogHref} d={d} filters={props.filters} />
           </div>
 
           <details className="group relative hidden lg:block">
             <summary className="toolbar-button inline-flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
               <FilterIcon />
-              Фильтры
+              {d.catalog.filters}
             </summary>
             <form
-              action="/catalog"
+              action={catalogHref}
               className="border-line bg-surface fixed top-24 right-10 z-[60] grid max-h-[calc(100vh-7rem)] w-[min(72rem,calc(100vw-5rem))] grid-cols-4 gap-4 overflow-y-auto rounded-[1.5rem] border p-6 shadow-[var(--shadow-card)]"
               method="get"
             >
               <label className="filter-field col-span-2">
-                <span>Поиск</span>
+                <span>{d.catalog.search}</span>
                 <input
                   defaultValue={props.filters.search}
                   name="q"
-                  placeholder="Название или описание"
+                  placeholder={d.catalog.searchPlaceholder}
                   type="search"
                 />
               </label>
-              <FilterFields {...props} />
+              <FilterFields {...props} d={d} />
               <input name="sort" type="hidden" value={props.filters.sort} />
               <div className="border-line col-span-4 flex justify-end gap-3 border-t pt-5">
-                <Link className="toolbar-button text-center" href="/catalog">
-                  Сбросить
+                <Link className="toolbar-button text-center" href={catalogHref}>
+                  {d.common.reset}
                 </Link>
                 <button
                   className="toolbar-button toolbar-button-primary"
                   type="submit"
                 >
-                  Показать {props.resultCount}
+                  {format(d.catalog.show, { count: props.resultCount })}
                 </button>
               </div>
             </form>
           </details>
           <div className="hidden lg:block">
-            <SortForm filters={props.filters} />
+            <SortForm action={catalogHref} d={d} filters={props.filters} />
           </div>
         </div>
       </div>
 
       <dialog className="filter-dialog" ref={dialogRef}>
         <form
-          action="/catalog"
+          action={catalogHref}
           className="bg-paper flex min-h-full flex-col"
           method="get"
         >
           <header className="border-line flex items-center justify-between border-b px-5 py-4">
-            <p className="text-lg font-medium">Фильтры</p>
+            <p className="text-lg font-medium">{d.catalog.filters}</p>
             <button
-              aria-label="Закрыть фильтры"
+              aria-label={d.catalog.closeFilters}
               className="text-2xl"
               onClick={() => dialogRef.current?.close()}
               type="button"
@@ -256,26 +271,26 @@ export function CatalogControls(props: CatalogControlsProps) {
           </header>
           <div className="flex-1 space-y-5 overflow-y-auto px-5 py-6">
             <label className="filter-field">
-              <span>Поиск</span>
+              <span>{d.catalog.search}</span>
               <input
                 defaultValue={props.filters.search}
                 name="q"
-                placeholder="Название или описание"
+                placeholder={d.catalog.searchPlaceholder}
                 type="search"
               />
             </label>
-            <SortField value={props.filters.sort} />
-            <FilterFields {...props} />
+            <SortField d={d} value={props.filters.sort} />
+            <FilterFields {...props} d={d} />
           </div>
           <footer className="border-line bg-paper sticky bottom-0 grid grid-cols-2 gap-3 border-t p-5">
-            <Link className="toolbar-button text-center" href="/catalog">
-              Сбросить
+            <Link className="toolbar-button text-center" href={catalogHref}>
+              {d.common.reset}
             </Link>
             <button
               className="toolbar-button bg-brand text-white"
               type="submit"
             >
-              Показать {props.resultCount}
+              {format(d.catalog.show, { count: props.resultCount })}
             </button>
           </footer>
         </form>
@@ -285,17 +300,19 @@ export function CatalogControls(props: CatalogControlsProps) {
 }
 
 function SortField({
+  d,
   value,
   autoSubmit = false,
 }: {
+  d: Dictionary;
   value: ProductFilters["sort"];
   autoSubmit?: boolean;
 }) {
   return (
     <label className="filter-field min-w-40">
-      <span className="sr-only">Сортировка</span>
+      <span className="sr-only">{d.catalog.sort}</span>
       <select
-        aria-label="Сортировка"
+        aria-label={d.catalog.sort}
         defaultValue={value}
         name="sort"
         onChange={
@@ -304,10 +321,10 @@ function SortField({
             : undefined
         }
       >
-        <option value="featured">Рекомендуем</option>
-        <option value="newest">Новинки</option>
-        <option value="price-asc">Цена ↑</option>
-        <option value="price-desc">Цена ↓</option>
+        <option value="featured">{d.catalog.sortFeatured}</option>
+        <option value="newest">{d.catalog.sortNewest}</option>
+        <option value="price-asc">{d.catalog.sortPriceAsc}</option>
+        <option value="price-desc">{d.catalog.sortPriceDesc}</option>
       </select>
     </label>
   );

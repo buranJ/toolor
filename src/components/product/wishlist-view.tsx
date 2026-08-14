@@ -8,16 +8,8 @@ import {
   LOCAL_WISHLIST_KEY,
   readLocalWishlist,
 } from "@/features/wishlist/local-wishlist";
+import { getDictionary, localePath, plural, type Locale } from "@/i18n";
 import type { Product } from "@/types";
-
-/** Russian plural for «товар»: [1, 2–4, 5+]. */
-function productWord(count: number) {
-  const mod10 = count % 10;
-  const mod100 = count % 100;
-  if (mod10 === 1 && mod100 !== 11) return "товар";
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return "товара";
-  return "товаров";
-}
 
 function subscribe(onStoreChange: () => void) {
   window.addEventListener("storage", onStoreChange);
@@ -28,7 +20,14 @@ function subscribe(onStoreChange: () => void) {
   };
 }
 
-export function WishlistView({ products }: { products: Product[] }) {
+export function WishlistView({
+  locale,
+  products,
+}: {
+  locale: Locale;
+  products: Product[];
+}) {
+  const d = getDictionary(locale);
   const snapshot = useSyncExternalStore(
     subscribe,
     () => window.localStorage.getItem(LOCAL_WISHLIST_KEY) ?? "",
@@ -43,9 +42,13 @@ export function WishlistView({ products }: { products: Product[] }) {
   if (saved.length === 0) {
     return (
       <EmptyState
-        action={{ href: "/catalog", label: "Смотреть каталог" }}
-        description="Нажимайте на сердечко у товара — он появится здесь."
-        title="Список пока пуст"
+        action={{
+          href: localePath(locale, "/catalog"),
+          label: d.wishlist.emptyAction,
+        }}
+        description={d.wishlist.emptyDescription}
+        locale={locale}
+        title={d.wishlist.emptyTitle}
       />
     );
   }
@@ -54,11 +57,13 @@ export function WishlistView({ products }: { products: Product[] }) {
     <>
       <p className="text-sm">
         <span className="text-ink font-semibold">{saved.length}</span>{" "}
-        <span className="text-muted">{productWord(saved.length)}</span>
+        <span className="text-muted">
+          {plural(locale, saved.length, d.common.productCount)}
+        </span>
       </p>
       <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
         {saved.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} locale={locale} product={product} />
         ))}
       </div>
     </>

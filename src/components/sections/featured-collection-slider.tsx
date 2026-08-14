@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 
 import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
+import { format, getDictionary, localePath, type Locale } from "@/i18n";
 import { formatMoney } from "@/lib/utils";
 import type { Product } from "@/types";
 
@@ -24,10 +25,13 @@ function circularOffset(index: number, active: number, total: number) {
 }
 
 export function FeaturedCollectionSlider({
+  locale,
   products,
 }: {
+  locale: Locale;
   products: Product[];
 }) {
+  const copy = getDictionary(locale).home.featuredCollection;
   const [activeIndex, setActiveIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
   const total = products.length;
@@ -58,8 +62,8 @@ export function FeaturedCollectionSlider({
 
   return (
     <div
-      aria-label="Подборка коллекции"
-      aria-roledescription="карусель"
+      aria-label={copy.carouselAria}
+      aria-roledescription={copy.carouselRole}
       className="featured-carousel mt-10 md:mt-14"
       data-testid="featured-carousel"
       onKeyDown={(event) => {
@@ -86,7 +90,11 @@ export function FeaturedCollectionSlider({
 
           return (
             <article
-              aria-label={`${index + 1} из ${total}: ${product.name}`}
+              aria-label={format(copy.slideAria, {
+                index: index + 1,
+                total,
+                name: product.name,
+              })}
               className="featured-carousel-slide"
               data-active={isActive}
               key={product.id}
@@ -103,19 +111,23 @@ export function FeaturedCollectionSlider({
 
                 {isActive ? (
                   <Link
-                    aria-label={`Открыть товар: ${product.name}`}
+                    aria-label={format(copy.openProduct, {
+                      name: product.name,
+                    })}
                     className="featured-carousel-active-link"
-                    href={`/product/${product.slug}`}
+                    href={localePath(locale, `/product/${product.slug}`)}
                   >
                     <span className="featured-carousel-meta">
                       {product.productType ?? "TOOLOR"}
                     </span>
                     <strong>{product.name}</strong>
-                    <span>{formatMoney(product.price)}</span>
+                    <span>{formatMoney(product.price, locale)}</span>
                   </Link>
                 ) : (
                   <button
-                    aria-label={`Показать товар: ${product.name}`}
+                    aria-label={format(copy.showProduct, {
+                      name: product.name,
+                    })}
                     className="absolute inset-0 cursor-pointer"
                     onClick={() => setActiveIndex(index)}
                     type="button"
@@ -130,14 +142,14 @@ export function FeaturedCollectionSlider({
       <div
         className="featured-carousel-dots"
         role="tablist"
-        aria-label="Навигация по подборке"
+        aria-label={copy.dotsAria}
       >
         {products.map((product, index) => (
           <button
             key={product.id}
             className="featured-carousel-dot"
             data-active={index === activeIndex}
-            aria-label={`Показать: ${product.name}`}
+            aria-label={format(copy.show, { name: product.name })}
             aria-current={index === activeIndex}
             onClick={() => setActiveIndex(index)}
             type="button"
@@ -146,7 +158,7 @@ export function FeaturedCollectionSlider({
       </div>
 
       <p className="sr-only" aria-live="polite">
-        Активный товар: {activeProduct.name}
+        {format(copy.activeProduct, { name: activeProduct.name })}
       </p>
     </div>
   );

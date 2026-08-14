@@ -1,6 +1,7 @@
 import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
+import { format, getDictionary, type Locale } from "@/i18n";
 import { instagramHandle, socialLinks } from "@/lib/config/social";
 import type { ProductImage } from "@/types";
 
@@ -23,7 +24,15 @@ function InstagramGlyph() {
   );
 }
 
-export function ModernNomadsSection({ images }: { images: ProductImage[] }) {
+export function ModernNomadsSection({
+  locale,
+  images,
+}: {
+  locale: Locale;
+  images: ProductImage[];
+}) {
+  const copy = getDictionary(locale).home.modernNomads;
+
   return (
     <section
       className="bg-frost-deep relative min-h-[80svh] overflow-hidden text-white"
@@ -41,17 +50,15 @@ export function ModernNomadsSection({ images }: { images: ProductImage[] }) {
         <div className="max-w-4xl">
           <p className="eyebrow flex items-center gap-2 text-white/75">
             <InstagramGlyph />
-            Мы в Instagram
+            {copy.kicker}
           </p>
           <h2 className="mt-6 font-serif text-[clamp(2.5rem,6.5vw,6.5rem)] leading-[1.02] font-medium text-balance">
-            Город заканчивается.
+            {copy.titleLine1}
             <br />
-            <span className="serif-italic">Движение продолжается.</span>
+            <span className="serif-italic">{copy.titleLine2}</span>
           </h2>
           <p className="mt-8 max-w-xl text-base leading-relaxed text-white/85">
-            Маршруты, съёмки в горах и новые модели — каждую неделю в нашем
-            Instagram. Подписывайтесь на {instagramHandle} и будьте ближе к
-            движению.
+            {format(copy.description, { handle: instagramHandle })}
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <ButtonLink
@@ -61,9 +68,8 @@ export function ModernNomadsSection({ images }: { images: ProductImage[] }) {
               size="lg"
             >
               <InstagramGlyph />
-              Подписаться в Instagram
+              {copy.cta}
             </ButtonLink>
-            {/* <span className="text-sm text-white/70">{instagramHandle}</span> */}
           </div>
         </div>
       </Container>

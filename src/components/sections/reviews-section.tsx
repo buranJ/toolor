@@ -1,12 +1,19 @@
 import { Container } from "@/components/ui/container";
 import { ScrollRevealMark } from "@/components/ui/scroll-reveal-mark";
-import { reviews } from "@/data/reviews";
+import { getReviews } from "@/data/reviews";
 import type { Review } from "@/data/reviews";
+import { getDictionary, type Locale } from "@/i18n";
 
-function Stars({ tone = "brand" }: { tone?: "brand" | "white" }) {
+function Stars({
+  label,
+  tone = "brand",
+}: {
+  label: string;
+  tone?: "brand" | "white";
+}) {
   const color = tone === "white" ? "#ffffff" : "var(--brand-blue)";
   return (
-    <span className="flex gap-1" role="img" aria-label="Оценка 5 из 5">
+    <span className="flex gap-1" role="img" aria-label={label}>
       {Array.from({ length: 5 }).map((_, index) => (
         <svg
           key={index}
@@ -46,7 +53,13 @@ function Avatar({
   );
 }
 
-function FeaturedReview({ review }: { review: Review }) {
+function FeaturedReview({
+  review,
+  ratingLabel,
+}: {
+  review: Review;
+  ratingLabel: string;
+}) {
   return (
     <article className="bg-brand relative flex flex-col justify-between overflow-hidden rounded-[2rem] p-8 text-white shadow-[var(--shadow-soft)] md:col-span-2 md:p-10 lg:row-span-2">
       <span
@@ -60,7 +73,7 @@ function FeaturedReview({ review }: { review: Review }) {
         className="pointer-events-none absolute -bottom-24 -left-16 size-72 rounded-full bg-white/10 blur-2xl"
       />
       <div className="relative">
-        <Stars tone="white" />
+        <Stars label={ratingLabel} tone="white" />
         <blockquote className="mt-6 font-serif text-[clamp(1.6rem,2.6vw,2.4rem)] leading-[1.2] text-balance">
           {review.quote}
         </blockquote>
@@ -78,10 +91,16 @@ function FeaturedReview({ review }: { review: Review }) {
   );
 }
 
-function ReviewCard({ review }: { review: Review }) {
+function ReviewCard({
+  review,
+  ratingLabel,
+}: {
+  review: Review;
+  ratingLabel: string;
+}) {
   return (
     <article className="group border-line bg-surface relative flex flex-col overflow-hidden rounded-[2rem] border p-6 shadow-[var(--shadow-soft)] transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-[var(--shadow-card)]">
-      <Stars />
+      <Stars label={ratingLabel} />
       <blockquote className="text-ink mt-4 flex-1 text-[0.95rem] leading-relaxed">
         {review.quote}
       </blockquote>
@@ -100,8 +119,10 @@ function ReviewCard({ review }: { review: Review }) {
   );
 }
 
-export function ReviewsSection() {
-  const [featured, ...rest] = reviews;
+export function ReviewsSection({ locale }: { locale: Locale }) {
+  const d = getDictionary(locale);
+  const copy = d.home.reviews;
+  const [featured, ...rest] = getReviews(d);
 
   return (
     <section
@@ -118,16 +139,20 @@ export function ReviewsSection() {
       <Container className="relative z-10">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-2xl">
-       
-            <h2 className="section-serif mt-4">Отзывы </h2>
+            <h2 className="section-serif mt-4">{copy.title}</h2>
           </div>
-          
         </div>
 
-        <div className="mt-12 grid gap-5 md:mt-14 md:grid-cols-2 lg:grid-cols-3 lg:auto-rows-fr">
-          {featured ? <FeaturedReview review={featured} /> : null}
+        <div className="mt-12 grid gap-5 md:mt-14 md:grid-cols-2 lg:auto-rows-fr lg:grid-cols-3">
+          {featured ? (
+            <FeaturedReview ratingLabel={copy.ratingAria} review={featured} />
+          ) : null}
           {rest.map((review) => (
-            <ReviewCard key={review.name} review={review} />
+            <ReviewCard
+              key={review.name}
+              ratingLabel={copy.ratingAria}
+              review={review}
+            />
           ))}
         </div>
       </Container>

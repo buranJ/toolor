@@ -7,6 +7,7 @@ import {
   readLocalWishlist,
   writeLocalWishlist,
 } from "@/features/wishlist/local-wishlist";
+import { format, getDictionary, type Locale } from "@/i18n";
 
 function subscribe(onStoreChange: () => void) {
   window.addEventListener("storage", onStoreChange);
@@ -18,12 +19,15 @@ function subscribe(onStoreChange: () => void) {
 }
 
 export function WishlistToggle({
+  locale,
   productId,
   productName,
 }: {
+  locale: Locale;
   productId: string;
   productName: string;
 }) {
+  const d = getDictionary(locale);
   const snapshot = useSyncExternalStore(
     subscribe,
     () => window.localStorage.getItem(LOCAL_WISHLIST_KEY) ?? "",
@@ -40,7 +44,10 @@ export function WishlistToggle({
 
   return (
     <button
-      aria-label={`${active ? "Удалить" : "Добавить"} ${productName} ${active ? "из избранного" : "в избранное"}`}
+      aria-label={format(
+        active ? d.product.wishlistRemove : d.product.wishlistAdd,
+        { name: productName },
+      )}
       aria-pressed={active}
       className={`hover:bg-brand flex size-10 items-center justify-center rounded-full bg-white/90 shadow-[var(--shadow-soft)] backdrop-blur-sm transition-colors hover:text-white ${
         active ? "text-brand" : "text-ink"

@@ -3,21 +3,24 @@
 import Link from "next/link";
 import { useRef } from "react";
 
+import { LanguageSwitcher } from "@/components/navigation/language-switcher";
 import { BrandLogo } from "@/components/ui/brand-logo";
-import { siteConfig } from "@/lib/config/site";
+import { getDictionary, localePath, type Locale } from "@/i18n";
+import { navigation } from "@/lib/config/site";
 
-export function MobileMenu() {
+export function MobileMenu({ locale }: { locale: Locale }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const d = getDictionary(locale);
 
   return (
     <>
       <button
-        aria-label="Открыть меню"
+        aria-label={d.mobileMenu.open}
         className="mobile-menu-trigger"
         onClick={() => dialogRef.current?.showModal()}
         type="button"
       >
-        <span>Меню</span>
+        <span>{d.mobileMenu.trigger}</span>
         <span aria-hidden="true" className="mobile-menu-trigger-lines">
           <i />
           <i />
@@ -30,37 +33,40 @@ export function MobileMenu() {
             <div>
               <BrandLogo tone="white" className="h-6" />
               <p className="mt-2 font-mono text-[0.55rem] tracking-[0.18em] text-white/45 uppercase">
-                Кыргызстан
+                {d.common.brandCountry}
               </p>
             </div>
-            <button
-              aria-label="Закрыть меню"
-              className="mobile-menu-close"
-              onClick={() => dialogRef.current?.close()}
-              type="button"
-            >
-              <span aria-hidden="true">×</span>
-            </button>
+            <div className="flex items-start gap-3">
+              <LanguageSwitcher label={d.language.switch} locale={locale} />
+              <button
+                aria-label={d.mobileMenu.close}
+                className="mobile-menu-close"
+                onClick={() => dialogRef.current?.close()}
+                type="button"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
           </header>
           <nav
-            aria-label="Мобильная навигация"
+            aria-label={d.mobileMenu.navAria}
             className="relative z-10 my-auto py-10"
           >
             <p className="mb-5 font-mono text-[0.6rem] tracking-[0.2em] text-white/45 uppercase">
-              Выберите направление
+              {d.mobileMenu.chooseDirection}
             </p>
             <ul>
-              {siteConfig.navigation.map((item, index) => (
+              {navigation.map((item, index) => (
                 <li key={item.href}>
                   <Link
                     className="mobile-menu-link group"
-                    href={item.href}
+                    href={localePath(locale, item.href)}
                     onClick={() => dialogRef.current?.close()}
                   >
                     <span className="font-mono text-xs text-white/45">
                       0{index + 1}
                     </span>
-                    <span>{item.label}</span>
+                    <span>{d.nav[item.key]}</span>
                     <span
                       aria-hidden="true"
                       className="text-xl text-white/35 transition-transform group-hover:translate-x-1"
@@ -73,14 +79,23 @@ export function MobileMenu() {
             </ul>
           </nav>
           <div className="relative z-10 grid grid-cols-3 gap-3 border-t border-white/15 pt-5 text-[0.65rem] tracking-[0.12em] text-white/60 uppercase">
-            <Link href="/search" onClick={() => dialogRef.current?.close()}>
-              Поиск
+            <Link
+              href={localePath(locale, "/search")}
+              onClick={() => dialogRef.current?.close()}
+            >
+              {d.nav.search}
             </Link>
-            <Link href="/wishlist" onClick={() => dialogRef.current?.close()}>
-              Избранное
+            <Link
+              href={localePath(locale, "/wishlist")}
+              onClick={() => dialogRef.current?.close()}
+            >
+              {d.nav.wishlist}
             </Link>
-            <Link href="/cart" onClick={() => dialogRef.current?.close()}>
-              Корзина
+            <Link
+              href={localePath(locale, "/cart")}
+              onClick={() => dialogRef.current?.close()}
+            >
+              {d.nav.cart}
             </Link>
           </div>
           <svg

@@ -9,6 +9,10 @@ export default defineConfig({
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3100",
     trace: "on-first-retry",
+    // Unprefixed paths are redirected to a locale based on Accept-Language.
+    // Pin Russian so the specs below assert against a deterministic language;
+    // i18n.spec.ts overrides it where it needs another.
+    locale: "ru-RU",
   },
   projects: [
     {

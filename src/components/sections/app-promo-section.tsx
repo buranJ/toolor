@@ -3,8 +3,12 @@ import Image from "next/image";
 import { BrandMark } from "@/components/ui/brand-mark";
 import { Container } from "@/components/ui/container";
 import { APP_STORES, StoreIcon } from "@/components/ui/app-store-links";
+import { format, getDictionary, type Locale } from "@/i18n";
 
-export function AppPromoSection() {
+export function AppPromoSection({ locale }: { locale: Locale }) {
+  const d = getDictionary(locale);
+  const copy = d.home.appPromo;
+
   return (
     <section
       className="app-promo-section relative overflow-hidden text-white"
@@ -21,20 +25,15 @@ export function AppPromoSection() {
         <div className="app-promo-grid">
           <div className="app-promo-copy">
             <h2 className="app-promo-title">
-              TOOLOR всегда <span className="serif-italic">с вами.</span>
+              {copy.titleLead}{" "}
+              <span className="serif-italic">{copy.titleAccent}</span>
             </h2>
-            <p className="app-promo-description">
-              Скачайте официальное приложение TOOLOR для iOS или Android.
-              Выберите удобный магазин или наведите камеру на QR-код.
-            </p>
+            <p className="app-promo-description">{copy.description}</p>
 
-            <div
-              className="app-store-buttons"
-              aria-label="Ссылки на приложение"
-            >
+            <div className="app-store-buttons" aria-label={copy.linksAria}>
               {APP_STORES.map((store) => (
                 <a
-                  aria-label={`Открыть TOOLOR в ${store.name}`}
+                  aria-label={format(copy.openIn, { store: store.name })}
                   className="app-store-button"
                   href={store.href}
                   key={store.name}
@@ -43,7 +42,7 @@ export function AppPromoSection() {
                 >
                   <StoreIcon kind={store.icon} />
                   <span>
-                    <small>{store.eyebrow}</small>
+                    <small>{d.appStores[store.eyebrowKey]}</small>
                     <strong>{store.name}</strong>
                   </span>
                   <span aria-hidden="true" className="app-store-arrow">
@@ -56,7 +55,7 @@ export function AppPromoSection() {
             <div className="app-qr-grid">
               {APP_STORES.map((store, index) => (
                 <a
-                  aria-label={`Сканировать QR-код для ${store.name}`}
+                  aria-label={format(copy.scanQr, { store: store.name })}
                   className="app-qr-card"
                   href={store.href}
                   key={store.name}
@@ -68,7 +67,7 @@ export function AppPromoSection() {
                   </span>
                   <span className="app-qr-image">
                     <Image
-                      alt={`QR-код TOOLOR для ${store.name}`}
+                      alt={format(copy.qrAlt, { store: store.name })}
                       height={store.qrSize}
                       src={store.qr}
                       unoptimized
@@ -77,7 +76,7 @@ export function AppPromoSection() {
                   </span>
                   <span className="app-qr-meta">
                     <strong>{store.name}</strong>
-                    <small>Наведите камеру</small>
+                    <small>{copy.pointCamera}</small>
                   </span>
                 </a>
               ))}
@@ -124,7 +123,7 @@ export function AppPromoSection() {
                 </div>
                 <div className="app-phone-floating-label">
                   <small>COLLECTION / 02</small>
-                  <strong>Тишина в движении</strong>
+                  <strong>{copy.phoneCaption}</strong>
                 </div>
               </div>
             </div>

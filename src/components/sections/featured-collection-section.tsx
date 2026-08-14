@@ -1,12 +1,18 @@
 import { FeaturedCollectionSlider } from "@/components/sections/featured-collection-slider";
 import { Container } from "@/components/ui/container";
+import { getDictionary, type Locale } from "@/i18n";
 import type { Product } from "@/types";
 
 export function FeaturedCollectionSection({
+  locale,
   products,
 }: {
+  locale: Locale;
   products: Product[];
 }) {
+  const d = getDictionary(locale);
+  const copy = d.home.featuredCollection;
+
   return (
     <section
       className="featured-collection-section overflow-hidden bg-white py-20 md:py-28"
@@ -14,16 +20,14 @@ export function FeaturedCollectionSection({
     >
       <Container>
         <div className="text-center">
-          <p className="eyebrow text-brand"></p>
-          <h2 className="section-serif mt-4">Рекомендуем</h2>
+          <h2 className="section-serif mt-4">{copy.title}</h2>
           <p className="text-muted mx-auto mt-4 max-w-lg text-sm leading-6">
-            Вещи, с которых удобно собрать гардероб TOOLOR — от базовых моделей
-            до акцентных.
+            {copy.description}
           </p>
         </div>
       </Container>
 
-      <FeaturedCollectionSlider products={products} />
+      <FeaturedCollectionSlider locale={locale} products={products} />
     </section>
   );
 }

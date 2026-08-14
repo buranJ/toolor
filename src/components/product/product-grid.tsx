@@ -1,12 +1,15 @@
+import type { Locale } from "@/i18n";
 import type { Product } from "@/types";
 
 import { ProductCard } from "./product-card";
 
 export function ProductGrid({
+  locale,
   products,
   className = "",
   prioritizeFirstRow = false,
 }: {
+  locale: Locale;
   products: Product[];
   className?: string;
   prioritizeFirstRow?: boolean;
@@ -19,6 +22,7 @@ export function ProductGrid({
         <ProductCard
           imagePriority={prioritizeFirstRow && index < 4}
           key={product.id}
+          locale={locale}
           product={product}
         />
       ))}

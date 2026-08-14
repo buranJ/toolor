@@ -4,6 +4,7 @@ import type { TouchEvent } from "react";
 import { useRef, useState, useSyncExternalStore } from "react";
 
 import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
+import { format, getDictionary, type Locale } from "@/i18n";
 import type { ProductImage } from "@/types";
 
 function rotateImages(images: ProductImage[], index: number) {
@@ -22,13 +23,16 @@ function useIsHydrated() {
 
 export function ProductGallery({
   images,
+  locale,
   productName,
   productType,
 }: {
   images: ProductImage[];
+  locale: Locale;
   productName: string;
   productType?: string;
 }) {
+  const d = getDictionary(locale);
   const [activeIndex, setActiveIndex] = useState(0);
   const isReady = useIsHydrated();
   const touchStartX = useRef<number | null>(null);
@@ -63,14 +67,14 @@ export function ProductGallery({
     return (
       <div className="editorial-fallback relative min-h-[30rem]">
         <span className="mono-meta">{productName}</span>
-        <span className="mono-meta text-white/55">Фото скоро появятся</span>
+        <span className="mono-meta text-white/55">{d.product.photosSoon}</span>
       </div>
     );
   }
 
   return (
     <div
-      aria-label="Галерея товара"
+      aria-label={d.product.galleryAria}
       className="product-gallery"
       data-gallery-ready={isReady}
       data-zoom-ready="true"
@@ -85,7 +89,7 @@ export function ProductGallery({
         {visibleImages.map((image, index) => (
           <button
             aria-current={index === activeIndex ? "true" : undefined}
-            aria-label={`Показать изображение ${index + 1}`}
+            aria-label={format(d.product.showImage, { index: index + 1 })}
             className="product-gallery-thumbnail"
             disabled={!isReady}
             key={image.id}
@@ -123,7 +127,7 @@ export function ProductGallery({
         {visibleImages.length > 1 ? (
           <div className="product-gallery-arrows">
             <button
-              aria-label="Предыдущее изображение"
+              aria-label={d.product.previousImage}
               disabled={!isReady}
               onClick={() => move(-1)}
               type="button"
@@ -131,7 +135,7 @@ export function ProductGallery({
               ←
             </button>
             <button
-              aria-label="Следующее изображение"
+              aria-label={d.product.nextImage}
               disabled={!isReady}
               onClick={() => move(1)}
               type="button"

@@ -8,6 +8,7 @@ import {
   readLocalCart,
   writeLocalCart,
 } from "@/features/cart/local-cart";
+import { format, getDictionary, type Locale } from "@/i18n";
 import { formatMoney, getProductColorHex } from "@/lib/utils";
 import type { Product } from "@/types";
 
@@ -17,10 +18,13 @@ type PurchaseProduct = Pick<
 >;
 
 export function ProductPurchasePanel({
+  locale,
   product,
 }: {
+  locale: Locale;
   product: PurchaseProduct;
 }) {
+  const d = getDictionary(locale);
   const panelRef = useRef<HTMLDivElement>(null);
   const [selectedId, setSelectedId] = useState(product.variants[0]?.id ?? "");
   const [selectedColor, setSelectedColor] = useState(
@@ -110,7 +114,7 @@ export function ProductPurchasePanel({
     >
       <fieldset className="product-option-group">
         <div className="product-option-heading">
-          <legend>Цвет</legend>
+          <legend>{d.product.color}</legend>
           <span>{selectedColor}</span>
         </div>
         {product.colors?.length ? (
@@ -143,17 +147,17 @@ export function ProductPurchasePanel({
             })}
           </div>
         ) : (
-          <div className="product-color-missing" aria-label="Цвет">
+          <div className="product-color-missing" aria-label={d.product.color}>
             <span aria-hidden="true" />
-            <p>Один цвет</p>
+            <p>{d.product.oneColor}</p>
           </div>
         )}
       </fieldset>
 
       <fieldset className="product-option-group">
         <div className="product-option-heading">
-          <legend>Размер</legend>
-          <span id="size-guide-note">Таблица размеров</span>
+          <legend>{d.catalog.size}</legend>
+          <span id="size-guide-note">{d.product.sizeGuide}</span>
         </div>
         <div className="product-size-options">
           {sizeVariants.map((item) => (
@@ -176,7 +180,8 @@ export function ProductPurchasePanel({
       </fieldset>
 
       <p className="product-availability">
-        <span aria-hidden="true" style={{ background: "#2f9e44" }} />В наличии
+        <span aria-hidden="true" style={{ background: "#2f9e44" }} />
+        {d.product.inStock}
       </p>
 
       <div className="product-purchase-actions hidden md:flex">
@@ -185,26 +190,34 @@ export function ProductPurchasePanel({
           onClick={addToCart}
           type="button"
         >
-          {added ? "Добавлено" : `В корзину · ${formatMoney(variant.price)}`}
+          {added
+            ? d.product.added
+            : format(d.product.addToCartPrice, {
+                price: formatMoney(variant.price, locale),
+              })}
         </button>
-        <WishlistToggle productId={product.id} productName={product.name} />
+        <WishlistToggle
+          locale={locale}
+          productId={product.id}
+          productName={product.name}
+        />
       </div>
 
       <div className="product-service-grid">
         <ServiceItem
-          detail="По Кыргызстану и за рубеж"
+          detail={d.product.service.deliveryDetail}
           icon={<TruckIcon />}
-          title="Доставка"
+          title={d.product.service.deliveryTitle}
         />
         <ServiceItem
-          detail="Обмен и возврат"
+          detail={d.product.service.returnsDetail}
           icon={<ReturnIcon />}
-          title="Возврат"
+          title={d.product.service.returnsTitle}
         />
         <ServiceItem
-          detail="Безопасная оплата"
+          detail={d.product.service.paymentDetail}
           icon={<ShieldIcon />}
-          title="Оплата"
+          title={d.product.service.paymentTitle}
         />
       </div>
 
@@ -214,12 +227,22 @@ export function ProductPurchasePanel({
           onClick={addToCart}
           type="button"
         >
-          {added ? "Добавлено" : `В корзину · ${formatMoney(variant.price)}`}
+          {added
+            ? d.product.added
+            : format(d.product.addToCartPrice, {
+                price: formatMoney(variant.price, locale),
+              })}
         </button>
-        <WishlistToggle productId={product.id} productName={product.name} />
+        <WishlistToggle
+          locale={locale}
+          productId={product.id}
+          productName={product.name}
+        />
       </div>
       <span aria-live="polite" className="sr-only">
-        {added ? `${product.name} добавлен в корзину` : ""}
+        {added
+          ? format(d.product.addedAnnouncement, { name: product.name })
+          : ""}
       </span>
     </div>
   );

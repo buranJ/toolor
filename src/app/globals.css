@@ -881,6 +881,58 @@ body:has([data-page="home"]) .footer-mountain-cut {
   place-items: center;
 }
 
+/* Language switcher — one real link per locale, current one marked. */
+.language-switcher ul {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.language-switcher-stacked ul {
+  gap: 0.35rem;
+}
+
+.language-switcher a {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2rem;
+  min-height: 2.5rem;
+  padding-inline: 0.35rem;
+  font-size: 0.69rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  transition:
+    color var(--motion-duration-fast) var(--motion-ease-standard),
+    opacity var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.language-switcher abbr {
+  text-decoration: none;
+}
+
+.language-switcher a:hover,
+.language-switcher a:focus-visible {
+  opacity: 1;
+  color: var(--brand-blue);
+}
+
+.language-switcher a[data-active="true"] {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+  text-decoration-thickness: 1.5px;
+}
+
+/* On dark surfaces (footer, mobile menu) the links inherit white. */
+.site-footer .language-switcher a:hover,
+.site-footer .language-switcher a:focus-visible,
+.mobile-menu-panel .language-switcher a:hover,
+.mobile-menu-panel .language-switcher a:focus-visible {
+  color: inherit;
+}
+
 .summit-icon-link {
   width: 1.8rem;
   height: 2.5rem;
