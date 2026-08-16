@@ -2,6 +2,20 @@ import { z } from "zod";
 
 export const LOCAL_CART_KEY = "toolor-demo-cart-v1";
 
+const localCartImageUrlSchema = z.string().refine(
+  (value) => {
+    if (value.startsWith("/") && !value.startsWith("//")) return true;
+
+    try {
+      const url = new URL(value);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+      return false;
+    }
+  },
+  { message: "Expected an HTTP(S) URL or a root-relative image path" },
+);
+
 export const localCartLineSchema = z.object({
   productId: z.string(),
   slug: z.string(),
@@ -10,8 +24,8 @@ export const localCartLineSchema = z.object({
   quantity: z.number().int().positive(),
   unitAmount: z.number().int().nonnegative(),
   currencyCode: z.literal("KGS"),
-  imageUrl: z.string().url().optional(),
-  imageUrls: z.array(z.string().url()).optional(),
+  imageUrl: localCartImageUrlSchema.optional(),
+  imageUrls: z.array(localCartImageUrlSchema).optional(),
   variantTitle: z.string().optional(),
 });
 
