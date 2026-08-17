@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 
 import {
   localeNames,
@@ -19,6 +19,39 @@ type SwitcherProps = {
   variant?: "inline" | "stacked";
 };
 
+const SCROLL_KEY = "toolor:locale-switch-scroll";
+
+/**
+ * Swapping the locale changes the `[locale]` segment, so the whole layout
+ * remounts and the router lands the visitor at the top of the new page. Stash
+ * the offset on click and put it back once the translated page has rendered,
+ * so a switch made half-way down a page stays half-way down.
+ */
+function useLocaleSwitchScroll() {
+  useEffect(() => {
+    const saved = sessionStorage.getItem(SCROLL_KEY);
+    if (saved === null) return;
+    // Claim it immediately: the switcher renders in the header, the mobile
+    // menu and the footer, and only one of them should restore.
+    sessionStorage.removeItem(SCROLL_KEY);
+
+    const target = Number(saved);
+    if (!Number.isFinite(target) || target <= 0) return;
+
+    // The translated page streams in, so the document can still be shorter
+    // than the saved offset for a few frames. Retry until it fits.
+    let frames = 0;
+    let raf = requestAnimationFrame(function step() {
+      window.scrollTo({ top: target, behavior: "instant" });
+      if (Math.abs(window.scrollY - target) > 1 && frames++ < 90) {
+        raf = requestAnimationFrame(step);
+      }
+    });
+
+    return () => cancelAnimationFrame(raf);
+  }, []);
+}
+
 function SwitcherLinks({
   locale,
   label,
@@ -27,6 +60,7 @@ function SwitcherLinks({
   query,
 }: SwitcherProps & { query: string }) {
   const pathname = usePathname();
+  useLocaleSwitchScroll();
 
   return (
     <nav
@@ -46,6 +80,12 @@ function SwitcherLinks({
                 href={query ? `${href}?${query}` : href}
                 hrefLang={target}
                 lang={target}
+                onClick={() => {
+                  if (!isActive) {
+                    sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
+                  }
+                }}
+                scroll={false}
               >
                 <abbr title={localeNames[target]}>
                   {localeShortNames[target]}
