@@ -69,7 +69,7 @@ export default async function AboutPage({
     heroImages;
 
   return (
-    <>
+    <div data-page="about">
       {/* Hero */}
       <section className="border-line bg-paper border-b">
         <Container className="pt-14 pb-12 md:pt-20 md:pb-16">
@@ -247,6 +247,6 @@ export default async function AboutPage({
       </section>
 
       <AppPromoSection locale={locale} />
-    </>
+    </div>
   );
 }

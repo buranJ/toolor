@@ -697,8 +697,12 @@ body {
   pointer-events: none;
 }
 
-body:has([data-page="home"]) .footer-mountain-cut {
-  color: var(--surface);
+/* Home and About close on a dark full-bleed section that runs straight into the
+   footer image, so the ridge would read as a stray light band across it. Those
+   two pages get a flat seam; every other page keeps the mountain cut. */
+body:has([data-page="home"]) .footer-mountain-cut,
+body:has([data-page="about"]) .footer-mountain-cut {
+  display: none;
 }
 
 .site-footer-content {
