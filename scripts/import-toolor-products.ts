@@ -10,14 +10,13 @@ import {
   type ImportedProduct,
 } from "../src/lib/commerce/importers/toolor-product-schema";
 
-const SOURCE_PATH = resolve(process.cwd(), "docs/data-toolor.xlsx");
+const SOURCE_PATH = resolve(process.cwd(), "bd/Toolor_2026.08.06_1.xlsx");
 const GENERATED_JSON_PATH = resolve(
   process.cwd(),
   "src/data/toolor-products.generated.json",
 );
 const REPORT_PATH = resolve(process.cwd(), "docs/PRODUCT_IMPORT_REPORT.md");
-const SOURCE_LABEL = "docs/data-toolor.xlsx" as const;
-const TARGET_PRODUCT_COUNT = 24;
+const SOURCE_LABEL = "bd/Toolor_2026.08.06_1.xlsx" as const;
 
 const BASE_HEADERS = {
   sku: ["уникальный идентификатор товара", "sku", "артикул"],
@@ -167,7 +166,11 @@ function normalizeDescription(value: string): string {
 }
 
 function normalizeHeader(value: string): string {
-  return normalizeWhitespace(value).toLocaleLowerCase("ru-RU");
+  // The export marks required columns with a trailing asterisk ("Цена товара
+  // *"); the alias lookup below is exact, so the marker has to come off first.
+  return normalizeWhitespace(value)
+    .replace(/\s*\*+$/, "")
+    .toLocaleLowerCase("ru-RU");
 }
 
 function normalizeSourceValue(value: string): string {
@@ -354,7 +357,10 @@ async function readWorkbookRows(): Promise<{
       row.eachCell({ includeEmpty: true }, (cell, columnNumber) => {
         values[columnNumber - 1] = displayValue(cell.value);
       });
-      while ((values.at(-1) ?? "") === "") values.pop();
+      // Trim trailing blanks. The length guard matters: on an all-blank row
+      // `at(-1)` returns undefined once the array empties, which `?? ""`
+      // turned back into a match — popping an empty array forever.
+      while (values.length > 0 && values.at(-1) === "") values.pop();
       if (!values.some((value) => normalizeWhitespace(value))) continue;
 
       if (headers.length === 0) {
@@ -489,10 +495,22 @@ function normalizeRows(rawRows: RawWorkbookRow[]): {
   return { rows, rejectedRows, duplicateRows, invalidLinks };
 }
 
+/**
+ * Variant rows of one product share a SKU stem — `TW-193-1` … `TW-193-12` all
+ * belong to `TW-193`. Only rows carrying the same stem *and* the same product
+ * name are merged, so a stem collision cannot fuse two different garments.
+ */
+function skuStemKey(row: NormalizedVariantRow): string {
+  const stem = row.sku.replace(/-\d+$/, "");
+  return `${stem}\u0000${normalizedProductName(row).toLocaleLowerCase("ru-RU")}`;
+}
+
 function groupKey(row: NormalizedVariantRow): string {
+  // The marketplace export only fills the grouping column on some workbooks;
+  // when it is blank every row would otherwise become its own product.
   const groupedSkus = row.groupSkus.length
     ? [...row.groupSkus].sort().join("|")
-    : row.sku;
+    : skuStemKey(row);
   return `${row.sheet}\u0000${groupedSkus}`;
 }
 
@@ -647,47 +665,21 @@ function selectCandidates(candidates: ProductCandidate[]): {
         left.product.name.localeCompare(right.product.name, "ru"),
     );
 
+  // Every sufficiently complete group ships — the workbook is the catalogue,
+  // not a pool to sample from. Groups normalising to a name already taken are
+  // dropped: they are the same garment split across rows, and a second
+  // identical card helps nobody.
   const selected: ProductCandidate[] = [];
-  const usedSheets = new Set<string>();
   const usedNames = new Set<string>();
-  const identity = (candidate: ProductCandidate) =>
-    candidate.product.name.toLocaleLowerCase("ru-RU");
-  const add = (candidate: ProductCandidate) => {
+  for (const candidate of eligible) {
+    const identity = candidate.product.name.toLocaleLowerCase("ru-RU");
+    if (usedNames.has(identity)) continue;
+    usedNames.add(identity);
     selected.push(candidate);
-    usedSheets.add(candidate.sheet);
-    usedNames.add(identity(candidate));
-  };
-
-  const accessoryCandidates = eligible.filter((candidate) =>
-    isAccessoryType(candidate.product.productType),
-  );
-  for (const candidate of accessoryCandidates) {
-    if (usedSheets.has(candidate.sheet) || usedNames.has(identity(candidate)))
-      continue;
-    add(candidate);
   }
 
-  for (const candidate of eligible) {
-    if (selected.length >= TARGET_PRODUCT_COUNT) break;
-    if (usedSheets.has(candidate.sheet) || usedNames.has(identity(candidate)))
-      continue;
-    add(candidate);
-  }
-
-  for (const candidate of eligible) {
-    if (selected.length >= TARGET_PRODUCT_COUNT) break;
-    if (selected.includes(candidate)) continue;
-    if (usedNames.has(identity(candidate))) continue;
-    const sameSheetCount = selected.filter(
-      (item) => item.sheet === candidate.sheet,
-    ).length;
-    if (sameSheetCount < 2) add(candidate);
-  }
-
-  if (selected.length < 20) {
-    throw new Error(
-      `Only ${selected.length} sufficiently complete product groups were found.`,
-    );
+  if (selected.length === 0) {
+    throw new Error("No sufficiently complete product groups were found.");
   }
 
   const selectedKeys = new Set(selected.map((candidate) => candidate.key));
@@ -903,7 +895,7 @@ function buildReport(
     )
     .map(
       (candidate) =>
-        `| ${markdownCell(candidate.sheet)} | ${rowsLabel(candidate.product.source.rows)} | ${markdownCell(candidate.product.name)} | ${candidate.score} | not selected: 24-product completeness/diversity limit |`,
+        `| ${markdownCell(candidate.sheet)} | ${rowsLabel(candidate.product.source.rows)} | ${markdownCell(candidate.product.name)} | ${candidate.score} | not selected: below completeness threshold or duplicate product name |`,
     )
     .join("\n");
   const linkTable = [...linkChecks.values()]
@@ -976,7 +968,7 @@ ${repeatedNamesTable || "| — | 0 | — |"}
 
 ## Imported products
 
-One highest-completeness product group was preferred per source sheet; remaining slots were filled by score. A group scores required identifiers/name/price plus description, images, variants, sizes, colors, material, main-row marker, collection and product URL.
+Every product group scoring at least 7 is imported, ordered by completeness; groups sharing a normalized name with an already-imported group are skipped. A group scores required identifiers/name/price plus description, images, variants, sizes, colors, material, main-row marker, collection and product URL.
 
 | # | Product | Sheet | Source rows | SKUs | Variants | Images | Price | Score |
 |---:|---|---|---|---|---:|---:|---:|---:|

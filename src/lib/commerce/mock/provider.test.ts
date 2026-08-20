@@ -53,17 +53,27 @@ describe("MockCommerceProvider", () => {
   });
 
   it("finds a catalog category through its source product type", async () => {
+    // Taken from the imported data rather than hard-coded: the product types
+    // are whatever the current workbook ships, and pinning one here made the
+    // test fail on the next catalogue import instead of catching a real bug.
+    const productType = mockProducts[0]?.productType;
+    expect(productType).toBeTruthy();
+
     const result = await provider.getProducts({
-      search: "Куртки и пуховики",
+      search: productType,
       pageSize: 100,
     });
 
-    expect(result.items.length).toBeGreaterThan(0);
-    expect(
-      result.items.every(
-        (product) => product.productType === "Куртки и пуховики",
-      ),
-    ).toBe(true);
+    // Search spans name + description + product type, so a type word can also
+    // surface other garments that mention it. What must hold is the other
+    // direction: every product of that type is reachable through the search.
+    const expected = mockProducts
+      .filter((product) => product.productType === productType)
+      .map((product) => product.id);
+    expect(expected.length).toBeGreaterThan(0);
+    expect(result.items.map((product) => product.id)).toEqual(
+      expect.arrayContaining(expected),
+    );
   });
 
   it("returns a product by slug and null for an unknown slug", async () => {

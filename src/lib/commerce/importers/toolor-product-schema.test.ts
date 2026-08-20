@@ -8,10 +8,10 @@ describe("generated TOOLOR product data", () => {
   it("validates the generated provider payload and its source contract", () => {
     const parsed = generatedProductFileSchema.parse(importedData);
 
-    expect(parsed.products).toHaveLength(24);
-    expect(parsed.source.workbook).toBe("docs/data-toolor.xlsx");
+    expect(parsed.products).toHaveLength(7);
+    expect(parsed.source.workbook).toBe("bd/Toolor_2026.08.06_1.xlsx");
     expect(parsed.source.sha256).toBe(
-      "d742bdfc14b2d3011d4bc302cecc163e60a9a2217c9186111d4f358cf763e2e6",
+      "a62c8f282e940b6c8014a1d361ccc0b714b6125a512982ff5031c15181f19bf8",
     );
     expect(
       parsed.products.every(

@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { sampleProduct } from "./catalog-fixture";
+
 test("homepage smoke", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
@@ -143,15 +145,12 @@ test("desktop catalog filters stay compact and update the URL", async ({
 });
 
 test("product page smoke", async ({ page }) => {
-  await page.goto("/product/toolor-ta-26-1", {
+  await page.goto(`/product/${sampleProduct.slug}`, {
     waitUntil: "domcontentloaded",
   });
-  await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: /Кепка бейсболка Toolor ASKA/,
-    }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(
+    sampleProduct.name,
+  );
   await expect(
     page.getByRole("button", { name: /В корзину/ }).first(),
   ).toBeVisible();
@@ -171,7 +170,7 @@ test("product page smoke", async ({ page }) => {
 
 test("mobile menu, cart drawer and cart page smoke", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/product/toolor-ta-26-1", {
+  await page.goto(`/product/${sampleProduct.slug}`, {
     waitUntil: "domcontentloaded",
   });
   await expect(page.locator('[data-purchase-ready="true"]')).toBeAttached();

@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { sampleProduct } from "./catalog-fixture";
+
 test("unprefixed paths redirect to the Accept-Language locale", async ({
   browser,
 }) => {
@@ -90,19 +92,17 @@ test("product copy stays in its source language across locales", async ({
   page,
 }) => {
   // Imported workbook data is deliberately not translated.
-  for (const path of [
-    "/ru/product/toolor-ta-26-1",
-    "/en/product/toolor-ta-26-1",
-    "/ky/product/toolor-ta-26-1",
-  ]) {
-    await page.goto(path, { waitUntil: "domcontentloaded" });
+  for (const locale of ["ru", "en", "ky"]) {
+    await page.goto(`/${locale}/product/${sampleProduct.slug}`, {
+      waitUntil: "domcontentloaded",
+    });
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      /Кепка бейсболка Toolor ASKA/,
+      sampleProduct.name,
     );
   }
 
   // ...while the surrounding interface does translate.
-  await page.goto("/en/product/toolor-ta-26-1", {
+  await page.goto(`/en/product/${sampleProduct.slug}`, {
     waitUntil: "domcontentloaded",
   });
   await expect(

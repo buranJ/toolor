@@ -5,6 +5,15 @@ import { Container } from "@/components/ui/container";
 import { APP_STORES, StoreIcon } from "@/components/ui/app-store-links";
 import { format, getDictionary, type Locale } from "@/i18n";
 
+/**
+ * Decorative photos inside the phone mock-ups. They are pulled from the current
+ * imported catalogue rather than a local file so the promo never advertises a
+ * garment the shop no longer sells — the previous pair pointed at product
+ * images that were deleted with the old workbook.
+ */
+const PHONE_PHOTO_BACK = "https://i.postimg.cc/sXcTcBYq/color34741.jpg";
+const PHONE_PHOTO_FRONT = "https://i.postimg.cc/8CdZ54HT/color35655.jpg";
+
 export function AppPromoSection({ locale }: { locale: Locale }) {
   const d = getDictionary(locale);
   const copy = d.home.appPromo;
@@ -96,7 +105,7 @@ export function AppPromoSection({ locale }: { locale: Locale }) {
                     alt=""
                     fill
                     sizes="(max-width: 767px) 42vw, 240px"
-                    src="/imgs/3590000.webp"
+                    src={PHONE_PHOTO_BACK}
                   />
                 </div>
                 <div className="app-phone-ui-copy">
@@ -118,7 +127,7 @@ export function AppPromoSection({ locale }: { locale: Locale }) {
                     alt=""
                     fill
                     sizes="(max-width: 767px) 45vw, 270px"
-                    src="/imgs/3590142.webp"
+                    src={PHONE_PHOTO_FRONT}
                   />
                 </div>
                 <div className="app-phone-floating-label">

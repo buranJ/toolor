@@ -65,7 +65,7 @@ export const importedProductSchema = z.object({
     ]),
   ),
   source: z.object({
-    workbook: z.literal("docs/data-toolor.xlsx"),
+    workbook: z.string().min(1),
     sheet: z.string().min(1),
     rows: z.array(z.number().int().positive()).min(1),
     originalSkus: z.array(z.string().min(1)).min(1),
@@ -75,13 +75,13 @@ export const importedProductSchema = z.object({
 
 export const generatedProductFileSchema = z.object({
   source: z.object({
-    workbook: z.literal("docs/data-toolor.xlsx"),
+    workbook: z.string().min(1),
     sha256: z.string().length(64),
     generatedAt: z.iso.datetime(),
     worksheetCount: z.number().int().positive(),
     productWorksheetCount: z.number().int().positive(),
   }),
-  products: z.array(importedProductSchema).min(20).max(25),
+  products: z.array(importedProductSchema).min(1),
 });
 
 export type ImportedProduct = z.infer<typeof importedProductSchema>;
