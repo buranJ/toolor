@@ -10,13 +10,13 @@ import {
   type ImportedProduct,
 } from "../src/lib/commerce/importers/toolor-product-schema";
 
-const SOURCE_PATH = resolve(process.cwd(), "bd/Toolor_2026.08.06_1.xlsx");
+const SOURCE_PATH = resolve(process.cwd(), "bd/Toolor_2026.08.21_1.xlsx");
 const GENERATED_JSON_PATH = resolve(
   process.cwd(),
   "src/data/toolor-products.generated.json",
 );
 const REPORT_PATH = resolve(process.cwd(), "docs/PRODUCT_IMPORT_REPORT.md");
-const SOURCE_LABEL = "bd/Toolor_2026.08.06_1.xlsx" as const;
+const SOURCE_LABEL = "bd/Toolor_2026.08.21_1.xlsx" as const;
 
 const BASE_HEADERS = {
   sku: ["уникальный идентификатор товара", "sku", "артикул"],
@@ -497,11 +497,15 @@ function normalizeRows(rawRows: RawWorkbookRow[]): {
 
 /**
  * Variant rows of one product share a SKU stem — `TW-193-1` … `TW-193-12` all
- * belong to `TW-193`. Only rows carrying the same stem *and* the same product
- * name are merged, so a stem collision cannot fuse two different garments.
+ * belong to `TW-193`. Combined sets carry a compound SKU whose every part is
+ * numbered (`TM-0358-1/TM-0349-1`), so the trailing index comes off each part;
+ * stripping only the last one left every size as its own product.
  */
 function skuStemKey(row: NormalizedVariantRow): string {
-  const stem = row.sku.replace(/-\d+$/, "");
+  const stem = row.sku
+    .split(/[/\\]/)
+    .map((part) => part.trim().replace(/-\d+$/, ""))
+    .join("/");
   return `${stem}\u0000${normalizedProductName(row).toLocaleLowerCase("ru-RU")}`;
 }
 
@@ -665,18 +669,11 @@ function selectCandidates(candidates: ProductCandidate[]): {
         left.product.name.localeCompare(right.product.name, "ru"),
     );
 
-  // Every sufficiently complete group ships — the workbook is the catalogue,
-  // not a pool to sample from. Groups normalising to a name already taken are
-  // dropped: they are the same garment split across rows, and a second
-  // identical card helps nobody.
-  const selected: ProductCandidate[] = [];
-  const usedNames = new Set<string>();
-  for (const candidate of eligible) {
-    const identity = candidate.product.name.toLocaleLowerCase("ru-RU");
-    if (usedNames.has(identity)) continue;
-    usedNames.add(identity);
-    selected.push(candidate);
-  }
+  // Every sufficiently complete group ships. Nothing is dropped for sharing a
+  // name: the workbook's own grouping column splits a garment by colourway, so
+  // same-name groups are separate colours of one model, and de-duplicating
+  // them threw away every colour but the first.
+  const selected = [...eligible];
 
   if (selected.length === 0) {
     throw new Error("No sufficiently complete product groups were found.");

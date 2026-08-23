@@ -1506,6 +1506,15 @@ body:has([data-page="about"]) .footer-mountain-cut {
   touch-action: pan-y;
 }
 
+/* Supplier photography arrives in mixed ratios — 3:4, 4:5, 2:3 and square —
+   so a cover fit silently cropped whatever did not match the box: up to 20% of
+   the frame here, which took the model's head and hem. Contain shows the whole
+   garment and the stone box fills what is left. */
+.product-gallery-main img,
+.product-gallery-thumbnail img {
+  object-fit: contain;
+}
+
 .product-gallery-main-scrim {
   position: absolute;
   inset: 0;
