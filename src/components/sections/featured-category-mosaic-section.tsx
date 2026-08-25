@@ -70,7 +70,7 @@ export function FeaturedCategoryMosaicSection({
                   >
                     <ResilientEditorialImage
                       className="featured-category-image object-cover"
-                      fallbackLabel={item.label}
+                      fallbackLabel=""
                       images={leadImages(item.product, item.imageOffset)}
                       sizes="(max-width: 767px) 50vw, 33vw"
                     />

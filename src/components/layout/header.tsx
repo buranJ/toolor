@@ -15,19 +15,20 @@ export function Header({ locale }: { locale: Locale }) {
     <header className="site-header sticky top-0 z-[var(--depth-nav)]">
       <div className="header-frame">
         <div className="header-surface">
-          <div className="header-layout relative z-10 grid min-h-16 grid-cols-[1fr_auto] items-center gap-5 xl:min-h-[4.5rem] xl:grid-cols-[auto_1fr_auto] xl:gap-8">
+          <div className="header-layout relative z-10 grid min-h-16 grid-cols-[1fr_auto] items-center gap-5 xl:min-h-[4.5rem] xl:grid-cols-[1fr_auto_1fr] xl:gap-8">
             <Link
               aria-label={d.header.homeAria}
-              className="header-mark flex w-fit items-center"
+              className="header-mark flex w-fit items-center justify-self-start"
               href={localePath(locale, "/")}
             >
               <BrandLogo tone="blue" className="h-5 xl:h-6" />
             </Link>
 
-            <nav
-              aria-label={d.header.mainNavAria}
-              className="hidden justify-self-center xl:block"
-            >
+            {/* Equal 1fr side tracks put this centre track on the page's
+                midline. Centring inside a single wide track instead offset the
+                menu by half the difference between the logo and the right-hand
+                controls — about 140px to the left. */}
+            <nav aria-label={d.header.mainNavAria} className="hidden xl:block">
               <ul className="flex items-center gap-[clamp(1.25rem,2.2vw,2.75rem)]">
                 {navigation.map((item) => (
                   <li key={item.href}>

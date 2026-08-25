@@ -24,8 +24,12 @@ export function ResilientEditorialImage({
   if (!image) {
     return (
       <div className="editorial-fallback">
-        <span className="mono-meta">{fallbackLabel}</span>
-        <span className="bg-brand h-1 w-14" aria-hidden="true" />
+        {/* Callers that already print the name over the tile pass an empty
+            label, so the placeholder does not repeat it. */}
+        {fallbackLabel ? (
+          <span className="mono-meta">{fallbackLabel}</span>
+        ) : null}
+        <span className="bg-brand mt-auto h-1 w-14" aria-hidden="true" />
       </div>
     );
   }

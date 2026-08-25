@@ -21,7 +21,7 @@ export function FeaturedCollectionSection({
       <Container>
         <div className="text-center">
           <h2 className="section-serif mt-4">{copy.title}</h2>
-          <p className="text-muted mx-auto mt-4 max-w-lg text-sm leading-6">
+          <p className="text-muted mx-auto mt-4 max-w-md text-sm leading-6">
             {copy.description}
           </p>
         </div>

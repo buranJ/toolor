@@ -44,7 +44,7 @@ export function ProductCard({
           <div className="bg-stone relative aspect-[3/4] overflow-hidden">
             {image ? (
               <ResilientEditorialImage
-                className="product-card-media object-contain group-hover:opacity-0"
+                className="product-card-media object-cover group-hover:opacity-0"
                 images={product.images}
                 priority={imagePriority}
                 sizes={imageSizes}
@@ -59,7 +59,7 @@ export function ProductCard({
               <Image
                 alt=""
                 aria-hidden="true"
-                className="product-card-media object-contain opacity-0 group-hover:opacity-100"
+                className="product-card-media object-cover opacity-0 group-hover:opacity-100"
                 fill
                 sizes={imageSizes}
                 src={hoverImage.url}

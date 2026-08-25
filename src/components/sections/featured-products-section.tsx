@@ -33,17 +33,19 @@ export function FeaturedProductsSection({
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
       >
+        {/* Level bands that step across the whole section: the top one stamps
+            right-to-left, the bottom one left-to-right. */}
         <RuneReveal
           variant="grey"
           from="right"
           targetOpacity={0.75}
-          className="absolute top-24 right-0 w-[46rem] max-w-none translate-x-1/6 rotate-3"
+          className="absolute inset-x-0 top-4"
         />
         <RuneReveal
           variant="grey"
           from="left"
           targetOpacity={0.7}
-          className="absolute bottom-6 left-0 w-[42rem] max-w-none -translate-x-1/6 -rotate-3"
+          className="absolute inset-x-0 bottom-6"
         />
       </div>
       <Container className="relative z-10">
