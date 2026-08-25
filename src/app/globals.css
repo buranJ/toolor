@@ -43,7 +43,17 @@
   --depth-content: 10;
   --depth-nav: 50;
   --depth-motion: 0;
-  --header-height: 4.5rem;
+  /* Must track the real header height, which the layout sets as min-h-16 and
+     raises to 4.5rem at xl. The hero pulls itself up by this value and starts
+     its media below it, so an over-declared value left a black strip of the
+     hero's backdrop showing between the header and the video. */
+  --header-height: 4rem;
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --header-height: 4.5rem;
+  }
 }
 
 @theme inline {

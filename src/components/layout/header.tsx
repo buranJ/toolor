@@ -12,10 +12,10 @@ export function Header({ locale }: { locale: Locale }) {
   const d = getDictionary(locale);
 
   return (
-    <header className="site-header sticky top-0 z-[var(--depth-nav)]">
+    <header className="site-header sticky top-0 z-(--depth-nav)">
       <div className="header-frame">
         <div className="header-surface">
-          <div className="header-layout relative z-10 grid min-h-16 grid-cols-[1fr_auto] items-center gap-5 xl:min-h-[4.5rem] xl:grid-cols-[1fr_auto_1fr] xl:gap-8">
+          <div className="header-layout relative z-10 grid min-h-16 grid-cols-[1fr_auto] items-center gap-5 xl:min-h-18 xl:grid-cols-[1fr_auto_1fr] xl:gap-8">
             <Link
               aria-label={d.header.homeAria}
               className="header-mark flex w-fit items-center justify-self-start"
