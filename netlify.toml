@@ -1,0 +1,18 @@
+# Files under public/ are served straight from the CDN and, unlike the hashed
+# build output, got `cache-control: public, max-age=0, must-revalidate`. Nothing
+# was reused between visits, so the scroll-driven hero re-fetched its video on
+# every load and could not lean on the cache while seeking.
+#
+# Not `immutable`: the hero assets keep their filenames across re-encodes, so a
+# year-long lock would strand visitors on an old cut.
+[[headers]]
+  for = "/media/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/fonts/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

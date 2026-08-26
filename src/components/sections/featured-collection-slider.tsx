@@ -97,6 +97,7 @@ export function FeaturedCollectionSlider({
               })}
               className="featured-carousel-slide"
               data-active={isActive}
+              data-depth={depth}
               key={product.id}
               style={style}
             >

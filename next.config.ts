@@ -16,9 +16,13 @@ const nextConfig: NextConfig = {
   },
   poweredByHeader: false,
   images: {
-    // Source hosts intermittently exceed Next's optimizer timeout; use the exact
-    // validated workbook URLs in the browser instead of proxying their bytes.
-    unoptimized: true,
+    // Optimisation was off because the source hosts were said to exceed the
+    // optimizer's timeout. They no longer do — a sweep of the supplier images
+    // resized in 0.5-1.7s each — and leaving it off was serving the browser
+    // the untouched originals: one product photo alone was 19.4MB, and the
+    // home page pulled 25MB on a phone.
+    unoptimized: false,
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "i.postimg.cc" },
       { protocol: "https", hostname: "s3.m-market.kg" },

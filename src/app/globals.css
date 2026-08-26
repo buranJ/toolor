@@ -2152,6 +2152,11 @@ body:has([data-page="about"]) .footer-mountain-cut {
 }
 
 .featured-carousel-stage {
+  /* How many cards flank the active one. Wide screens have the room for the
+     whole stack, so nothing is clipped here; only the phone breakpoint below
+     narrows it. */
+  --visible-depth: 99;
+
   position: relative;
   display: grid;
   height: clamp(28rem, 42vw, 37rem);
@@ -2182,6 +2187,23 @@ body:has([data-page="about"]) .footer-mountain-cut {
 
 .featured-carousel-slide:not([data-active="true"]) {
   filter: saturate(0.72) brightness(0.9);
+}
+
+/* Full opacity up to --visible-depth, then a one-step fade to nothing. */
+.featured-carousel-slide {
+  opacity: clamp(
+    0,
+    calc((var(--visible-depth) + 1 - var(--slide-depth)) / 1),
+    1
+  );
+}
+
+/* Faded-out cards must not swallow taps; only applies where they are hidden,
+   which is the phone breakpoint. */
+@media (max-width: 639px) {
+  .featured-carousel-slide:not([data-depth="0"]):not([data-depth="1"]) button {
+    pointer-events: none;
+  }
 }
 
 .featured-carousel-media {
@@ -2298,7 +2320,17 @@ body:has([data-page="about"]) .footer-mountain-cut {
   }
 
   .featured-carousel-stage {
+    /* One flanking card each side on a phone; deeper ones crowded the frame
+       and broke the read of a single card in focus. */
+    --visible-depth: 1;
+
     height: 27rem;
+  }
+
+  .featured-carousel-dots {
+    /* The active card is scaled up and lifted, so it ate into the nominal gap
+       and the dots sat almost against it. */
+    margin-top: 3.25rem;
   }
 
   .featured-carousel-active-link {
