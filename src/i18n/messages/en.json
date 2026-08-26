@@ -47,8 +47,7 @@
     "open": "Open menu",
     "close": "Close menu",
     "trigger": "Menu",
-    "navAria": "Mobile navigation",
-    "chooseDirection": "Choose your direction"
+    "navAria": "Mobile navigation"
   },
   "footer": {
     "newsletterKicker": "Newsletter",
@@ -184,6 +183,9 @@
     "showImage": "Show image {index}",
     "previousImage": "Previous image",
     "nextImage": "Next image",
+    "zoomOpen": "View the full photo",
+    "zoomClose": "Close viewer",
+    "zoomAria": "Product photo viewer",
     "photosSoon": "Photos coming soon",
     "photoSoon": "Photo coming soon",
     "detailsAria": "Product details",

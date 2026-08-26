@@ -47,8 +47,7 @@
     "open": "Менюну ачуу",
     "close": "Менюну жабуу",
     "trigger": "Меню",
-    "navAria": "Мобилдик чабыттоо",
-    "chooseDirection": "Багытты тандаңыз"
+    "navAria": "Мобилдик чабыттоо"
   },
   "footer": {
     "newsletterKicker": "Жаңылыктар",
@@ -184,6 +183,9 @@
     "showImage": "{index}-сүрөттү көрсөтүү",
     "previousImage": "Мурунку сүрөт",
     "nextImage": "Кийинки сүрөт",
+    "zoomOpen": "Сүрөттү толук көрүү",
+    "zoomClose": "Көрүүнү жабуу",
+    "zoomAria": "Товардын сүрөтүн көрүү",
     "photosSoon": "Сүрөттөр жакында чыгат",
     "photoSoon": "Сүрөт жакында чыгат",
     "detailsAria": "Товардын деталдары",

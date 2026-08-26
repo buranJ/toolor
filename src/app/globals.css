@@ -939,11 +939,9 @@ body:has([data-page="about"]) .footer-mountain-cut {
   text-decoration-thickness: 1.5px;
 }
 
-/* On dark surfaces (footer, mobile menu) the links inherit white. */
+/* On the dark footer the links inherit white instead of turning blue. */
 .site-footer .language-switcher a:hover,
-.site-footer .language-switcher a:focus-visible,
-.mobile-menu-panel .language-switcher a:hover,
-.mobile-menu-panel .language-switcher a:focus-visible {
+.site-footer .language-switcher a:focus-visible {
   color: inherit;
 }
 
@@ -1026,63 +1024,101 @@ body:has([data-page="about"]) .footer-mountain-cut {
   flex-direction: column;
   overflow: hidden;
   padding: 1.25rem;
-  background:
-    radial-gradient(circle at 82% 12%, rgb(73 113 193 / 30%), transparent 28%),
-    linear-gradient(145deg, #0c1730 0%, #12204a 55%, #0a1120 100%);
-  color: white;
-}
-
-.mobile-menu-orbit {
-  position: absolute;
-  top: -8rem;
-  right: -7rem;
-  width: 18rem;
-  height: 18rem;
-  border: 1px solid rgb(255 255 255 / 10%);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 3.5rem rgb(255 255 255 / 2.5%),
-    0 0 0 7rem rgb(255 255 255 / 1.5%);
+  background: var(--paper);
+  color: var(--ink);
 }
 
 .mobile-menu-close {
   width: 2.75rem;
   height: 2.75rem;
-  border: 1px solid rgb(255 255 255 / 24%);
+  border: 1px solid var(--line);
   border-radius: 999px;
   font-size: 1.7rem;
   font-weight: 300;
   line-height: 1;
+  transition:
+    border-color var(--motion-duration-fast) var(--motion-ease-standard),
+    color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.mobile-menu-close:hover {
+  border-color: var(--ink);
+  color: var(--brand-blue);
+}
+
+/* Shortcut row. Equal columns with the icon and label stacked and centred:
+   left-aligned text in three cells of differing width read as ragged, and the
+   0.65rem labels alone gave no real tap target. */
+.mobile-menu-shortcuts {
+  display: grid;
+  border-top: 1px solid var(--line);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mobile-menu-shortcuts a {
+  display: grid;
+  min-height: 4.5rem;
+  align-content: center;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 0.5rem;
+  color: var(--ink);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.mobile-menu-shortcuts a + a {
+  border-left: 1px solid var(--line);
+}
+
+.mobile-menu-shortcuts svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.mobile-menu-shortcuts a:hover,
+.mobile-menu-shortcuts a:focus-visible {
+  color: var(--brand-blue);
 }
 
 .mobile-menu-link {
   display: grid;
-  grid-template-columns: 1.5rem 1fr auto;
-  align-items: baseline;
+  grid-template-columns: 1fr auto;
+  align-items: center;
   gap: 0.75rem;
-  border-top: 1px solid rgb(255 255 255 / 14%);
+  border-top: 1px solid var(--line);
   padding-block: clamp(0.8rem, 2.5vh, 1.15rem);
-  font-size: clamp(1.75rem, 8vw, 2.65rem);
+  font-size: clamp(1.6rem, 7vw, 2.35rem);
   font-weight: 520;
-  line-height: 1;
-  letter-spacing: -0.055em;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
-.mobile-menu-link:last-child {
-  border-bottom: 1px solid rgb(255 255 255 / 14%);
+.mobile-menu-panel li:last-child .mobile-menu-link {
+  border-bottom: 1px solid var(--line);
 }
 
-.mobile-menu-mountains {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 7rem;
-  fill: rgb(115 156 255 / 7%);
-  stroke: rgb(255 255 255 / 12%);
-  stroke-width: 1;
-  pointer-events: none;
+.mobile-menu-link:hover,
+.mobile-menu-link:focus-visible {
+  color: var(--brand-blue);
+}
+
+.mobile-menu-link-arrow {
+  color: var(--brand-gray);
+  font-size: 1.1rem;
+  transition:
+    transform var(--motion-duration-fast) var(--motion-ease-standard),
+    color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.mobile-menu-link:hover .mobile-menu-link-arrow {
+  color: var(--brand-blue);
+  transform: translateX(0.25rem);
 }
 
 .cart-drawer {
@@ -1516,13 +1552,118 @@ body:has([data-page="about"]) .footer-mountain-cut {
   touch-action: pan-y;
 }
 
-/* Supplier photography arrives in mixed ratios — 3:4, 4:5, 2:3 and square —
-   so a cover fit silently cropped whatever did not match the box: up to 20% of
-   the frame here, which took the model's head and hem. Contain shows the whole
-   garment and the stone box fills what is left. */
-.product-gallery-main img,
-.product-gallery-thumbnail img {
+/* Zoom affordance. Sits bottom-left, clear of the counter (top-right) and the
+   arrows (bottom-right). */
+.product-gallery-zoom {
+  position: absolute;
+  z-index: 3;
+  bottom: 1rem;
+  left: 1rem;
+  display: grid;
+  width: 2.6rem;
+  height: 2.6rem;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 999px;
+  background: rgb(9 14 18 / 38%);
+  color: white;
+  backdrop-filter: blur(10px);
+  transition:
+    background var(--motion-duration-fast) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.product-gallery-zoom:hover:not(:disabled) {
+  border-color: white;
+  background: rgb(9 14 18 / 62%);
+}
+
+.product-gallery-zoom:disabled {
+  opacity: 0.45;
+}
+
+.product-gallery-zoom svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+/* --- Full-frame photo viewer --- */
+
+.product-viewer {
+  position: fixed;
+  z-index: 200;
+  inset: 0;
+  display: grid;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgb(6 10 14 / 92%);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 1rem;
+  backdrop-filter: blur(6px);
+}
+
+.product-viewer-stage {
+  position: relative;
+  min-height: 0;
+}
+
+/* The whole point of the viewer: nothing is cropped here. */
+.product-viewer-image {
   object-fit: contain;
+  object-position: center;
+}
+
+.product-viewer-close,
+.product-viewer-nav button {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 40%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 8%);
+  color: white;
+  font-size: 1rem;
+  transition:
+    background var(--motion-duration-fast) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.product-viewer-close:hover,
+.product-viewer-nav button:hover {
+  border-color: white;
+  background: rgb(255 255 255 / 18%);
+}
+
+.product-viewer-close:focus-visible,
+.product-viewer-nav button:focus-visible,
+.product-gallery-zoom:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
+}
+
+.product-viewer-close {
+  position: absolute;
+  /* Above the stage: both were auto, and the image — later in the DOM — took
+     the clicks, which the stage then swallowed to keep the backdrop from
+     closing. The button looked live but did nothing. */
+  z-index: 2;
+  top: clamp(1rem, 4vw, 3rem);
+  right: clamp(1rem, 4vw, 3rem);
+}
+
+.product-viewer-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  color: rgb(255 255 255 / 80%);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
 }
 
 .product-gallery-main-scrim {

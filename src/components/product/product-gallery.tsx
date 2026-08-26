@@ -4,6 +4,7 @@ import type { TouchEvent } from "react";
 import { useRef, useState, useSyncExternalStore } from "react";
 
 import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
+import { ProductImageViewer } from "@/components/product/product-image-viewer";
 import { format, getDictionary, type Locale } from "@/i18n";
 import type { ProductImage } from "@/types";
 
@@ -34,6 +35,7 @@ export function ProductGallery({
 }) {
   const d = getDictionary(locale);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [zoomed, setZoomed] = useState(false);
   const isReady = useIsHydrated();
   const touchStartX = useRef<number | null>(null);
   const visibleImages = images.slice(0, 8);
@@ -117,6 +119,18 @@ export function ProductGallery({
           sizes="(max-width: 1023px) 100vw, 58vw"
         />
         <div aria-hidden="true" className="product-gallery-main-scrim" />
+        <button
+          aria-label={d.product.zoomOpen}
+          className="product-gallery-zoom"
+          disabled={!isReady}
+          onClick={() => setZoomed(true)}
+          type="button"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="6.5" />
+            <path d="M16 16l4.5 4.5M11 8.2v5.6M8.2 11h5.6" />
+          </svg>
+        </button>
         <p className="product-gallery-route">
           TOOLOR / {productType ?? "PRODUCT"}
         </p>
@@ -145,6 +159,16 @@ export function ProductGallery({
           </div>
         ) : null}
       </div>
+
+      {zoomed ? (
+        <ProductImageViewer
+          d={d}
+          images={visibleImages}
+          index={activeIndex}
+          onClose={() => setZoomed(false)}
+          onMove={move}
+        />
+      ) : null}
     </div>
   );
 }

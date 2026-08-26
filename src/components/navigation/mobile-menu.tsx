@@ -8,6 +8,50 @@ import { BrandLogo } from "@/components/ui/brand-logo";
 import { getDictionary, localePath, type Locale } from "@/i18n";
 import { navigation } from "@/lib/config/site";
 
+/* One stroke language for all three: 20x20 box, 1.5 stroke, round joins —
+   matching the bag icon the header already uses. */
+function SearchIcon() {
+  return (
+    <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+      <circle cx="9" cy="9" r="5.5" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M13.2 13.2 17 17"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
+function HeartIcon() {
+  return (
+    <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+      <path
+        d="M10 16.5S3.5 12.6 3.5 8.2A3.7 3.7 0 0 1 10 5.9a3.7 3.7 0 0 1 6.5 2.3c0 4.4-6.5 8.3-6.5 8.3Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
+function BagIcon() {
+  return (
+    <svg aria-hidden="true" fill="none" viewBox="0 0 20 20">
+      <path
+        d="M5.5 7V5.5a4.5 4.5 0 0 1 9 0V7m-11 0h13l1 11h-15l1-11Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
 export function MobileMenu({ locale }: { locale: Locale }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const d = getDictionary(locale);
@@ -28,15 +72,15 @@ export function MobileMenu({ locale }: { locale: Locale }) {
       </button>
       <dialog className="menu-dialog" data-testid="mobile-menu" ref={dialogRef}>
         <div className="mobile-menu-panel">
-          <div aria-hidden="true" className="mobile-menu-orbit" />
-          <header className="relative z-10 flex items-start justify-between">
-            <div>
-              <BrandLogo tone="white" className="h-6" />
-              <p className="mt-2 font-mono text-[0.55rem] tracking-[0.18em] text-white/45 uppercase">
-                {d.common.brandCountry}
-              </p>
-            </div>
-            <div className="flex items-start gap-3">
+          <header className="flex items-center justify-between">
+            <Link
+              aria-label={d.header.homeAria}
+              href={localePath(locale, "/")}
+              onClick={() => dialogRef.current?.close()}
+            >
+              <BrandLogo tone="blue" className="h-6" />
+            </Link>
+            <div className="flex items-center gap-3">
               <LanguageSwitcher label={d.language.switch} locale={locale} />
               <button
                 aria-label={d.mobileMenu.close}
@@ -48,65 +92,46 @@ export function MobileMenu({ locale }: { locale: Locale }) {
               </button>
             </div>
           </header>
-          <nav
-            aria-label={d.mobileMenu.navAria}
-            className="relative z-10 my-auto py-10"
-          >
-            <p className="mb-5 font-mono text-[0.6rem] tracking-[0.2em] text-white/45 uppercase">
-              {d.mobileMenu.chooseDirection}
-            </p>
+          <nav aria-label={d.mobileMenu.navAria} className="my-auto py-10">
             <ul>
-              {navigation.map((item, index) => (
+              {navigation.map((item) => (
                 <li key={item.href}>
                   <Link
                     className="mobile-menu-link group"
                     href={localePath(locale, item.href)}
                     onClick={() => dialogRef.current?.close()}
                   >
-                    <span className="font-mono text-xs text-white/45">
-                      0{index + 1}
-                    </span>
                     <span>{d.nav[item.key]}</span>
-                    <span
-                      aria-hidden="true"
-                      className="text-xl text-white/35 transition-transform group-hover:translate-x-1"
-                    >
-                      ↗
+                    <span aria-hidden="true" className="mobile-menu-link-arrow">
+                      →
                     </span>
                   </Link>
                 </li>
               ))}
             </ul>
           </nav>
-          <div className="relative z-10 grid grid-cols-3 gap-3 border-t border-white/15 pt-5 text-[0.65rem] tracking-[0.12em] text-white/60 uppercase">
-            <Link
-              href={localePath(locale, "/search")}
-              onClick={() => dialogRef.current?.close()}
-            >
-              {d.nav.search}
-            </Link>
-            <Link
-              href={localePath(locale, "/wishlist")}
-              onClick={() => dialogRef.current?.close()}
-            >
-              {d.nav.wishlist}
-            </Link>
-            <Link
-              href={localePath(locale, "/cart")}
-              onClick={() => dialogRef.current?.close()}
-            >
-              {d.nav.cart}
-            </Link>
+          <div className="mobile-menu-shortcuts">
+            {(
+              [
+                { href: "/search", label: d.nav.search, icon: <SearchIcon /> },
+                {
+                  href: "/wishlist",
+                  label: d.nav.wishlist,
+                  icon: <HeartIcon />,
+                },
+                { href: "/cart", label: d.nav.cart, icon: <BagIcon /> },
+              ] as const
+            ).map((item) => (
+              <Link
+                href={localePath(locale, item.href)}
+                key={item.href}
+                onClick={() => dialogRef.current?.close()}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </Link>
+            ))}
           </div>
-          <svg
-            aria-hidden="true"
-            className="mobile-menu-mountains"
-            preserveAspectRatio="none"
-            viewBox="0 0 390 110"
-          >
-            <path d="M0 110V76L52 38L89 69L139 17L184 67L230 42L270 76L321 24L390 72V110Z" />
-            <path d="m0 87 61-31 31 22 45-42 48 44 44-23 42 35 52-47 67 40" />
-          </svg>
         </div>
       </dialog>
     </>
