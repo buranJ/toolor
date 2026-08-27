@@ -652,6 +652,47 @@ body {
   }
 }
 
+/* ------------------------------------------------------------ Preloader */
+
+.brand-preloader {
+  position: fixed;
+  z-index: 999;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  transition: opacity 420ms var(--motion-ease-standard);
+}
+
+.brand-preloader[data-leaving="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The wordmark draws itself left to right — the same reveal language as the
+   rune strip, and the only motion here. */
+.brand-preloader-mark {
+  display: block;
+  clip-path: inset(0 100% 0 0);
+  /* Deliberately not --motion-ease-standard: that curve front-loads its
+     movement, so the wipe was 98% finished within 150ms and never read as an
+     animation. This one keeps an even pace across the wordmark. */
+  animation: brand-preloader-wipe 850ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes brand-preloader-wipe {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-preloader-mark {
+    clip-path: none;
+    animation: none;
+  }
+}
+
 /* --------------------------------------------------------------- Footer */
 
 .site-footer {

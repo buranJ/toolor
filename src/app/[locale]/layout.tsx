@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Manrope } from "next/font/google";
 import { notFound } from "next/navigation";
 
+import { BrandPreloader } from "@/components/layout/brand-preloader";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { CartDrawer } from "@/components/cart/cart-drawer";
@@ -40,6 +41,15 @@ const geistMono = Geist_Mono({
 export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
+
+/**
+ * The scrubber's first loading pass: every eighth frame. Enough to drive the
+ * whole scroll coarsely, so the hero responds long before the full set lands.
+ */
+const HERO_COARSE_FRAMES = Array.from(
+  { length: 12 },
+  (_, i) => `f${String(i * 8 + 1).padStart(3, "0")}.webp`,
+);
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -96,6 +106,34 @@ export default async function LocaleLayout({
       className={`${brandFallback.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        {/*
+          Hero frames are fetched by a client effect, so nothing asked for them
+          until hydration finished — measured at 951ms while CSS and JS started
+          at 98ms, leaving the connection idle in between. Preloading the coarse
+          pass here starts it with everything else; `media` keeps each device to
+          its own set.
+        */}
+        {HERO_COARSE_FRAMES.map((frame) => (
+          <link
+            as="image"
+            href={`/media/hero/frames/mobile/${frame}`}
+            key={`m-${frame}`}
+            media="(max-width: 1023px)"
+            rel="preload"
+            type="image/webp"
+          />
+        ))}
+        {HERO_COARSE_FRAMES.map((frame) => (
+          <link
+            as="image"
+            href={`/media/hero/frames/desktop/${frame}`}
+            key={`d-${frame}`}
+            media="(min-width: 1024px)"
+            rel="preload"
+            type="image/webp"
+          />
+        ))}
+
         {/* Preload the two most-used brand weights to cut first-paint swap. */}
         <link
           rel="preload"
@@ -119,6 +157,7 @@ export default async function LocaleLayout({
         >
           {d.header.skipToContent}
         </a>
+        <BrandPreloader label={d.header.homeAria} />
         <Header locale={activeLocale} />
         <CartDrawer locale={activeLocale} />
         <main id="main-content" className="flex-1">
