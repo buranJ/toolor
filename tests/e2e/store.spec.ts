@@ -14,20 +14,19 @@ test("homepage smoke", async ({ page }) => {
   ).toBeVisible();
 });
 
-test("mobile hero uses the portrait video and follows scroll", async ({
+test("mobile hero paints its frame sequence and follows scroll", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
   const hero = page.getByTestId("hero-scroll-video");
-  const video = page.getByTestId("hero-scroll-media");
+  const canvas = page.getByTestId("hero-scroll-media");
 
-  await expect(video).toHaveAttribute(
-    "src",
-    "/media/hero/hero-scroll-mobile.mp4",
-  );
-  await expect(video).toHaveAttribute("playsinline", "");
+  // The scrubber draws frames to a canvas; it used to seek a <video>, which
+  // cost a decode per scroll tick and left phones on the poster.
+  await expect(canvas).toHaveJSProperty("tagName", "CANVAS");
+  await expect(canvas).toHaveClass(/opacity-100/, { timeout: 20_000 });
 
   await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.4));
 
@@ -40,15 +39,26 @@ test("mobile hero uses the portrait video and follows scroll", async ({
       { timeout: 10_000 },
     )
     .toBeGreaterThan(0.1);
+
+  // Something is actually on the canvas, not just an empty element.
   await expect
     .poll(
       () =>
-        video.evaluate((element) =>
-          element instanceof HTMLVideoElement ? element.currentTime : 0,
-        ),
+        canvas.evaluate((element) => {
+          const c = element as HTMLCanvasElement;
+          const ctx = c.getContext("2d");
+          if (!ctx || !c.width) return 0;
+          const { data } = ctx.getImageData(
+            Math.floor(c.width / 2),
+            Math.floor(c.height / 2),
+            1,
+            1,
+          );
+          return data[0]! + data[1]! + data[2]!;
+        }),
       { timeout: 10_000 },
     )
-    .toBeGreaterThan(0.25);
+    .toBeGreaterThan(0);
 });
 
 test("app promotion is available on home and about pages", async ({ page }) => {
