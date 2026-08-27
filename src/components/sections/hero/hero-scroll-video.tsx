@@ -17,7 +17,7 @@ const FRAME_COUNT = 96;
  * away detail, and one larger only invented pixels.
  */
 const FRAME_SIZE = {
-  mobile: { width: 1080, height: 1920 },
+  mobile: { width: 1440, height: 2560 },
   desktop: { width: 2880, height: 1620 },
 } as const;
 const frameUrl = (mode: "mobile" | "desktop", index: number) =>
