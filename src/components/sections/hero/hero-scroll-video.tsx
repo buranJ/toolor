@@ -11,6 +11,15 @@ const HERO_POSTER = "/media/hero/hero-poster.webp";
 const HERO_POSTER_MOBILE = "/media/hero/hero-poster-mobile.webp";
 
 const FRAME_COUNT = 96;
+/**
+ * Native size of each set, cut straight from the 4K masters. The canvas is
+ * sized from these: drawing into a backing store smaller than the frame threw
+ * away detail, and one larger only invented pixels.
+ */
+const FRAME_SIZE = {
+  mobile: { width: 1080, height: 1920 },
+  desktop: { width: 2880, height: 1620 },
+} as const;
 const frameUrl = (mode: "mobile" | "desktop", index: number) =>
   `/media/hero/frames/${mode}/f${String(index + 1).padStart(3, "0")}.webp`;
 
@@ -108,6 +117,7 @@ export function HeroScrollVideo({
   const framesRef = useRef<(HTMLImageElement | null)[]>([]);
   const repaintRef = useRef<(() => void) | null>(null);
   const loadedModeRef = useRef<"mobile" | "desktop" | null>(null);
+  const modeRef = useRef<"mobile" | "desktop">("mobile");
 
   const [painted, setPainted] = useState(false);
   const still = useSyncExternalStore(
@@ -131,6 +141,7 @@ export function HeroScrollVideo({
     const mode = window.matchMedia(DESKTOP_QUERY).matches
       ? "desktop"
       : "mobile";
+    modeRef.current = mode;
     if (loadedModeRef.current === mode) return;
     loadedModeRef.current = mode;
 
@@ -191,6 +202,9 @@ export function HeroScrollVideo({
     const section = sectionRef.current;
     const canvas = canvasRef.current;
     if (!section || !canvas || still) return;
+    modeRef.current = window.matchMedia(DESKTOP_QUERY).matches
+      ? "desktop"
+      : "mobile";
 
     const context = canvas.getContext("2d", { alpha: false });
     if (!context) return;
@@ -212,9 +226,14 @@ export function HeroScrollVideo({
       sectionHeight = section.offsetHeight;
 
       const box = canvas.getBoundingClientRect();
-      // Cap the backing store at 2x: beyond that the extra pixels cost real
-      // paint time on phones and buy nothing anyone can see.
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Match the screen, but never ask for more pixels than the frames hold:
+      // a flat 2x cap left the canvas below both the screen and the artwork on
+      // a 3x phone, so the picture was upscaled twice over.
+      const frame = FRAME_SIZE[modeRef.current];
+      const dpr = Math.min(
+        window.devicePixelRatio || 1,
+        box.width > 0 ? frame.width / box.width : 1,
+      );
       const w = Math.round(box.width * dpr);
       const h = Math.round(box.height * dpr);
       if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
