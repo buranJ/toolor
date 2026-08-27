@@ -16,8 +16,11 @@ const frameUrl = (mode: "mobile" | "desktop", index: number) =>
 
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
-/** Load every Nth frame first so the scrub works long before the set is in. */
-const COARSE_STRIDE = 8;
+/**
+ * Stride of each loading pass. The first gets the scrub working on a tenth of
+ * the bytes; each following pass halves the gaps everywhere at once.
+ */
+const LOAD_PASSES = [8, 4, 2, 1] as const;
 /** Easing applied per frame: rendered += (target - rendered) * SCROLL_EASING. */
 const SCROLL_EASING = 0.12;
 /** Below this progress delta the loop is considered settled and pauses. */
@@ -162,16 +165,23 @@ export function HeroScrollVideo({
       });
 
     void (async () => {
-      const coarse: number[] = [];
-      for (let i = 0; i < FRAME_COUNT; i += COARSE_STRIDE) coarse.push(i);
-      await Promise.all(coarse.map(load));
-
-      const rest = Array.from({ length: FRAME_COUNT }, (_, i) => i).filter(
-        (i) => i % COARSE_STRIDE !== 0,
-      );
-      for (let i = 0; i < rest.length; i += 6) {
-        if (framesRef.current !== frames) return;
-        await Promise.all(rest.slice(i, i + 6).map(load));
+      // Halve the stride each pass instead of filling left-to-right: the old
+      // order left the tail of the sequence empty for seconds, so scrubbing
+      // jumped between distant frames while the middle filled in. Now the
+      // whole strip gets steadily denser.
+      const seen = new Set<number>();
+      for (const stride of LOAD_PASSES) {
+        const batch: number[] = [];
+        for (let i = 0; i < FRAME_COUNT; i += stride) {
+          if (!seen.has(i)) {
+            seen.add(i);
+            batch.push(i);
+          }
+        }
+        for (let i = 0; i < batch.length; i += 6) {
+          if (framesRef.current !== frames) return;
+          await Promise.all(batch.slice(i, i + 6).map(load));
+        }
       }
     })();
   }, [isDesktop, still]);
