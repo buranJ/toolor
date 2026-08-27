@@ -372,8 +372,8 @@ export function HeroScrollVideo({
     <div
       ref={sectionRef}
       data-testid="hero-scroll-video"
-      className={`relative h-[300svh] motion-reduce:h-[100svh] lg:h-[340svh] ${
-        still ? "!h-[100svh]" : ""
+      className={`relative h-[300svh] motion-reduce:h-[100dvh] lg:h-[340svh] ${
+        still ? "!h-[100dvh]" : ""
       } ${className}`}
       style={
         {
@@ -382,7 +382,11 @@ export function HeroScrollVideo({
         } as CSSVars
       }
     >
-      <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-black">
+      {/* dvh, not svh: `svh` is the viewport with the browser toolbar shown,
+          so once the toolbar retracted the pinned layer was shorter than the
+          screen and the page background showed through as a white strip along
+          the bottom. `dvh` tracks the viewport as it actually is. */}
+      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-black">
         {/* Media sits below the pinned header so the garment is never cut. */}
         <div className="absolute inset-x-0 top-[var(--header-height)] bottom-0">
           {/* Poster paints instantly and stays until the first frame lands. */}

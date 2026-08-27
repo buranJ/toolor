@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Manrope } from "next/font/google";
 import { notFound } from "next/navigation";
 
@@ -31,6 +31,15 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+/**
+ * Paints the browser's own chrome — the status bar on Android, the toolbar tint
+ * in Yandex Browser. It was left to the manifest's brand blue, which framed the
+ * light page in a blue band; this matches the header instead.
+ */
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+};
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
