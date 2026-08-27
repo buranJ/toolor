@@ -34,6 +34,12 @@ const LOAD_PASSES = [8, 4, 2, 1] as const;
 const SCROLL_EASING = 0.12;
 /** Below this progress delta the loop is considered settled and pauses. */
 const SETTLE_EPSILON = 0.0004;
+/**
+ * Sub-steps the paint loop distinguishes inside one frame interval. Only the
+ * frame index changes the picture, but sampling finer keeps the CSS-driven
+ * overlays — logo fade, CTA reveal — moving continuously.
+ */
+const PROGRESS_STEPS = 8;
 
 /** Centre logo fade window (scroll progress) — gone before the garment reveal. */
 const LOGO_FADE_START = 0.42;
@@ -262,15 +268,8 @@ export function HeroScrollVideo({
       return null;
     };
 
-    const draw = (progress: number) => {
-      section.style.setProperty("--hero-progress", progress.toFixed(4));
-      const index = Math.round(progress * (FRAME_COUNT - 1));
-      if (index === lastDrawn) return;
-
-      const img = pick(index);
-      if (!img || !canvas.width) return;
-      lastDrawn = index;
-
+    /** Cover fit: fill the canvas, crop the overflow, centred. */
+    const paint = (img: HTMLImageElement) => {
       const scale = Math.max(
         canvas.width / img.naturalWidth,
         canvas.height / img.naturalHeight,
@@ -284,6 +283,24 @@ export function HeroScrollVideo({
         w,
         h,
       );
+    };
+
+    const draw = (progress: number) => {
+      section.style.setProperty("--hero-progress", progress.toFixed(4));
+      if (!canvas.width) return;
+
+      const exact = progress * (FRAME_COUNT - 1);
+      // Redraw on sub-steps, not only when the frame index changes.
+      const key = Math.round(exact * PROGRESS_STEPS);
+      if (key === lastDrawn) return;
+
+      const index = Math.floor(exact);
+      const base = pick(index);
+      if (!base) return;
+      lastDrawn = key;
+
+      paint(base);
+
       setPainted(true);
     };
 
@@ -355,7 +372,7 @@ export function HeroScrollVideo({
     <div
       ref={sectionRef}
       data-testid="hero-scroll-video"
-      className={`relative h-[430svh] motion-reduce:h-[100svh] lg:h-[550svh] ${
+      className={`relative h-[300svh] motion-reduce:h-[100svh] lg:h-[340svh] ${
         still ? "!h-[100svh]" : ""
       } ${className}`}
       style={
