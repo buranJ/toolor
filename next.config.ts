@@ -15,6 +15,16 @@ const nextConfig: NextConfig = {
     root: projectRoot,
   },
   poweredByHeader: false,
+  async rewrites() {
+    return [
+      // The link-in-bio page is a self-contained static file in public/. Next
+      // does not resolve directory indexes there, so /links would 404 and only
+      // /links/index.html worked. This covers local dev; netlify.toml carries
+      // the same rule for production, where public/ lives on the CDN instead of
+      // in the function bundle.
+      { source: "/links", destination: "/links/index.html" },
+    ];
+  },
   images: {
     // Optimisation was off because the source hosts were said to exceed the
     // optimizer's timeout. They no longer do — a sweep of the supplier images

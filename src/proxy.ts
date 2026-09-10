@@ -64,10 +64,14 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip Next internals, the metadata routes and anything with a file
-  // extension (images, fonts, videos in /public).
+  // Skip Next internals, the metadata routes, the standalone /links page and
+  // anything with a file extension (images, fonts, videos in /public).
+  //
+  // `/links` is a self-contained static page with its own markup and no locale
+  // variants; without the exemption the locale redirect would send it to
+  // /ru/links, where nothing is served.
   matcher: [
-    "/((?!_next|api|favicon.ico|robots.txt|sitemap.xml|.*\\.[\\w]+$).*)",
+    "/((?!_next|api|links|favicon.ico|robots.txt|sitemap.xml|.*\\.[\\w]+$).*)",
   ],
 };
 

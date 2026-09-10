@@ -16,3 +16,21 @@
 
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Pretty URL for the link-in-bio page, handled at the CDN edge.
+#
+# There is a matching rewrite in next.config.ts, and both are needed: that one
+# serves /links during `next dev` and `next start`, where the whole public/
+# folder sits on disk. In the deployed serverless runtime public/ is on the CDN
+# rather than in the function bundle, so the framework rewrite cannot reach the
+# file and the request falls through to the app's 404.
+[[redirects]]
+  from = "/links"
+  to = "/links/index.html"
+  status = 200
+
+[[headers]]
+  for = "/links/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
