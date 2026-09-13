@@ -22,9 +22,9 @@ test("unprefixed paths redirect to the Accept-Language locale", async ({
 
 test("each locale renders its own language and html lang", async ({ page }) => {
   for (const [path, lang, needle] of [
-    ["/ru", "ru", "Сделано в Кыргызстане"],
-    ["/en", "en", "Made in Kyrgyzstan"],
-    ["/ky", "ky", "Кыргызстанда жасалган"],
+    ["/ru", "ru", "Разработано itdos.dev"],
+    ["/en", "en", "Developed by itdos.dev"],
+    ["/ky", "ky", "Иштеп чыккан itdos.dev"],
   ] as const) {
     await page.goto(path, { waitUntil: "domcontentloaded" });
     await expect(page.locator("html")).toHaveAttribute("lang", lang);

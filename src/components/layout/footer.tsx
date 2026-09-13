@@ -137,7 +137,17 @@ export function Footer({ locale }: { locale: Locale }) {
         />
         <div className="mt-8 flex flex-col gap-2 border-t border-white/15 pt-5 text-xs text-white/45 sm:flex-row sm:justify-between">
           <p>{format(d.footer.rights, { year: new Date().getFullYear() })}</p>
-          <p>{d.footer.madeIn}</p>
+          <p>
+            {d.footer.developedBy}{" "}
+            <a
+              className="hover:text-white"
+              href="https://itdos.dev"
+              rel="noopener"
+              target="_blank"
+            >
+              itdos.dev
+            </a>
+          </p>
         </div>
       </Container>
     </footer>
