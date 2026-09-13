@@ -102,9 +102,10 @@ export function ProductCard({
           ) : null}
         </div>
 
-        <div className="mt-1.5 flex items-start justify-between gap-3">
+        {/* Stacked on phones so the clamped name gets the full card width. */}
+        <div className="mt-1.5 flex items-start justify-between gap-1 max-sm:flex-col sm:gap-3">
           <h3
-            className={`min-w-0 leading-snug font-medium ${
+            className={`line-clamp-2 min-w-0 leading-snug font-medium ${
               large
                 ? "text-lg md:text-2xl"
                 : compact
@@ -112,7 +113,11 @@ export function ProductCard({
                   : "text-[0.95rem] md:text-base"
             }`}
           >
-            <Link className="hover:text-brand transition-colors" href={href}>
+            <Link
+              className="hover:text-brand transition-colors"
+              href={href}
+              title={product.name}
+            >
               {product.name}
             </Link>
           </h3>
