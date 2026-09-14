@@ -8,14 +8,11 @@ import { BrandLogo } from "@/components/ui/brand-logo";
 const MIN_VISIBLE = 950;
 /** Never hold the page longer than this, however slow the connection. */
 const MAX_VISIBLE = 1800;
-/** Coarse hero frames that make the scroll usable straight away. */
-const FRAMES_WANTED = 6;
-
-function heroFramesLoaded() {
-  return performance
-    .getEntriesByType("resource")
-    .filter((entry) => entry.name.includes("/media/hero/frames/")).length;
-}
+/** The hero has put its first frame on the canvas. */
+const heroPainted = () =>
+  document.querySelector(
+    '[data-testid="hero-scroll-media"][data-painted="true"]',
+  ) !== null;
 
 /**
  * Brand moment on a cold load.
@@ -38,13 +35,12 @@ export function BrandPreloader({ label }: { label: string }) {
       // clock at hydration — by then the floor had barely begun, so the
       // overlay always ran to its ceiling.
       const elapsed = performance.now();
-      // Only the home page has frames worth waiting for. Elsewhere the
+      // Only the home page has a picture worth waiting for. Elsewhere the
       // fallback was `readyState`, which waits for every image on the page —
       // it held the overlay on the catalogue for 2.7s.
       const hasHero = document.querySelector('[data-scroll-anchor="hero"]');
       const ready = hasHero
-        ? heroFramesLoaded() >= FRAMES_WANTED ||
-          document.readyState === "complete"
+        ? heroPainted() || document.readyState === "complete"
         : true;
       if (elapsed >= MAX_VISIBLE || (ready && elapsed >= MIN_VISIBLE)) {
         setLeaving(true);

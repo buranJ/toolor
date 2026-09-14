@@ -63,8 +63,10 @@ export function FeaturedProductsSection({
         <div className="mt-12 grid gap-6 md:mt-14 lg:grid-cols-12">
           {lead ? (
             <div className="lg:col-span-7">
+              {/* Not `imagePriority`: this sits screens below the hero, and a
+                  priority image is preloaded in the head — competing with the
+                  hero track for the first seconds of a phone connection. */}
               <ProductCard
-                imagePriority
                 imageSizes="(max-width: 1024px) 100vw, 58vw"
                 locale={locale}
                 product={lead}

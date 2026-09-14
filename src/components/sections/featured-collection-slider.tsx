@@ -102,9 +102,10 @@ export function FeaturedCollectionSlider({
               style={style}
             >
               <div className="featured-carousel-media">
+                {/* Lazy even when active: the slider is screens below the
+                    hero, and priority images are preloaded in the head. */}
                 <ResilientEditorialImage
                   images={product.images}
-                  priority={isActive}
                   sizes="(max-width: 640px) 76vw, (max-width: 1024px) 48vw, 24rem"
                   fallbackLabel={product.productType ?? "TOOLOR"}
                 />

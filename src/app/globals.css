@@ -662,6 +662,19 @@ body {
   place-items: center;
   background: var(--paper);
   transition: opacity 420ms var(--motion-ease-standard);
+  /* Failsafe that needs no JavaScript: the component lifts the overlay, but
+     only once it has hydrated — on a slow phone connection that was 4-7s in,
+     far past its 1.8s ceiling. */
+  animation: brand-preloader-failsafe 420ms var(--motion-ease-standard) 2.2s
+    forwards;
+}
+
+@keyframes brand-preloader-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 
 .brand-preloader[data-leaving="true"] {

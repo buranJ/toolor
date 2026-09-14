@@ -1,0 +1,67 @@
+{
+  "format": "codex-chat-handoff",
+  "createdAt": "2026-09-13",
+  "language": "ru",
+  "project": {
+    "name": "TOOLOR",
+    "path": "/Users/a99699/Desktop/IT-DOS/Project/toolor",
+    "repositoryState": "Code is on GitHub and currently deployed to Netlify.",
+    "framework": "Next.js 16.2.10 / React 19 / pnpm 11.13.1",
+    "scripts": {
+      "install": "pnpm install --frozen-lockfile",
+      "build": "pnpm build",
+      "start": "pnpm start"
+    }
+  },
+  "userGoal": "Move the public TOOLOR website from its current Netlify deployment to a company-owned computer that should operate as a server, and make it available to all customers through the domain.",
+  "importantContext": [
+    "The user has remote access to the company computer through AnyDesk.",
+    "The user is new to hosting a site on a local/on-premises computer.",
+    "The company believes the computer may already be configured for 1C and CRM systems, but nobody has provided deployment/network access details.",
+    "Do not disable Netlify or change production DNS until the on-premises deployment is working and verified.",
+    "AnyDesk is remote-desktop access only; it does not make the computer publicly accessible as a web server.",
+    "The current project uses mock commerce data. Cart is local to the browser and checkout does not submit real orders or accept payments. It can be deployed as a storefront/demo, not yet as a production transactional shop."
+  ],
+  "repositoryFindings": [
+    "The app is server-run Next.js, with `next build` and `next start`; no static-export configuration was identified.",
+    "Architecture documentation states that `https://toolorkg.com` is only a provisional canonical metadata base and final host/migration policy must be confirmed.",
+    "Product imagery is served from external URLs."
+  ],
+  "agreedDeploymentApproach": [
+    "First perform a read-only infrastructure audit of the company computer and network.",
+    "Only then decide whether to use an existing web server, public IP plus router port forwarding, or a secure tunnel such as Cloudflare Tunnel.",
+    "Do not open port 3000 directly to the public internet. A production setup needs a reverse proxy (for example Caddy), HTTPS, firewall rules, and automatic restart after reboot."
+  ],
+  "pendingUserActions": [
+    {
+      "purpose": "Identify the host and Windows version.",
+      "command": "hostname"
+    },
+    {
+      "purpose": "Identify the operating system and version.",
+      "command": "systeminfo | findstr /B /C:\"OS Name\" /C:\"OS Version\""
+    },
+    {
+      "purpose": "Inspect local network configuration.",
+      "command": "ipconfig"
+    },
+    {
+      "purpose": "Find the internet-facing IP address visible externally.",
+      "command": "curl https://api.ipify.org"
+    },
+    {
+      "purpose": "Check whether common web/process services already exist.",
+      "command": "sc query type= service state= all | findstr /I \"caddy nginx apache iis node pm2\""
+    },
+    {
+      "purpose": "Check whether a website or local application is already served on the normal HTTP and Next.js development ports.",
+      "instructions": "On the company computer, open http://localhost and http://localhost:3000 in a browser; capture a screenshot of anything that opens."
+    }
+  ],
+  "privacyAndSafety": [
+    "Do not send passwords, AnyDesk session codes, 1C credentials, router credentials, or private company data into chat.",
+    "If sharing the external IP is sensitive, redact it (for example: 185.XX.XX.XX).",
+    "Do not change router settings, firewall rules, DNS records, or existing services until the audit results are understood."
+  ],
+  "nextAssistantTask": "Review the audit outputs. Determine whether there is an existing web server, whether the machine is on Windows, whether a public IP and router access are available, and provide an exact safe deployment sequence tailored to the results."
+}

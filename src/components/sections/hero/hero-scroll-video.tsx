@@ -1,45 +1,48 @@
 "use client";
 
-import Image from "next/image";
+import { getImageProps } from "next/image";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { ButtonLink } from "@/components/ui/button";
+import {
+  type FrameSource,
+  type Painter,
+  StillSequenceSource,
+  VideoTrackSource,
+  videoTrackSupported,
+} from "./hero-frame-sources";
+import {
+  HERO_DESKTOP_QUERY,
+  HERO_STILLS,
+  HERO_TRACK,
+  type HeroMode,
+  heroStillUrl,
+} from "./hero-media";
 import type { HeroSectionContent } from "./hero-section";
 
 const HERO_POSTER = "/media/hero/hero-poster.webp";
 const HERO_POSTER_MOBILE = "/media/hero/hero-poster-mobile.webp";
 
-const FRAME_COUNT = 96;
-/**
- * Native size of each set, cut straight from the 4K masters. The canvas is
- * sized from these: drawing into a backing store smaller than the frame threw
- * away detail, and one larger only invented pixels.
- */
-const FRAME_SIZE = {
-  mobile: { width: 1440, height: 2560 },
-  desktop: { width: 2880, height: 1620 },
-} as const;
-const frameUrl = (mode: "mobile" | "desktop", index: number) =>
-  `/media/hero/frames/${mode}/f${String(index + 1).padStart(3, "0")}.webp`;
-
-const DESKTOP_QUERY = "(min-width: 1024px)";
+/** Art-directed poster: each breakpoint's own crop through the optimizer. */
+const posters = (() => {
+  const common = { alt: "", fill: true, priority: true, sizes: "100vw" };
+  const desktop = getImageProps({ ...common, src: HERO_POSTER }).props;
+  const { srcSet: mobile, ...img } = getImageProps({
+    ...common,
+    src: HERO_POSTER_MOBILE,
+  }).props;
+  return { desktop: desktop.srcSet, mobile, img };
+})();
 
 /**
- * Stride of each loading pass. The first gets the scrub working on a tenth of
- * the bytes; each following pass halves the gaps everywhere at once.
+ * Time constant of the scroll smoothing: the picture closes ~63% of the gap
+ * to the scroll position every this many ms. Time-based, so a 120Hz phone
+ * and a 60Hz laptop feel the same.
  */
-const LOAD_PASSES = [8, 4, 2, 1] as const;
-/** Easing applied per frame: rendered += (target - rendered) * SCROLL_EASING. */
-const SCROLL_EASING = 0.12;
+const SCROLL_SMOOTHING_MS = 120;
 /** Below this progress delta the loop is considered settled and pauses. */
-const SETTLE_EPSILON = 0.0004;
-/**
- * Sub-steps the paint loop distinguishes inside one frame interval. Only the
- * frame index changes the picture, but sampling finer keeps the CSS-driven
- * overlays — logo fade, CTA reveal — moving continuously.
- */
-const PROGRESS_STEPS = 8;
+const SETTLE_EPSILON = 0.0002;
 
 /** Centre logo fade window (scroll progress) — gone before the garment reveal. */
 const LOGO_FADE_START = 0.42;
@@ -88,25 +91,22 @@ function subscribeStill(notify: () => void) {
 }
 
 function subscribeDesktop(notify: () => void) {
-  const mq = window.matchMedia(DESKTOP_QUERY);
+  const mq = window.matchMedia(HERO_DESKTOP_QUERY);
   mq.addEventListener("change", notify);
   return () => mq.removeEventListener("change", notify);
 }
 
-const desktopSnapshot = () => window.matchMedia(DESKTOP_QUERY).matches;
+const desktopSnapshot = () => window.matchMedia(HERO_DESKTOP_QUERY).matches;
 /** Mobile-first while rendering on the server, where no media query exists. */
 const serverFalse = () => false;
 
 /**
  * Full-bleed, scroll-controlled cinematic hero.
  *
- * Page scroll drives a frame sequence painted to a canvas. It used to drive
- * `video.currentTime` instead, which meant a decode on every scroll tick:
- * ~11ms on a laptop and several times that on a phone, so the animation was
- * smooth on some devices and a slideshow on others — and on iOS the element
- * often never left its poster at all. Blitting a decoded frame is ~0.1ms
- * regardless of hardware, and the coarse-first load means the scrub responds
- * after roughly a tenth of the bytes.
+ * Page scroll drives the clip painted to a canvas. Frames come from an H.264
+ * track decoded with WebCodecs — every frame of the source, so scrubbing
+ * reads as video rather than a flip-book — or, where WebCodecs is missing,
+ * from WebP stills. The poster stays underneath until the first frame lands.
  *
  * `prefers-reduced-motion` and Data Saver collapse the tall scroll area to one
  * screen and keep the poster.
@@ -120,10 +120,16 @@ export function HeroScrollVideo({
 }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const framesRef = useRef<(HTMLImageElement | null)[]>([]);
-  const repaintRef = useRef<(() => void) | null>(null);
-  const loadedModeRef = useRef<"mobile" | "desktop" | null>(null);
-  const modeRef = useRef<"mobile" | "desktop">("mobile");
+  const sourceRef = useRef<FrameSource | null>(null);
+  const sourceModeRef = useRef<HeroMode | null>(null);
+  /** Native size of the current source's frames; sizes the canvas. */
+  const frameSizeRef = useRef<{ width: number; height: number }>(
+    HERO_TRACK.mobile,
+  );
+  /** Set by the paint loop: draws a frame onto the canvas. */
+  const paintRef = useRef<Painter | null>(null);
+  /** Set by the paint loop: re-measure and re-request after a source swap. */
+  const refreshRef = useRef<(() => void) | null>(null);
 
   const [painted, setPainted] = useState(false);
   const still = useSyncExternalStore(
@@ -136,81 +142,73 @@ export function HeroScrollVideo({
     desktopSnapshot,
     serverFalse,
   );
-  const mediaMode: "mobile" | "desktop" = isDesktop ? "desktop" : "mobile";
+  const mediaMode: HeroMode = isDesktop ? "desktop" : "mobile";
 
-  // ---- decode the sequence, coarse pass first ----
+  // ---- frame source: video track, stills as the fallback ----
   useEffect(() => {
-    if (still) return;
+    if (still) {
+      sourceRef.current?.dispose();
+      sourceRef.current = null;
+      sourceModeRef.current = null;
+      return;
+    }
     // Read the breakpoint here rather than trusting the rendered value: the
-    // server snapshot is mobile-first, so on a desktop the coarse pass had
-    // already fetched a dozen phone frames before hydration corrected it.
-    const mode = window.matchMedia(DESKTOP_QUERY).matches
+    // server snapshot is mobile-first, so on a desktop the first run would
+    // start fetching the phone track before hydration corrected it.
+    const mode: HeroMode = window.matchMedia(HERO_DESKTOP_QUERY).matches
       ? "desktop"
       : "mobile";
-    modeRef.current = mode;
-    if (loadedModeRef.current === mode) return;
-    loadedModeRef.current = mode;
+    // No cleanup between runs: this effect re-runs when hydration settles the
+    // breakpoint, and tearing the source down there would restart the
+    // download it had just begun.
+    if (sourceRef.current && sourceModeRef.current === mode) return;
+    sourceRef.current?.dispose();
+    sourceModeRef.current = mode;
 
-    // Identity, not a cancel flag: this effect re-runs when hydration settles
-    // the breakpoint, and cancelling on cleanup killed the in-flight load
-    // while the guard above stopped it from ever restarting. A load that
-    // belongs to a superseded mode simply finds a different array here and
-    // drops itself.
-    const frames: (HTMLImageElement | null)[] = Array.from(
-      { length: FRAME_COUNT },
-      () => null,
-    );
-    framesRef.current = frames;
+    const paint: Painter = (image, width, height) =>
+      paintRef.current?.(image, width, height);
+    const startStills = () => {
+      frameSizeRef.current = HERO_STILLS[mode];
+      sourceRef.current = new StillSequenceSource(
+        HERO_STILLS.count,
+        (index) => heroStillUrl(mode, index),
+        paint,
+      );
+      refreshRef.current?.();
+    };
 
-    const load = (index: number) =>
-      new Promise<void>((resolve) => {
-        // `Image` here is next/image; the DOM constructor lives on window.
-        const img = new window.Image();
-        img.decoding = "async";
-        img.onload = () => {
-          if (framesRef.current === frames) {
-            frames[index] = img;
-            // Nudge the running loop rather than re-creating it: keying the
-            // paint effect on a load counter tore it down once per frame and
-            // each teardown cancelled the pending draw.
-            repaintRef.current?.();
-          }
-          resolve();
-        };
-        img.onerror = () => resolve();
-        img.src = frameUrl(mode, index);
-      });
-
-    void (async () => {
-      // Halve the stride each pass instead of filling left-to-right: the old
-      // order left the tail of the sequence empty for seconds, so scrubbing
-      // jumped between distant frames while the middle filled in. Now the
-      // whole strip gets steadily denser.
-      const seen = new Set<number>();
-      for (const stride of LOAD_PASSES) {
-        const batch: number[] = [];
-        for (let i = 0; i < FRAME_COUNT; i += stride) {
-          if (!seen.has(i)) {
-            seen.add(i);
-            batch.push(i);
-          }
-        }
-        for (let i = 0; i < batch.length; i += 6) {
-          if (framesRef.current !== frames) return;
-          await Promise.all(batch.slice(i, i + 6).map(load));
-        }
-      }
-    })();
+    if (videoTrackSupported()) {
+      frameSizeRef.current = HERO_TRACK[mode];
+      const source: FrameSource = new VideoTrackSource(
+        HERO_TRACK[mode].url,
+        paint,
+        // Codec refused or decoder broken: fall back only if this source is
+        // still the current one.
+        () => {
+          if (sourceRef.current === source) startStills();
+        },
+      );
+      sourceRef.current = source;
+      refreshRef.current?.();
+    } else {
+      startStills();
+    }
   }, [isDesktop, still]);
+
+  useEffect(
+    () => () => {
+      sourceRef.current?.dispose();
+      sourceRef.current = null;
+      sourceModeRef.current = null;
+    },
+    [],
+  );
 
   // ---- scroll → frame ----
   useEffect(() => {
     const section = sectionRef.current;
     const canvas = canvasRef.current;
     if (!section || !canvas || still) return;
-    modeRef.current = window.matchMedia(DESKTOP_QUERY).matches
-      ? "desktop"
-      : "mobile";
 
     const context = canvas.getContext("2d", { alpha: false });
     if (!context) return;
@@ -220,12 +218,33 @@ export function HeroScrollVideo({
     let active = false;
     let sectionTop = 0;
     let sectionHeight = 0;
-    let lastDrawn = -1;
+    let lastTime = 0;
+    let hasPainted = false;
 
     const target = { current: 0 };
     const rendered = { current: 0 };
     const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
+    /** Cover fit: fill the canvas, crop the overflow, centred. */
+    paintRef.current = (image, width, height) => {
+      if (!canvas.width || !width || !height) return;
+      const scale = Math.max(canvas.width / width, canvas.height / height);
+      const w = width * scale;
+      const h = height * scale;
+      context.drawImage(
+        image,
+        (canvas.width - w) / 2,
+        (canvas.height - h) / 2,
+        w,
+        h,
+      );
+      if (!hasPainted) {
+        hasPainted = true;
+        setPainted(true);
+      }
+    };
+
+    /** Size the canvas; returns whether that cleared it. */
     const measure = () => {
       const rect = section.getBoundingClientRect();
       sectionTop = rect.top + window.scrollY;
@@ -235,7 +254,7 @@ export function HeroScrollVideo({
       // Match the screen, but never ask for more pixels than the frames hold:
       // a flat 2x cap left the canvas below both the screen and the artwork on
       // a 3x phone, so the picture was upscaled twice over.
-      const frame = FRAME_SIZE[modeRef.current];
+      const frame = frameSizeRef.current;
       const dpr = Math.min(
         window.devicePixelRatio || 1,
         box.width > 0 ? frame.width / box.width : 1,
@@ -245,8 +264,9 @@ export function HeroScrollVideo({
       if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
         canvas.width = w;
         canvas.height = h;
-        lastDrawn = -1;
+        return true;
       }
+      return false;
     };
 
     const readTarget = () => {
@@ -257,61 +277,26 @@ export function HeroScrollVideo({
           : clamp01((window.scrollY - sectionTop) / scrollable);
     };
 
-    /** Nearest decoded frame, so gaps in the sequence never blank the canvas. */
-    const pick = (index: number) => {
-      const all = framesRef.current;
-      if (all[index]) return all[index];
-      for (let step = 1; step < FRAME_COUNT; step++) {
-        if (all[index - step]) return all[index - step];
-        if (all[index + step]) return all[index + step];
-      }
-      return null;
-    };
-
-    /** Cover fit: fill the canvas, crop the overflow, centred. */
-    const paint = (img: HTMLImageElement) => {
-      const scale = Math.max(
-        canvas.width / img.naturalWidth,
-        canvas.height / img.naturalHeight,
-      );
-      const w = img.naturalWidth * scale;
-      const h = img.naturalHeight * scale;
-      context.drawImage(
-        img,
-        (canvas.width - w) / 2,
-        (canvas.height - h) / 2,
-        w,
-        h,
-      );
-    };
-
     const draw = (progress: number) => {
       section.style.setProperty("--hero-progress", progress.toFixed(4));
-      if (!canvas.width) return;
-
-      const exact = progress * (FRAME_COUNT - 1);
-      // Redraw on sub-steps, not only when the frame index changes.
-      const key = Math.round(exact * PROGRESS_STEPS);
-      if (key === lastDrawn) return;
-
-      const index = Math.floor(exact);
-      const base = pick(index);
-      if (!base) return;
-      lastDrawn = key;
-
-      paint(base);
-
-      setPainted(true);
+      if (canvas.width) sourceRef.current?.show(progress);
     };
 
-    const loop = () => {
-      rendered.current += (target.current - rendered.current) * SCROLL_EASING;
+    const loop = (time: number) => {
+      const dt = lastTime ? Math.min(time - lastTime, 100) : 16.7;
+      lastTime = time;
+      rendered.current +=
+        (target.current - rendered.current) *
+        (1 - Math.exp(-dt / SCROLL_SMOOTHING_MS));
       const settled =
         Math.abs(target.current - rendered.current) < SETTLE_EPSILON;
       if (settled) rendered.current = target.current;
       draw(rendered.current);
       if (!settled) raf = requestAnimationFrame(loop);
-      else looping = false;
+      else {
+        looping = false;
+        lastTime = 0;
+      }
     };
 
     const start = () => {
@@ -320,21 +305,22 @@ export function HeroScrollVideo({
       raf = requestAnimationFrame(loop);
     };
 
-    repaintRef.current = () => {
-      lastDrawn = -1;
-      start();
-    };
-
     const onScroll = () => {
       if (!active) return;
       readTarget();
       start();
     };
     const onResize = () => {
-      measure();
+      // Resizing clears the canvas; put the current frame straight back so
+      // the collapsing mobile toolbar never flashes black.
+      if (measure()) sourceRef.current?.repaint();
       readTarget();
-      lastDrawn = -1;
       start();
+    };
+
+    refreshRef.current = () => {
+      if (measure()) sourceRef.current?.repaint();
+      draw(rendered.current);
     };
 
     const observer = new IntersectionObserver(
@@ -344,6 +330,7 @@ export function HeroScrollVideo({
         else if (raf) {
           cancelAnimationFrame(raf);
           looping = false;
+          lastTime = 0;
         }
       },
       { rootMargin: "200px 0px" },
@@ -357,9 +344,11 @@ export function HeroScrollVideo({
     measure();
     readTarget();
     rendered.current = target.current;
+    draw(rendered.current);
 
     return () => {
-      repaintRef.current = null;
+      paintRef.current = null;
+      refreshRef.current = null;
       if (raf) cancelAnimationFrame(raf);
       observer.disconnect();
       resizeObserver.disconnect();
@@ -389,30 +378,26 @@ export function HeroScrollVideo({
       <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-black">
         {/* Media sits below the pinned header so the garment is never cut. */}
         <div className="absolute inset-x-0 top-[var(--header-height)] bottom-0">
-          {/* Poster paints instantly and stays until the first frame lands. */}
-          <Image
-            alt=""
-            aria-hidden="true"
-            className="object-cover object-center lg:hidden"
-            fill
-            priority
-            sizes="100vw"
-            src={HERO_POSTER_MOBILE}
-          />
-          <Image
-            alt=""
-            aria-hidden="true"
-            className="hidden object-cover object-center lg:block"
-            fill
-            priority
-            sizes="100vw"
-            src={HERO_POSTER}
-          />
+          {/* Poster paints instantly and stays until the first frame lands.
+              One <picture>, not two images hidden per breakpoint: both of
+              those were preloaded, so every phone also fetched the desktop
+              poster. */}
+          <picture>
+            <source media={HERO_DESKTOP_QUERY} srcSet={posters.desktop} />
+            <source srcSet={posters.mobile} />
+            <img
+              {...posters.img}
+              alt=""
+              aria-hidden="true"
+              className="object-cover object-center"
+            />
+          </picture>
 
           {!still ? (
             <canvas
               ref={canvasRef}
               aria-hidden="true"
+              data-painted={painted}
               data-testid="hero-scroll-media"
               className={`absolute inset-0 block h-full w-full transition-opacity duration-500 ${
                 painted ? "opacity-100" : "opacity-0"

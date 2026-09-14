@@ -35,8 +35,9 @@ business data.
   All copy lives in `src/i18n/messages/*.json`; if a locale is missing a key, `typecheck` fails,
   so the three files cannot drift apart.
 - **Content pages** — about, delivery, returns, stores, sustainability
-- **Motion contract without a motion runtime** — the hero declares `data-motion-slot` and a static
-  poster/fallback, so animation can be added later without touching layout
+- **Scroll-scrubbed hero** — page scroll drives the clip on a canvas. Frames are H.264 decoded
+  with WebCodecs (every source frame; 4.6MB on phones, 5.3MB on desktops), with WebP stills as the
+  fallback where WebCodecs is missing and the poster alone under reduced motion or Data Saver
 - **Tests** — Vitest unit tests for cart, money, i18n, validation and the mock provider;
   Playwright end-to-end specs for the store and locale routing
 - **Documented design system** — tokens, accessibility notes and a performance budget in `docs/`
@@ -103,7 +104,7 @@ src/
 tests/e2e/          Playwright specs
 docs/               ARCHITECTURE, DECISIONS, DESIGN_SYSTEM, ACCESSIBILITY,
                     PERFORMANCE_BUDGET, COMMERCE_MODEL, SCOPE, OPEN_QUESTIONS, …
-scripts/            product import
+scripts/            product import, hero video build
 media-src/          source media before encoding
 ```
 
@@ -125,6 +126,7 @@ provider is process-local and deterministic.
 corepack pnpm dev
 corepack pnpm products:inspect     # read and validate the product workbook, report findings
 corepack pnpm products:import      # write the imported catalog
+corepack pnpm hero:build           # re-encode the hero tracks from media-src/ (needs ffmpeg)
 corepack pnpm format
 ```
 
@@ -146,6 +148,11 @@ Netlify. `netlify.toml` sets cache headers explicitly: `/media/*` gets a one-day
 week of `stale-while-revalidate` (the scroll-driven hero video was re-fetched on every load
 otherwise), and `/fonts/*` is immutable for a year. Media is deliberately *not* immutable —
 hero assets keep their filenames across re-encodes.
+
+Self-hosted (`next build && next start`): `next.config.ts` sends the same cache headers, so a
+server that lets Next serve `public/` needs nothing extra. If a reverse proxy serves `public/`
+itself, give `/media/` and `/fonts/` those headers there. Image optimisation is on and uses
+`sharp`, which pnpm installs with Next.
 
 ## Screenshots
 

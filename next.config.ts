@@ -15,6 +15,31 @@ const nextConfig: NextConfig = {
     root: projectRoot,
   },
   poweredByHeader: false,
+  // Same policy as netlify.toml, for hosts that run `next start` and let it
+  // serve public/ itself — there every file went out with `max-age=0`, so a
+  // returning visitor re-validated the hero track and every image.
+  async headers() {
+    return [
+      {
+        source: "/media/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+      {
+        source: "/fonts/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
   async rewrites() {
     return [
       // The link-in-bio page is a self-contained static file in public/. Next
