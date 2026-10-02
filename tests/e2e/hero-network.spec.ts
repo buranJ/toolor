@@ -117,7 +117,12 @@ test("reduced motion does not request video or frame sequences", async ({
   await page.emulateMedia({ reducedMotion: "reduce" });
   const requests: string[] = [];
   page.on("request", (request) => requests.push(request.url()));
-  await page.goto("/ru", { waitUntil: "networkidle" });
+  await page.goto("/ru", { waitUntil: "domcontentloaded" });
+  // Product photos are hosted elsewhere and may keep the network busy even
+  // after the hero has finished hydrating.
+  await expect(page.locator(".brand-preloader")).toHaveCount(0, {
+    timeout: 15_000,
+  });
   await expect(page.getByTestId("hero-scroll-media")).toHaveCount(0);
   expect(
     requests.filter((url) => /\/media\/hero\/(tracks|frames)\//.test(url)),
