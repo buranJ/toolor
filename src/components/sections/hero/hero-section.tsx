@@ -14,13 +14,9 @@ export interface HeroSectionContent {
 export function HeroSection({ locale }: { locale: Locale }) {
   const d = getDictionary(locale);
 
-  // The track is deliberately not preloaded. A 4.7MB `<link rel=preload>`
-  // at high priority was sent ahead of the page's own JavaScript: on
-  // toolor.store the last chunk landed at 5.5s, so the hero could not start
-  // until the whole track had downloaded — and Safari, which never matched
-  // the preload to the fetch, downloaded it twice. The poster (frame 0)
-  // covers the gap; the canvas starts streaming the track right after
-  // hydration and plays as it arrives.
+  // The poster covers hydration. The client then fetches small, immutable
+  // keyframe groups around the scroll target, without a full-track preload
+  // competing with the JavaScript needed to start the hero.
 
   const content: HeroSectionContent = {
     kicker: d.home.hero.kicker,

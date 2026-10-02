@@ -57,7 +57,6 @@ type CSSVars = React.CSSProperties & Record<string, string>;
 
 type ConnectionInfo = {
   saveData?: boolean;
-  effectiveType?: string;
   addEventListener?: (type: "change", listener: () => void) => void;
   removeEventListener?: (type: "change", listener: () => void) => void;
 };
@@ -69,14 +68,9 @@ const connection = () =>
 function stillSnapshot() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
     return true;
-  const conn = connection();
-  if (!conn) return false;
-  return (
-    conn.saveData === true ||
-    conn.effectiveType === "slow-2g" ||
-    conn.effectiveType === "2g" ||
-    conn.effectiveType === "3g"
-  );
+  // A fluctuating throughput estimate must not remove the canvas and change
+  // the page height mid-scroll. Only explicit visitor preferences opt out.
+  return connection()?.saveData === true;
 }
 
 function subscribeStill(notify: () => void) {
@@ -180,7 +174,7 @@ export function HeroScrollVideo({
     if (videoTrackSupported()) {
       frameSizeRef.current = HERO_TRACK[mode];
       const source: FrameSource = new VideoTrackSource(
-        HERO_TRACK[mode].url,
+        HERO_TRACK[mode],
         paint,
         // Codec refused or decoder broken: fall back only if this source is
         // still the current one.

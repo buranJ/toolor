@@ -18,7 +18,9 @@ test("mobile hero paints its frame sequence and follows scroll", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  const track = page.waitForRequest(/\/media\/hero\/hero-mobile\.bin$/);
+  const track = page.waitForRequest(
+    /\/media\/hero\/tracks\/mobile-[a-f0-9]+\/g000\.bin$/,
+  );
   await page.goto("/", { waitUntil: "domcontentloaded" });
   // The phone's own track, not the 1440p desktop one.
   await track;
@@ -84,7 +86,8 @@ test("hero falls back to stills where WebCodecs is missing", async ({
 });
 
 test("app promotion is available on home and about pages", async ({ page }) => {
-  for (const route of ["/", "/about"]) {
+  // This checks Russian copy; locale-cookie routing is covered separately.
+  for (const route of ["/ru", "/ru/about"]) {
     await page.goto(route, { waitUntil: "domcontentloaded" });
     const section = page.locator("#app");
 

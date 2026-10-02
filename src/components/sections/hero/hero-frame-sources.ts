@@ -1,3 +1,5 @@
+import { HeroTrackLoader, type HeroTrack } from "./hero-track-loader";
+
 /**
  * Frame sources for the scroll-scrubbed hero. The component tells the source
  * how far through the clip the scroll is; the source paints the matching
@@ -23,16 +25,6 @@ export interface FrameSource {
 // Video track (WebCodecs)
 // ---------------------------------------------------------------------------
 
-/** What `scripts/build-hero-video.ts` writes ahead of the samples. */
-type TrackHeader = {
-  codec: string;
-  width: number;
-  height: number;
-  description: string;
-  sizes: number[];
-  keys: number[];
-};
-
 export const videoTrackSupported = () =>
   typeof window !== "undefined" &&
   typeof window.VideoDecoder === "function" &&
@@ -46,18 +38,18 @@ const MAX_DECODER_FAILURES = 3;
  * ones hold the last until more input arrives, which would leave the scrub
  * a frame short of where the user stopped.
  */
-const STALL_MS = 100;
+const STALL_MS = 32;
 
 type Shown = { image: CanvasImageSource; width: number; height: number };
 
 /**
- * All the frames of the clip from one H.264 stream, decoded on demand.
+ * All the original H.264 frames, downloaded by GOP and decoded on demand.
  *
  * Why not `<video>`: seeking an element is asynchronous, coalesced and paced
  * differently by every browser — the first version of this hero scrubbed
  * `currentTime` and was smooth on some devices and a slideshow on others.
  * Why not stills: each still carries the whole picture, so 96 stills of this
- * scene weighed twice what the full 361-frame clip does as video, and the
+ * scene weighed twice what the full clip does as video, and the
  * gaps between them still showed as steps.
  *
  * Scrolling forward is plain playback — one small delta decode per frame.
@@ -67,12 +59,9 @@ type Shown = { image: CanvasImageSource; width: number; height: number };
  */
 export class VideoTrackSource implements FrameSource {
   private count = 0;
-  private header: TrackHeader | null = null;
-  private offsets: number[] = [];
+  private header: HeroTrack | null = null;
   private keySet = new Set<number>();
-  private data = new Uint8Array(0);
-  private received = 0;
-  private available = 0;
+  private readonly loader: HeroTrackLoader;
 
   private decoder: VideoDecoder | null = null;
   private config: VideoDecoderConfig | null = null;
@@ -100,19 +89,29 @@ export class VideoTrackSource implements FrameSource {
 
   /** Whether the first frame has been checked to actually draw. */
   private verified = false;
-  private readonly abort = new AbortController();
   private disposed = false;
 
   constructor(
-    private readonly url: string,
+    track: HeroTrack,
     private readonly paint: Painter,
     private readonly onFail: () => void,
   ) {
-    void this.load().catch(() => this.fail());
+    this.loader = new HeroTrackLoader(
+      track,
+      () => this.pump(),
+      () => this.fail(),
+    );
+    void this.configure(track)
+      .then(() => {
+        if (this.disposed) return;
+        this.loader.request(this.requested);
+      })
+      .catch(() => this.fail());
   }
 
   show(progress: number) {
     this.progress = progress;
+    if (this.config) this.loader.request(this.requested);
     this.pump();
   }
 
@@ -121,88 +120,36 @@ export class VideoTrackSource implements FrameSource {
       this.paint(this.shown.image, this.shown.width, this.shown.height);
   }
 
-  /** The frame the scroll asks for, limited to what has downloaded. */
+  private get requested() {
+    return Math.min(
+      this.count - 1,
+      Math.max(0, Math.round(this.progress * (this.count - 1))),
+    );
+  }
+
+  /** Closest complete group while the requested one is in flight. */
   private get want() {
-    const index = Math.round(this.progress * (this.count - 1));
-    return Math.min(Math.max(index, 0), this.available - 1);
+    return this.loader.nearest(this.requested);
   }
 
   dispose() {
     this.disposed = true;
-    this.abort.abort();
+    this.loader.dispose();
     window.clearTimeout(this.stallTimer);
     this.shownFrame?.close();
     this.shownFrame = null;
     this.shown = null;
+    for (const canvas of [...this.cache.values(), ...this.spare])
+      canvas.width = canvas.height = 0;
     this.cache.clear();
     this.spare = [];
     if (this.decoder && this.decoder.state !== "closed") this.decoder.close();
     this.decoder = null;
   }
 
-  // ---- download ----
-
-  private async load() {
-    const response = await fetch(this.url, { signal: this.abort.signal });
-    if (!response.ok || !response.body) throw new Error("track unavailable");
-    const reader = response.body.getReader();
-
-    // The header is tiny; buffer until it is complete.
-    let head = new Uint8Array(0);
-    let headerEnd = -1;
-    while (headerEnd < 0) {
-      const { value, done } = await reader.read();
-      if (done) throw new Error("truncated header");
-      head = concat(head, value);
-      if (head.length >= 4) {
-        const length = new DataView(head.buffer).getUint32(0, true);
-        if (head.length >= 4 + length) headerEnd = 4 + length;
-      }
-    }
-
-    const header = JSON.parse(
-      new TextDecoder().decode(head.subarray(4, headerEnd)),
-    ) as TrackHeader;
-    await this.configure(header);
-
-    let offset = 0;
-    this.offsets = header.sizes.map((size) => {
-      const at = offset;
-      offset += size;
-      return at;
-    });
-    this.data = new Uint8Array(offset);
-    this.append(head.subarray(headerEnd));
-
-    // Samples become playable as they arrive, in order — the start of the
-    // clip, where every visit begins, is ready long before the end is.
-    for (;;) {
-      const { value, done } = await reader.read();
-      if (done || this.disposed) break;
-      this.append(value);
-    }
-  }
-
-  private append(bytes: Uint8Array) {
-    const room = this.data.length - this.received;
-    if (room <= 0) return;
-    const chunk = bytes.length > room ? bytes.subarray(0, room) : bytes;
-    this.data.set(chunk, this.received);
-    this.received += chunk.length;
-
-    const sizes = this.header?.sizes ?? [];
-    const before = this.available;
-    while (
-      this.available < sizes.length &&
-      this.offsets[this.available]! + sizes[this.available]! <= this.received
-    )
-      this.available++;
-    if (this.available !== before) this.pump();
-  }
-
   // ---- decoder ----
 
-  private async configure(header: TrackHeader) {
+  private async configure(header: HeroTrack) {
     const config: VideoDecoderConfig = {
       codec: header.codec,
       codedWidth: header.width,
@@ -226,13 +173,18 @@ export class VideoTrackSource implements FrameSource {
   private createDecoder() {
     if (!this.config) return;
     const decoder = new VideoDecoder({
-      output: (frame) => this.onOutput(frame),
+      output: (frame) => {
+        if (this.decoder === decoder) this.onOutput(frame);
+        else frame.close();
+      },
       error: () => {
         // Hardware decoders can be reclaimed (a backgrounded tab, a GPU
         // reset). Rebuild on the next request; only repeated failures mean
         // this device cannot play the track at all.
-        if (this.decoder === decoder) this.decoder = null;
+        if (this.disposed || this.decoder !== decoder) return;
+        this.decoder = null;
         if (++this.failures > MAX_DECODER_FAILURES) this.fail();
+        else queueMicrotask(() => this.pump());
       },
     });
     decoder.configure(this.config);
@@ -258,12 +210,13 @@ export class VideoTrackSource implements FrameSource {
     const header = this.header;
     if (!decoder || !header) return;
     for (let i = from; i <= to; i++) {
-      const start = this.offsets[i]!;
+      const data = this.loader.sample(i);
+      if (!data) return;
       decoder.decode(
         new EncodedVideoChunk({
           type: this.keySet.has(i) ? "key" : "delta",
           timestamp: i,
-          data: this.data.subarray(start, start + header.sizes[i]!),
+          data,
         }),
       );
       this.inFlight++;
@@ -279,9 +232,8 @@ export class VideoTrackSource implements FrameSource {
       if (this.failures > MAX_DECODER_FAILURES) return;
       this.createDecoder();
     }
-    if (this.available === 0) return;
-
     const target = this.want;
+    if (target < 0) return;
     if (target === this.shownIndex) return;
 
     const cached = this.cache.get(target);
@@ -296,6 +248,7 @@ export class VideoTrackSource implements FrameSource {
     if (target > this.lastOut && target <= this.fed) return;
 
     if (target > this.fed && this.fed >= 0) {
+      if (this.inFlight > 0) return;
       // Ahead of the stream: keep playing forward, unless a keyframe closer
       // to the target makes the frames in between pointless.
       const key = this.keyBefore(target);
@@ -355,7 +308,7 @@ export class VideoTrackSource implements FrameSource {
     // in memory.
     const current = this.keyBefore(this.want);
     const end = current - 1;
-    if (end < 0 || end >= this.available || this.cache.has(end)) return;
+    if (end < 0 || !this.loader.sample(end) || this.cache.has(end)) return;
     const start = this.keyBefore(end);
     // Room for it: keep only the GOP the user is in, plus the new one.
     this.trimCache(start, current + this.gop - 1);
@@ -373,16 +326,37 @@ export class VideoTrackSource implements FrameSource {
    * hardware decoders stall when the page holds on to their frames.
    */
   private keep(index: number, frame: VideoFrame) {
-    const canvas = this.spare.pop() ?? document.createElement("canvas");
+    if (this.cache.has(index)) return;
+    // Retain at least one complete GOP: smaller caches repeatedly decode the
+    // same group in Safari on reverse scroll. Bound the rest by pixels, and
+    // reuse canvases instead of allocating them on each decoder callback.
+    const limit = Math.min(
+      this.gop * 2,
+      Math.max(
+        this.gop,
+        Math.floor(
+          (128 * 1024 * 1024) / (frame.displayWidth * frame.displayHeight * 4),
+        ),
+      ),
+    );
+    let canvas = this.spare.pop();
+    if (this.cache.size >= limit) {
+      const oldest = [...this.cache.keys()].find(
+        (key) => this.cache.get(key) !== this.shown?.image,
+      );
+      if (oldest === undefined) return;
+      const discarded = this.cache.get(oldest)!;
+      this.cache.delete(oldest);
+      if (canvas) discarded.width = discarded.height = 0;
+      else canvas = discarded;
+    }
+    canvas ??= document.createElement("canvas");
     if (canvas.width !== frame.displayWidth) canvas.width = frame.displayWidth;
     if (canvas.height !== frame.displayHeight)
       canvas.height = frame.displayHeight;
     const context = canvas.getContext("2d", { alpha: false });
     if (!context) return;
     context.drawImage(frame, 0, 0);
-    const previous = this.cache.get(index);
-    if (previous && previous !== canvas && this.shown?.image !== previous)
-      this.spare.push(previous);
     this.cache.set(index, canvas);
   }
 
@@ -393,8 +367,8 @@ export class VideoTrackSource implements FrameSource {
       this.cache.delete(index);
       if (this.shown?.image !== canvas) this.spare.push(canvas);
     }
-    // The spare pool only saves reallocations; never let it outgrow a GOP.
-    this.spare.length = Math.min(this.spare.length, this.gop);
+    // One spare is enough; explicitly release the other pixel buffers.
+    for (const canvas of this.spare.splice(1)) canvas.width = canvas.height = 0;
   }
 
   private present(
@@ -477,31 +451,21 @@ function drawsVideoFrames(frame: VideoFrame) {
   }
 }
 
-function concat(a: Uint8Array, b: Uint8Array) {
-  const out = new Uint8Array(a.length + b.length);
-  out.set(a);
-  out.set(b, a.length);
-  return out;
-}
-
 // ---------------------------------------------------------------------------
 // Still sequence (fallback)
 // ---------------------------------------------------------------------------
 
 /**
- * Stride of each loading pass. The first gets the scrub working on a tenth of
- * the bytes; each following pass halves the gaps everywhere at once.
- */
-const LOAD_PASSES = [8, 4, 2, 1] as const;
-
-/**
- * WebP stills, for browsers without WebCodecs (iOS before 16.4, older
- * Firefox). Heavier and coarser than the video track, but works anywhere
- * canvas does.
+ * WebP stills when video decoding is unavailable. Keep only the current
+ * neighbourhood decoded; retaining all 96 full-size images costs >1 GB.
+ * Requests follow the scroll, including on the first uncached visit.
  */
 export class StillSequenceSource implements FrameSource {
-  private readonly frames: (HTMLImageElement | null)[];
+  private readonly frames = new Map<number, HTMLImageElement>();
+  private readonly pending = new Map<number, AbortController>();
+  private readonly failed = new Set<number>();
   private progress = 0;
+  private direction = 1;
   private shown: HTMLImageElement | null = null;
   private disposed = false;
 
@@ -510,16 +474,19 @@ export class StillSequenceSource implements FrameSource {
     private readonly url: (index: number) => string,
     private readonly paint: Painter,
   ) {
-    this.frames = Array.from({ length: count }, () => null);
-    void this.load();
+    this.schedule();
   }
 
   show(progress: number) {
+    if (progress !== this.progress)
+      this.direction = Math.sign(progress - this.progress);
     this.progress = progress;
-    const image = this.pick(Math.round(progress * (this.count - 1)));
-    if (!image || image === this.shown) return;
-    this.shown = image;
-    this.repaint();
+    const image = this.pick(this.target);
+    if (image && image !== this.shown) {
+      this.shown = image;
+      this.repaint();
+    }
+    this.schedule();
   }
 
   repaint() {
@@ -529,51 +496,92 @@ export class StillSequenceSource implements FrameSource {
 
   dispose() {
     this.disposed = true;
+    for (const controller of this.pending.values()) controller.abort();
+    this.pending.clear();
+    for (const image of this.frames.values()) image.removeAttribute("src");
+    this.frames.clear();
+    this.shown = null;
   }
 
-  /** Nearest loaded frame, so gaps in the sequence never blank the canvas. */
+  private get target() {
+    return Math.min(
+      this.count - 1,
+      Math.max(0, Math.round(this.progress * (this.count - 1))),
+    );
+  }
+
   private pick(index: number) {
-    const all = this.frames;
-    if (all[index]) return all[index];
-    for (let step = 1; step < this.count; step++) {
-      if (all[index - step]) return all[index - step];
-      if (all[index + step]) return all[index + step];
+    const nearest = [...this.frames.keys()].sort(
+      (a, b) => Math.abs(a - index) - Math.abs(b - index),
+    )[0];
+    return nearest === undefined ? null : this.frames.get(nearest)!;
+  }
+
+  private schedule() {
+    if (this.disposed) return;
+    const candidates = [
+      this.target,
+      this.target + this.direction,
+      this.target - this.direction,
+    ];
+    for (const index of candidates) {
+      if (
+        index < 0 ||
+        index >= this.count ||
+        this.frames.has(index) ||
+        this.pending.has(index) ||
+        this.failed.has(index)
+      )
+        continue;
+      if (this.pending.size >= 2) {
+        if (index !== this.target) break;
+        const furthest = [...this.pending.keys()].sort(
+          (a, b) => Math.abs(b - index) - Math.abs(a - index),
+        )[0]!;
+        this.pending.get(furthest)!.abort();
+        this.pending.delete(furthest);
+      }
+      const controller = new AbortController();
+      this.pending.set(index, controller);
+      void this.loadOne(index, controller).finally(() => {
+        if (this.pending.get(index) === controller) this.pending.delete(index);
+        this.schedule();
+      });
+      if (!this.frames.has(this.target) && !this.failed.has(this.target)) break;
     }
-    return null;
   }
 
-  private loadOne(index: number) {
-    return new Promise<void>((resolve) => {
-      const img = new window.Image();
-      img.decoding = "async";
-      img.onload = () => {
-        if (!this.disposed) {
-          this.frames[index] = img;
-          this.show(this.progress);
-        }
-        resolve();
-      };
-      img.onerror = () => resolve();
-      img.src = this.url(index);
-    });
-  }
-
-  private async load() {
-    // Halve the stride each pass instead of filling left-to-right, so the
-    // whole strip gets steadily denser rather than the tail staying empty.
-    const seen = new Set<number>();
-    for (const stride of LOAD_PASSES) {
-      const batch: number[] = [];
-      for (let i = 0; i < this.count; i += stride) {
-        if (!seen.has(i)) {
-          seen.add(i);
-          batch.push(i);
-        }
+  private async loadOne(index: number, controller: AbortController) {
+    let objectUrl: string | undefined;
+    try {
+      const response = await fetch(this.url(index), {
+        signal: controller.signal,
+      });
+      if (!response.ok) throw new Error("Hero still unavailable");
+      const blob = await response.blob();
+      if (this.disposed || controller.signal.aborted) return;
+      const image = new window.Image();
+      image.decoding = "async";
+      objectUrl = URL.createObjectURL(blob);
+      image.src = objectUrl;
+      await image.decode();
+      if (this.disposed || controller.signal.aborted) return;
+      this.frames.set(index, image);
+      this.show(this.progress);
+      // Three frames at native quality, plus at most two in-flight requests.
+      const ordered = [...this.frames.keys()].sort(
+        (a, b) => Math.abs(a - this.target) - Math.abs(b - this.target),
+      );
+      for (const old of ordered.slice(3)) {
+        const discarded = this.frames.get(old)!;
+        if (discarded === this.shown) continue;
+        discarded.removeAttribute("src");
+        this.frames.delete(old);
       }
-      for (let i = 0; i < batch.length; i += 6) {
-        if (this.disposed) return;
-        await Promise.all(batch.slice(i, i + 6).map((n) => this.loadOne(n)));
-      }
+    } catch {
+      if (!this.disposed && !controller.signal.aborted) this.failed.add(index);
+    } finally {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     }
   }
 }

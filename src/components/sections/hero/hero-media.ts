@@ -1,3 +1,5 @@
+import heroTracks from "@/data/hero-tracks.json";
+
 /**
  * Where the hero's media lives. Kept out of the client component so the
  * server-rendered section can preload the same files the canvas will fetch.
@@ -9,14 +11,11 @@ export type HeroMode = "mobile" | "desktop";
 export const HERO_DESKTOP_QUERY = "(min-width: 1024px)";
 
 /**
- * The clip as H.264 for WebCodecs — every source frame, 4.6MB on phones and
- * 5.3MB on desktops (see scripts/build-hero-video.ts). Mobile is cut from
- * the portrait master, desktop from the landscape one.
+ * The original H.264 samples split at keyframes. The manifest travels with
+ * the component; only the segments around the scroll target are urgent.
+ * Hashed paths let the CDN and browser retain them across repeat visits.
  */
-export const HERO_TRACK = {
-  mobile: { url: "/media/hero/hero-mobile.bin", width: 1080, height: 1920 },
-  desktop: { url: "/media/hero/hero-desktop.bin", width: 2560, height: 1440 },
-} as const;
+export const HERO_TRACK = heroTracks;
 
 /** WebP stills for browsers without WebCodecs. */
 export const HERO_STILLS = {

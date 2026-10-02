@@ -6,10 +6,29 @@
 # Not `immutable`: the hero assets keep their filenames across re-encodes, so a
 # year-long lock would strand visitors on an old cut.
 [[headers]]
-  for = "/media/*"
+  for = "/media/hero/hero-*"
 
   [headers.values]
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+# Keep these rules disjoint so Netlify cannot merge two max-age directives.
+[[headers]]
+  for = "/media/hero/frames/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/media/products/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/media/hero/tracks/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "/fonts/*"

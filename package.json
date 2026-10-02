@@ -14,7 +14,8 @@
     "test:e2e": "playwright test",
     "products:inspect": "tsx scripts/import-toolor-products.ts --inspect",
     "products:import": "tsx scripts/import-toolor-products.ts --write",
-    "hero:build": "tsx scripts/build-hero-video.ts",
+    "hero:build": "tsx scripts/build-hero-video.ts && pnpm hero:package",
+    "hero:package": "tsx scripts/package-hero-tracks.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

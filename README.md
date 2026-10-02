@@ -36,7 +36,8 @@ business data.
   so the three files cannot drift apart.
 - **Content pages** — about, delivery, returns, stores, sustainability
 - **Scroll-scrubbed hero** — page scroll drives the clip on a canvas. Frames are H.264 decoded
-  with WebCodecs (every source frame; 4.6MB on phones, 5.3MB on desktops), with WebP stills as the
+  with WebCodecs (every source frame; 4.6MB on phones, 5.3MB on desktops). Independent keyframe
+  groups load around the current scroll position, with WebP stills as the
   fallback where WebCodecs is missing and the poster alone under reduced motion or Data Saver
 - **Tests** — Vitest unit tests for cart, money, i18n, validation and the mock provider;
   Playwright end-to-end specs for the store and locale routing
@@ -127,6 +128,7 @@ corepack pnpm dev
 corepack pnpm products:inspect     # read and validate the product workbook, report findings
 corepack pnpm products:import      # write the imported catalog
 corepack pnpm hero:build           # re-encode the hero tracks from media-src/ (needs ffmpeg)
+corepack pnpm hero:package         # split existing encodes without changing video quality
 corepack pnpm format
 ```
 
@@ -144,14 +146,15 @@ corepack pnpm test:e2e      # Playwright
 
 ## Deployment
 
-Netlify. `netlify.toml` sets cache headers explicitly: `/media/*` gets a one-day max-age with a
-week of `stale-while-revalidate` (the scroll-driven hero video was re-fetched on every load
-otherwise), and `/fonts/*` is immutable for a year. Media is deliberately *not* immutable —
-hero assets keep their filenames across re-encodes.
+Netlify. `netlify.toml` sets cache headers explicitly: product images, hero posters and fallback
+stills get a one-day max-age with a week of `stale-while-revalidate`. The content-hashed hero
+segments under `/media/hero/tracks/*` and `/fonts/*` are immutable for a year. Do not mark the
+unversioned posters or stills immutable. Header rules are disjoint to avoid conflicting max-age
+values. See `docs/HERO_DELIVERY.md` for the cold-network diagnosis and validation procedure.
 
 Self-hosted (`next build && next start`): `next.config.ts` sends the same cache headers, so a
 server that lets Next serve `public/` needs nothing extra. If a reverse proxy serves `public/`
-itself, give `/media/` and `/fonts/` those headers there. Image optimisation is on and uses
+itself, give those media paths and `/fonts/` their respective headers there. Image optimisation is on and uses
 `sharp`, which pnpm installs with Next.
 
 ## Screenshots
