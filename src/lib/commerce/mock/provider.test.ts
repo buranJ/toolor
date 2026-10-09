@@ -10,6 +10,21 @@ describe("MockCommerceProvider", () => {
     provider = new MockCommerceProvider();
   });
 
+  it("allows every catalogue item to be reached and clamps out-of-range pages", async () => {
+    const first = await provider.getProducts();
+    const pages = await Promise.all(
+      Array.from({ length: first.totalPages }, (_, i) =>
+        provider.getProducts({ page: i + 1 }),
+      ),
+    );
+    expect(
+      new Set(pages.flatMap((page) => page.items.map((item) => item.id))).size,
+    ).toBe(first.totalItems);
+    const last = await provider.getProducts({ page: 999_999 });
+    expect(last.page).toBe(first.totalPages);
+    expect(last.items.length).toBeGreaterThan(0);
+  });
+
   it("filters and sorts products through typed criteria", async () => {
     const result = await provider.getProducts({
       category: "women",

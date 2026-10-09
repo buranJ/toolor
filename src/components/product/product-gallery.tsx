@@ -123,7 +123,12 @@ export function ProductGallery({
           aria-label={d.product.zoomOpen}
           className="product-gallery-zoom"
           disabled={!isReady}
-          onClick={() => setZoomed(true)}
+          onClick={(event) => {
+            // Safari pointer clicks need not focus buttons. Preserve a real
+            // keyboard return point before opening the modal.
+            event.currentTarget.focus();
+            setZoomed(true);
+          }}
           type="button"
         >
           <svg aria-hidden="true" viewBox="0 0 24 24">

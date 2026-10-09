@@ -26,7 +26,13 @@ const HERO_POSTER_MOBILE = "/media/hero/hero-poster-mobile.webp";
 
 /** Art-directed poster: each breakpoint's own crop through the optimizer. */
 const posters = (() => {
-  const common = { alt: "", fill: true, priority: true, sizes: "100vw" };
+  const common = {
+    alt: "",
+    fill: true,
+    priority: true,
+    fetchPriority: "high" as const,
+    sizes: "100vw",
+  };
   const desktop = getImageProps({ ...common, src: HERO_POSTER }).props;
   const { srcSet: mobile, ...img } = getImageProps({
     ...common,
@@ -40,7 +46,7 @@ const posters = (() => {
  * to the scroll position every this many ms. Time-based, so a 120Hz phone
  * and a 60Hz laptop feel the same.
  */
-const SCROLL_SMOOTHING_MS = 120;
+const SCROLL_SMOOTHING_MS = 70;
 /** Below this progress delta the loop is considered settled and pauses. */
 const SETTLE_EPSILON = 0.0002;
 
@@ -116,6 +122,7 @@ export function HeroScrollVideo({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sourceRef = useRef<FrameSource | null>(null);
   const sourceModeRef = useRef<HeroMode | null>(null);
+  const sourceActiveRef = useRef(true);
   /** Native size of the current source's frames; sizes the canvas. */
   const frameSizeRef = useRef<{ width: number; height: number }>(
     HERO_TRACK.mobile,
@@ -168,6 +175,7 @@ export function HeroScrollVideo({
         (index) => heroStillUrl(mode, index),
         paint,
       );
+      sourceRef.current.setActive(sourceActiveRef.current);
       refreshRef.current?.();
     };
 
@@ -183,6 +191,7 @@ export function HeroScrollVideo({
         },
       );
       sourceRef.current = source;
+      source.setActive(sourceActiveRef.current);
       refreshRef.current?.();
     } else {
       startStills();
@@ -208,8 +217,11 @@ export function HeroScrollVideo({
     if (!context) return;
 
     let raf = 0;
+    let pendingPaint: { image: CanvasImageSource; release: () => void } | null =
+      null;
     let looping = false;
     let active = false;
+    let intersecting = false;
     let sectionTop = 0;
     let sectionHeight = 0;
     let lastTime = 0;
@@ -219,22 +231,41 @@ export function HeroScrollVideo({
     const rendered = { current: 0 };
     const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
-    /** Cover fit: fill the canvas, crop the overflow, centred. */
+    const cancelPaint = () => {
+      pendingPaint?.release();
+      pendingPaint = null;
+    };
+
+    /** Keep the latest asynchronous decoder output for the shared render tick.
+     * Clones share native pixels but outlive the source's frame ownership. */
     paintRef.current = (image, width, height) => {
       if (!canvas.width || !width || !height) return;
-      const scale = Math.max(canvas.width / width, canvas.height / height);
-      const w = width * scale;
-      const h = height * scale;
-      context.drawImage(
-        image,
-        (canvas.width - w) / 2,
-        (canvas.height - h) / 2,
-        w,
-        h,
-      );
-      if (!hasPainted) {
-        hasPainted = true;
-        setPainted(true);
+      const frame =
+        typeof VideoFrame !== "undefined" && image instanceof VideoFrame
+          ? image.clone()
+          : null;
+      pendingPaint?.release();
+      pendingPaint = { image: frame ?? image, release: () => frame?.close() };
+      start();
+    };
+
+    const commitPaint = () => {
+      const pending = pendingPaint;
+      pendingPaint = null;
+      if (!pending) return;
+      try {
+        // CSS object-fit performs cover cropping in the compositor. At
+        // native resolution this is a direct frame copy, not a costly
+        // high-quality upscale/crop on every decoder callback.
+        context.drawImage(pending.image, 0, 0, canvas.width, canvas.height);
+        canvas.dataset.painted = "true";
+        canvas.style.opacity = "1";
+        if (!hasPainted) {
+          hasPainted = true;
+          setPainted(true);
+        }
+      } finally {
+        pending.release();
       }
     };
 
@@ -245,19 +276,29 @@ export function HeroScrollVideo({
       sectionHeight = section.offsetHeight;
 
       const box = canvas.getBoundingClientRect();
-      // Match the screen, but never ask for more pixels than the frames hold:
-      // a flat 2x cap left the canvas below both the screen and the artwork on
-      // a 3x phone, so the picture was upscaled twice over.
+      // Keep the source aspect ratio. Full-density phones/laptops use the
+      // native buffer; retracting mobile toolbars then need no canvas reset.
+      // For lower-density displays, reserve enough source pixels for cover.
       const frame = frameSizeRef.current;
-      const dpr = Math.min(
-        window.devicePixelRatio || 1,
-        box.width > 0 ? frame.width / box.width : 1,
+      const scale = Math.min(
+        1,
+        Math.max(box.width / frame.width, box.height / frame.height) *
+          (window.devicePixelRatio || 1),
       );
-      const w = Math.round(box.width * dpr);
-      const h = Math.round(box.height * dpr);
+      let gcd = frame.width,
+        divisor = frame.height;
+      while (divisor) {
+        [gcd, divisor] = [divisor, gcd % divisor];
+      }
+      const steps = Math.ceil(scale * gcd);
+      const w = (frame.width / gcd) * steps;
+      const h = (frame.height / gcd) * steps;
       if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
+        canvas.style.opacity = "0";
+        canvas.dataset.painted = "false";
         canvas.width = w;
         canvas.height = h;
+        context.imageSmoothingQuality = "high";
         return true;
       }
       return false;
@@ -286,6 +327,10 @@ export function HeroScrollVideo({
         Math.abs(target.current - rendered.current) < SETTLE_EPSILON;
       if (settled) rendered.current = target.current;
       draw(rendered.current);
+      // Cached frames are ready synchronously inside show(). Present them
+      // in this tick, not in a second rAF that adds a whole display interval.
+      // Decoder callbacks between ticks replace pendingPaint, never draw twice.
+      commitPaint();
       if (!settled) raf = requestAnimationFrame(loop);
       else {
         looping = false;
@@ -317,15 +362,22 @@ export function HeroScrollVideo({
       draw(rendered.current);
     };
 
+    const updateActive = () => {
+      active = intersecting && !document.hidden;
+      sourceActiveRef.current = active;
+      sourceRef.current?.setActive(active);
+      if (active) onResize();
+      else if (raf) {
+        cancelAnimationFrame(raf);
+        looping = false;
+        lastTime = 0;
+      }
+      if (!active) cancelPaint();
+    };
     const observer = new IntersectionObserver(
       ([entry]) => {
-        active = Boolean(entry?.isIntersecting);
-        if (active) onResize();
-        else if (raf) {
-          cancelAnimationFrame(raf);
-          looping = false;
-          lastTime = 0;
-        }
+        intersecting = Boolean(entry?.isIntersecting);
+        updateActive();
       },
       { rootMargin: "200px 0px" },
     );
@@ -335,6 +387,7 @@ export function HeroScrollVideo({
     resizeObserver.observe(section);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
+    document.addEventListener("visibilitychange", updateActive);
     measure();
     readTarget();
     rendered.current = target.current;
@@ -342,12 +395,14 @@ export function HeroScrollVideo({
 
     return () => {
       paintRef.current = null;
+      cancelPaint();
       refreshRef.current = null;
       if (raf) cancelAnimationFrame(raf);
       observer.disconnect();
       resizeObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", updateActive);
     };
   }, [mediaMode, still]);
 
@@ -355,6 +410,7 @@ export function HeroScrollVideo({
     <div
       ref={sectionRef}
       data-testid="hero-scroll-video"
+      data-still={still}
       className={`relative h-[300svh] motion-reduce:h-[100dvh] lg:h-[340svh] ${
         still ? "!h-[100dvh]" : ""
       } ${className}`}
@@ -393,7 +449,7 @@ export function HeroScrollVideo({
               aria-hidden="true"
               data-painted={painted}
               data-testid="hero-scroll-media"
-              className={`absolute inset-0 block h-full w-full transition-opacity duration-500 ${
+              className={`absolute inset-0 block h-full w-full object-cover object-center transition-opacity duration-500 ${
                 painted ? "opacity-100" : "opacity-0"
               }`}
             />
@@ -427,7 +483,9 @@ export function HeroScrollVideo({
             aria-hidden="true"
             className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.4),transparent_62%)]"
           />
-          <h1 className="relative drop-shadow-[0_6px_34px_rgba(0,0,0,0.35)]">
+          {/* The radial shade already gives contrast. A filtered wordmark
+              forced WebKit to rerasterize the large mask on every scroll. */}
+          <h1 className="relative">
             <BrandLogo
               tone="white"
               className="w-[clamp(18rem,58vw,52rem)]"
@@ -439,7 +497,7 @@ export function HeroScrollVideo({
 
         {/* Bottom-left copy + CTA — revealed once the garment is in frame. */}
         <div
-          className="absolute inset-x-0 bottom-0"
+          className="hero-copy absolute inset-x-0 bottom-0"
           style={
             {
               opacity:
@@ -472,7 +530,7 @@ export function HeroScrollVideo({
         {/* Scroll indicator — visible only at the very start. */}
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-6 flex justify-center motion-reduce:hidden"
+          className={`absolute inset-x-0 bottom-6 flex justify-center motion-reduce:hidden ${still ? "hidden" : ""}`}
           style={
             {
               opacity:

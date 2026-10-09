@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PageHeader } from "@/components/layout/page-header";
+import { Pagination } from "@/components/catalog/pagination";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Container } from "@/components/ui/container";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
-import { getDictionary, isLocale } from "@/i18n";
+import { getDictionary, isLocale, localePath } from "@/i18n";
 import { commerce } from "@/lib/commerce";
+import { parseProductQuery, type RawSearchParams } from "@/lib/validation";
 
 export async function generateMetadata({
   params,
@@ -28,14 +30,17 @@ export default async function SearchPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<RawSearchParams>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const d = getDictionary(locale);
 
-  const query = (await searchParams).q?.trim() ?? "";
-  const result = query ? await commerce.searchProducts(query) : null;
+  const filters = parseProductQuery(await searchParams);
+  const query = filters.search ?? "";
+  const result = query
+    ? await commerce.searchProducts(query, { page: filters.page, pageSize: 12 })
+    : null;
 
   return (
     <>
@@ -52,6 +57,7 @@ export default async function SearchPage({
           <Input
             defaultValue={query}
             id="site-search"
+            maxLength={100}
             name="q"
             placeholder={d.search.placeholder}
             type="search"
@@ -78,6 +84,15 @@ export default async function SearchPage({
             />
           )}
         </div>
+        {result ? (
+          <Pagination
+            locale={locale}
+            pathname={localePath(locale, "/search")}
+            filters={{ search: query }}
+            page={result.page}
+            totalPages={result.totalPages}
+          />
+        ) : null}
       </Container>
     </>
   );

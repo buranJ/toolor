@@ -18,7 +18,14 @@
       "many": "products",
       "other": "products"
     },
-    "pieces": "pcs"
+    "pieces": "pcs",
+    "pagination": {
+      "label": "Catalogue pages",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page}",
+      "status": "Page {page} of {total}"
+    }
   },
   "nav": {
     "catalog": "Catalogue",
@@ -246,7 +253,7 @@
     "total": "Total",
     "checkout": "Check out",
     "checkoutShort": "Check out",
-    "paymentNote": "Pay by cash or card on delivery. Exchange and returns follow our store policy.",
+    "paymentNote": "Send a request without online payment. A specialist will confirm availability, the final price, delivery and the payment method.",
     "drawer": {
       "heading": "Cart / {count}",
       "close": "Close cart",
@@ -275,19 +282,33 @@
     "commentPlaceholder": "Entrance, floor, convenient time — anything we should know",
     "deliveryNote": "Delivery cost depends on the city and is agreed when we confirm your order.",
     "payment": "Payment",
-    "submit": "Place order · {price}",
-    "terms": "By placing an order you agree to TOOLOR's delivery and returns terms.",
+    "submit": "Send request · {price}",
+    "submitting": "Sending request…",
+    "phonePlaceholder": "+996 ___ ___ ___",
+    "emailPlaceholder": "name@example.com",
+    "paymentNote": "No online payment is taken. A specialist will confirm availability, the final price, delivery and the payment method.",
+    "consent": "I agree to share my contact details, address and order items with TOOLOR specialists through Telegram to process this request.",
+    "honeypot": "Leave this field empty",
+    "terms": "Sending a request is not a payment or confirmation of availability.",
+    "submitError": "The request could not be sent. Your details and cart are preserved. Please try later.",
+    "notConfigured": "Requests are temporarily unavailable. Your details and cart are preserved.",
+    "cartChanged": "Product details have changed. Review your cart items and prices before sending again.",
+    "rateLimited": "Too many attempts. Please wait a few minutes before trying again.",
+    "deliveryUncertain": "Delivery of request {number} could not be confirmed. The specialists may have received it. Your cart is preserved; do not send it again until you have checked receipt.",
     "yourOrder": "Your order",
     "editOrder": "Edit order items",
-    "successTitle": "Order received",
+    "successTitle": "Request sent",
     "orderNumber": "No. {number}",
-    "successText": "We'll call you during business hours to confirm your order and arrange delivery and payment.",
+    "successText": "Your request was sent to the specialists. They will use the supplied contact details to discuss availability, delivery and payment. No online payment was taken.",
     "continueShopping": "Continue shopping",
     "errors": {
       "name": "Enter your name",
       "phone": "Enter a phone number",
       "city": "Enter your city",
-      "address": "Enter a delivery address"
+      "address": "Enter a delivery address (5–300 characters)",
+      "email": "Enter a valid email or leave the field empty",
+      "comment": "Keep your comment within 1000 characters",
+      "consent": "Confirm sharing your details to process the request"
     },
     "deliveryOptions": {
       "bishkekTitle": "Courier in Bishkek",
@@ -296,6 +317,34 @@
       "regionsNote": "Shipped to your city",
       "internationalTitle": "International delivery",
       "internationalNote": "Timing and cost confirmed separately"
+    },
+    "telegram": {
+      "title": "New TOOLOR request",
+      "contacts": "Customer contacts",
+      "deliveryHeading": "Delivery",
+      "commentHeading": "Customer comment",
+      "details": "Reference details",
+      "reference": "Request reference",
+      "openProduct": "Open product",
+      "size": "Size",
+      "color": "Colour",
+      "deliveryPending": "Delivery cost is confirmed separately",
+      "notice": "Request only: no payment or stock reservation. A specialist will confirm availability, the final amount, delivery and payment method.",
+      "createdAt": "Time (UTC)",
+      "locale": "Customer language",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "city": "City",
+      "address": "Address",
+      "items": "Requested items:",
+      "variant": "Variant / size",
+      "sku": "SKU",
+      "identifiers": "Product / variant ID",
+      "quantity": "Quantity",
+      "subtotal": "Catalogue item subtotal",
+      "pending": "Prices, availability and delivery require confirmation. This is a request, not a paid order.",
+      "consent": "The customer agreed to share their details with specialists through Telegram."
     },
     "paymentOptions": {
       "cashTitle": "Cash on delivery",

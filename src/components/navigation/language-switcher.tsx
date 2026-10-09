@@ -80,6 +80,7 @@ function SwitcherLinks({
                 href={query ? `${href}?${query}` : href}
                 hrefLang={target}
                 lang={target}
+                prefetch={false}
                 onClick={() => {
                   if (!isActive) {
                     sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));

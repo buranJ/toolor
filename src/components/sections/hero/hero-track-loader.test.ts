@@ -49,6 +49,44 @@ afterEach(() => {
 });
 
 describe("hero loading over a cold network", () => {
+  it("stops at the local neighbourhood when the visitor is stationary", async () => {
+    const requests = network();
+    const loader = new HeroTrackLoader(track, vi.fn(), vi.fn());
+    loader.request(0);
+    await complete(requests[0]!);
+    await complete(requests[1]!);
+    await complete(requests[2]!);
+    expect(requests).toHaveLength(3);
+    expect(loader.sample(6)).toBeUndefined();
+    loader.dispose();
+  });
+
+  it("pauses downloads offscreen and resumes the latest playhead", async () => {
+    const requests = network();
+    const loader = new HeroTrackLoader(track, vi.fn(), vi.fn());
+    loader.request(0);
+    loader.setActive(false);
+    loader.request(7);
+    expect(requests).toHaveLength(1);
+    expect(requests[0]!.signal.aborted).toBe(true);
+    loader.setActive(true);
+    expect(requests.at(-1)!.url).toMatch(/g003\.bin$/);
+    loader.dispose();
+  });
+
+  it("does not abandon the displayed track for a broken speculative segment", async () => {
+    const requests = network();
+    const fail = vi.fn();
+    const loader = new HeroTrackLoader(track, vi.fn(), fail);
+    loader.request(0);
+    await complete(requests[0]!);
+    await complete(requests[1]!, [1]);
+    await complete(requests[2]!, [1]);
+    expect(fail).not.toHaveBeenCalled();
+    expect(loader.sample(0)).toBeDefined();
+    loader.dispose();
+  });
+
   it("requests the end directly without downloading the beginning", async () => {
     const requests = network();
     const ready = vi.fn();

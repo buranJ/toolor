@@ -18,11 +18,18 @@ Status: temporary. The visible cart uses Zod-validated localStorage records. It 
 
 ## D-005 — Checkout, wishlist and account skeletons
 
-Status: temporary. Checkout does not submit data or initiate payment. Wishlist is an empty placeholder. Account pages collect no personal data and provide no authentication.
+Status: updated on 2026-10-08 after the user's approval of Telegram purchase
+requests. Checkout sends contact/delivery details and server-resolved catalogue
+lines to a server-configured Telegram recipient, only with explicit customer
+consent. No payment is collected, stock reserved or commercial order confirmed.
+Missing credentials fail closed without clearing the cart. Durable storage,
+distributed abuse prevention and the receiving private chat/group still need
+configuration/approval; see `docs/TELEGRAM_CHECKOUT.md`. Wishlist is an empty
+placeholder. Account pages collect no personal data and provide no authentication.
 
-## D-006 — Static motion-ready homepage
+## D-006 — Isolated native homepage motion
 
-Status: accepted for stage one. Semantic sections and a static hero fallback ship now. Motion libraries and assets are deferred and isolated behind a future adapter.
+Status: updated after the approved hero implementation. Semantic sections and a static poster remain the fallback contract. The scroll-driven hero uses native WebCodecs/canvas behind a `FrameSource` adapter, with no motion library. Decoded frames and speculative requests are bounded; offscreen/background playback pauses. Reduced motion and Data Saver keep the poster and visible content.
 
 ## D-007 — Temporary typography and source imagery
 
@@ -30,4 +37,4 @@ Status: temporary. Geist and system fallbacks stand in for the unprovided brand 
 
 ## D-008 — Canonical base
 
-Status: provisional. `https://toolorkg.com` is used as the metadata/sitemap base because it is the supplied current domain. Confirm host and migration policy before deployment.
+Status: updated on 2026-10-08. `https://toolor.store` is the current public site supplied by the user and is used consistently for metadata, sitemap and robots. A different production host or redirect migration requires confirmation; the earlier provisional `toolorkg.com` base is no longer used.

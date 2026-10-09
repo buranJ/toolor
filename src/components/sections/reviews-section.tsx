@@ -70,7 +70,9 @@ function FeaturedReview({
       </span>
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-24 -left-16 size-72 rounded-full bg-white/10 blur-2xl"
+        // A remote CSS blur layer produced black compositor tiles over the
+        // hero in WebKit. A radial glow needs no offscreen filter surface.
+        className="pointer-events-none absolute -bottom-24 -left-16 size-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.1)_0%,transparent_72%)]"
       />
       <div className="relative">
         <Stars label={ratingLabel} tone="white" />

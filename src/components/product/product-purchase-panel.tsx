@@ -26,9 +26,11 @@ export function ProductPurchasePanel({
 }) {
   const d = getDictionary(locale);
   const panelRef = useRef<HTMLDivElement>(null);
-  const [selectedId, setSelectedId] = useState(product.variants[0]?.id ?? "");
+  const initialVariant =
+    product.variants.find((item) => item.options.size) ?? product.variants[0];
+  const [selectedId, setSelectedId] = useState(initialVariant?.id ?? "");
   const [selectedColor, setSelectedColor] = useState(
-    product.variants[0]?.options.color ?? product.colors?.[0] ?? "",
+    initialVariant?.options.color ?? product.colors?.[0] ?? "",
   );
   const [added, setAdded] = useState(false);
   const variant = useMemo(
@@ -99,7 +101,11 @@ export function ProductPurchasePanel({
       product.variants.find(
         (item) =>
           item.options.color === color && item.options.size === currentSize,
-      ) ?? product.variants.find((item) => item.options.color === color);
+      ) ??
+      product.variants.find(
+        (item) => item.options.color === color && item.options.size,
+      ) ??
+      product.variants.find((item) => item.options.color === color);
 
     if (matchingVariant) setSelectedId(matchingVariant.id);
   }

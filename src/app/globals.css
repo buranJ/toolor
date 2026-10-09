@@ -1651,12 +1651,33 @@ body:has([data-page="about"]) .footer-mountain-cut {
   position: fixed;
   z-index: 200;
   inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  color: white;
   display: grid;
   padding: clamp(1rem, 4vw, 3rem);
   background: rgb(6 10 14 / 92%);
   grid-template-rows: minmax(0, 1fr) auto;
   gap: 1rem;
   backdrop-filter: blur(6px);
+}
+
+.product-viewer::backdrop {
+  background: transparent;
+}
+
+.product-viewer:not([open]) {
+  display: none;
+}
+
+.hero-copy:focus-within,
+[data-still="true"] .hero-copy {
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 .product-viewer-stage {
@@ -2605,6 +2626,11 @@ body:has([data-page="about"]) .footer-mountain-cut {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .hero-copy {
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   *,

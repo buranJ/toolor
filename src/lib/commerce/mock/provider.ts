@@ -14,8 +14,9 @@ import { mockCategories, mockCollections, mockProducts } from "./data";
 const emptyMoney = (): Money => ({ amount: 0, currencyCode: "KGS" });
 
 function paginate<T>(items: T[], page = 1, pageSize = 12): PaginatedResult<T> {
-  const safePage = Math.max(1, page);
   const safePageSize = Math.max(1, pageSize);
+  const totalPages = Math.max(1, Math.ceil(items.length / safePageSize));
+  const safePage = Math.min(totalPages, Math.max(1, page));
   const start = (safePage - 1) * safePageSize;
 
   return {
@@ -23,7 +24,7 @@ function paginate<T>(items: T[], page = 1, pageSize = 12): PaginatedResult<T> {
     page: safePage,
     pageSize: safePageSize,
     totalItems: items.length,
-    totalPages: Math.max(1, Math.ceil(items.length / safePageSize)),
+    totalPages,
   };
 }
 

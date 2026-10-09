@@ -226,6 +226,7 @@ export function CatalogControls(props: CatalogControlsProps) {
                 <span>{d.catalog.search}</span>
                 <input
                   defaultValue={props.filters.search}
+                  maxLength={100}
                   name="q"
                   placeholder={d.catalog.searchPlaceholder}
                   type="search"
@@ -274,6 +275,7 @@ export function CatalogControls(props: CatalogControlsProps) {
               <span>{d.catalog.search}</span>
               <input
                 defaultValue={props.filters.search}
+                maxLength={100}
                 name="q"
                 placeholder={d.catalog.searchPlaceholder}
                 type="search"

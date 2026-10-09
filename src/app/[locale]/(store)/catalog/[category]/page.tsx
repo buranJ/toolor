@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { CatalogControls } from "@/components/catalog/catalog-controls";
+import { Pagination } from "@/components/catalog/pagination";
 import { PageHeader } from "@/components/layout/page-header";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Container } from "@/components/ui/container";
@@ -106,6 +107,13 @@ export default async function CategoryPage({
             products={result.items}
           />
         </div>
+        <Pagination
+          locale={locale}
+          pathname={localePath(locale, `/catalog/${slug}`)}
+          filters={filters}
+          page={result.page}
+          totalPages={result.totalPages}
+        />
       </Container>
     </>
   );

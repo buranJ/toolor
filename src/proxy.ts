@@ -40,7 +40,14 @@ export function proxy(request: NextRequest) {
   if (isLocale(firstSegment)) {
     // Already localised — keep the cookie in step with what the visitor browses.
     const response = NextResponse.next();
-    if (request.cookies.get(LOCALE_COOKIE)?.value !== firstSegment) {
+    const isPrefetch =
+      request.headers.has("next-router-prefetch") ||
+      request.headers.has("next-router-segment-prefetch") ||
+      request.headers.get("purpose") === "prefetch";
+    if (
+      !isPrefetch &&
+      request.cookies.get(LOCALE_COOKIE)?.value !== firstSegment
+    ) {
       response.cookies.set(LOCALE_COOKIE, firstSegment, {
         maxAge: COOKIE_MAX_AGE,
         path: "/",

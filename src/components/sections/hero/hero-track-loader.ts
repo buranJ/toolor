@@ -22,6 +22,7 @@ export class HeroTrackLoader {
   private target = 0;
   private direction = 1;
   private disposed = false;
+  private active = true;
   private lastUrgentAt = -Infinity;
   private rescheduleTimer = 0;
 
@@ -43,6 +44,17 @@ export class HeroTrackLoader {
     return this.samples.get(index);
   }
 
+  setActive(active: boolean) {
+    this.active = active;
+    if (active) this.schedule();
+    else {
+      window.clearTimeout(this.rescheduleTimer);
+      this.rescheduleTimer = 0;
+      for (const controller of this.pending.values()) controller.abort();
+      this.pending.clear();
+    }
+  }
+
   /** Nearest complete downloaded group; never feed a delta without its key. */
   nearest(index: number): number {
     if (this.samples.has(index)) return index;
@@ -61,10 +73,8 @@ export class HeroTrackLoader {
   }
 
   dispose() {
+    this.setActive(false);
     this.disposed = true;
-    window.clearTimeout(this.rescheduleTimer);
-    for (const controller of this.pending.values()) controller.abort();
-    this.pending.clear();
     this.samples.clear();
     this.loaded.clear();
   }
@@ -80,7 +90,7 @@ export class HeroTrackLoader {
   }
 
   private schedule() {
-    if (this.disposed) return;
+    if (this.disposed || !this.active) return;
     if (!this.loaded.has(this.target)) {
       if (!this.pending.has(this.target)) {
         // A fast wheel/touch gesture can cross a GOP every animation frame.
@@ -110,19 +120,22 @@ export class HeroTrackLoader {
       return;
     }
 
-    // One background download leaves a slot for an immediate seek. Cache
-    // neighbours first, then fill the rest while the reader is stationary.
+    // A bounded compressed look-ahead, not a full-clip background download.
+    // Keep a slot free for an urgent seek. Already visited samples stay cheap
+    // and reusable (~5 MB at most), but idle visitors fetch only neighbours.
     if (this.pending.size) return;
-    const candidates = this.track.keys
-      .map((_, group) => group)
-      .sort((a, b) => {
-        const rank = (group: number) => {
-          const delta = (group - this.target) * this.direction;
-          return Math.abs(delta) * 2 + (delta < 0 ? 1 : 0);
-        };
-        return rank(a) - rank(b);
-      });
-    const next = candidates.find((group) => !this.loaded.has(group));
+    const candidates = [
+      this.target + this.direction,
+      this.target - this.direction,
+      this.target + this.direction * 2,
+    ];
+    const next = candidates.find(
+      (group) =>
+        group >= 0 &&
+        group < this.track.keys.length &&
+        !this.loaded.has(group) &&
+        (this.attempts.get(group) ?? 0) < 2,
+    );
     if (next !== undefined) this.start(next);
   }
 
@@ -171,8 +184,11 @@ export class HeroTrackLoader {
       const attempts = (this.attempts.get(group) ?? 0) + 1;
       this.attempts.set(group, attempts);
       if (attempts >= 2) {
-        this.dispose();
-        this.onFail();
+        // A broken speculative neighbour must not take down a working hero.
+        if (group === this.target) {
+          this.dispose();
+          this.onFail();
+        }
       }
     } finally {
       window.clearTimeout(timeout);

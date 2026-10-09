@@ -4,17 +4,30 @@ import type { ProductFilters } from "@/types";
 
 const querySchema = z.object({
   category: z.string().trim().min(1).optional(),
-  gender: z.enum(["men", "women", "unisex", "unknown"]).optional(),
-  size: z.string().trim().max(40).optional(),
-  color: z.string().trim().max(60).optional(),
+  gender: z
+    .enum(["men", "women", "unisex", "unknown"])
+    .optional()
+    .catch(undefined),
+  size: z.string().trim().max(40).optional().catch(undefined),
+  color: z.string().trim().max(60).optional().catch(undefined),
   collection: z.string().trim().min(1).optional(),
   q: z.string().trim().max(100).optional(),
   sort: z
     .enum(["featured", "newest", "price-asc", "price-desc"])
     .catch("featured"),
-  page: z.coerce.number().int().positive().catch(1),
-  minPrice: z.coerce.number().nonnegative().optional(),
-  maxPrice: z.coerce.number().nonnegative().optional(),
+  page: z.coerce.number().int().positive().max(1_000_000).catch(1),
+  minPrice: z.coerce
+    .number()
+    .nonnegative()
+    .max(Number.MAX_SAFE_INTEGER / 100)
+    .optional()
+    .catch(undefined),
+  maxPrice: z.coerce
+    .number()
+    .nonnegative()
+    .max(Number.MAX_SAFE_INTEGER / 100)
+    .optional()
+    .catch(undefined),
 });
 
 export type RawSearchParams = Record<string, string | string[] | undefined>;
@@ -33,7 +46,7 @@ export function parseProductQuery(params: RawSearchParams): ProductFilters {
     size: first(params.size),
     color: first(params.color),
     collection: first(params.collection),
-    q: first(params.q),
+    q: first(params.q)?.slice(0, 100),
     sort: first(params.sort),
     page: first(params.page),
     minPrice: first(params.minPrice),

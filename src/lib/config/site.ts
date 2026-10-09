@@ -2,7 +2,7 @@ import type { Dictionary } from "@/i18n";
 
 export const siteConfig = {
   name: "TOOLOR",
-  url: "https://toolorkg.com",
+  url: "https://toolor.store",
 } as const;
 
 /**

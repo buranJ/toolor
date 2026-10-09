@@ -17,7 +17,16 @@ Route files own metadata, URL parsing, server data loading and composition. Comp
 
 Business logic belongs in `features` or provider adapters, not presentational components. Runtime validation is used at untrusted boundaries (URL state and browser storage). Server Components are the default; the error boundary, local add-to-cart button and local cart view are deliberate client islands.
 
-Homepage sections remain content-first and semantic. They expose stable `data-scroll-anchor` values. The hero declares a `data-motion-slot` and static poster/fallback contract, but no animation runtime is loaded.
+Purchase requests use `POST /api/order-requests` (Node runtime). The route limits
+and validates the body, rejects cross-origin submissions, and delegates to
+`features/checkout`. Product/variant identifiers and expected prices are checked
+through `CommerceProvider`; browser-provided product descriptions or prices are
+never authoritative. The Telegram transport runs only in the server route and
+uses server-only environment variables. It is an operator notification, not a
+payment, inventory reservation or durable order system. See
+`docs/TELEGRAM_CHECKOUT.md` for setup and remaining launch requirements.
+
+Homepage sections remain content-first and semantic. They expose stable `data-scroll-anchor` values. The hero isolates its scroll-driven WebCodecs player behind `FrameSource`, with a bounded still-image fallback and a static poster for reduced motion/Data Saver. It uses native browser APIs, not an animation library; see `docs/HERO_DELIVERY.md` for network and decoded-frame budgets.
 
 ## Error and cache policy
 
@@ -25,4 +34,4 @@ Missing products/categories use Next.js `notFound()`. Provider errors propagate 
 
 ## Canonical and indexing strategy
 
-The supplied current domain, `https://toolorkg.com`, is the provisional metadata base. Every public route declares a clean path-only canonical; query-based filtering and sorting canonicalize to the unfiltered catalog route. Search, cart, checkout, wishlist and account routes are excluded from indexing. Confirm the final host, locale strategy and legacy redirect map before deployment.
+The current public domain supplied by the user, `https://toolor.store`, is the metadata, sitemap and robots base. Every public route declares a clean path-only canonical; query-based filtering and sorting canonicalize to the unfiltered catalog route. Search, cart, checkout, wishlist and account routes are excluded from indexing. Any future host migration and legacy redirect map still require an explicit decision.
