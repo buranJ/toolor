@@ -4,6 +4,9 @@ import { getDictionary, localePath } from "@/i18n";
 import { siteConfig } from "@/lib/config/site";
 import { formatMoney } from "@/lib/utils/money";
 import type { OrderRequest } from "./order-request";
+import { getDictionary as dictionary } from "@/i18n";
+import { orderButtons } from "@/features/orders/presentation";
+import type { StoredOrder } from "@/features/orders/repository";
 
 export class TelegramUnavailableError extends Error {}
 export class DeliveryUncertainError extends Error {}
@@ -83,7 +86,7 @@ const replySchema = z.object({
 
 /** Escape every dynamic value, including catalogue strings and link attributes.
  * Only this renderer can add Telegram HTML; buyers cannot inject entities. */
-function escapeHtml(value: string) {
+export function escapeHtml(value: string) {
   return value
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -172,29 +175,81 @@ export function telegramRequestHtml(order: OrderRequest) {
 }
 
 /** No automatic retries: a timeout can occur after Telegram accepted a message. */
-export async function sendOrderToTelegram(order: OrderRequest): Promise<void> {
-  const { token, chatId, threadId } = telegramConfig();
+export type TelegramReceipt = { messageId: number; asFile: boolean };
+export function workflowHtml(record: StoredOrder) {
+  const t = dictionary("ru").checkout.orderBot;
+  return [
+    `<b>${escapeHtml(t.status)}: ${escapeHtml(t.statuses[record.status])}</b>`,
+    ...(record.assignedTo
+      ? [
+          `${escapeHtml(t.assigned)}: <code>${escapeHtml(record.assignedTo)}</code>`,
+        ]
+      : []),
+    ...(record.delivery === "uncertain" || record.delivery === "dispatching"
+      ? [`<i>${escapeHtml(t.deliveryUncertain)}</i>`]
+      : []),
+    "",
+    `<blockquote expandable><b>${escapeHtml(t.audit)}</b>\n${record.history.map((event) => `${escapeHtml(event.at)} · ${escapeHtml(t.statuses[event.status])}${event.actor ? ` · ${escapeHtml(event.actor)}` : ""}`).join("\n")}</blockquote>`,
+  ].join("\n");
+}
+export function orderCardHtml(record: StoredOrder) {
+  return `${telegramRequestHtml(record.order)}\n\n${workflowHtml(record)}`;
+}
+export function orderCaption(record: StoredOrder) {
+  const t = dictionary("ru").checkout.orderBot;
+  return `${dictionary("ru").checkout.telegram.title}\n${record.order.number}\n${t.status}: ${t.statuses[record.status]}`;
+}
+export async function sendOrderToTelegram(
+  order: OrderRequest,
+  record?: StoredOrder,
+): Promise<TelegramReceipt> {
+  const { chatId, threadId } = telegramConfig();
   const text = telegramRequestText(order);
-  const html = telegramRequestHtml(order);
+  const managed =
+    Boolean(record) || process.env.ORDER_STORAGE_DRIVER === "netlify";
+  const html = record
+    ? orderCardHtml(record)
+    : `${telegramRequestHtml(order)}${managed ? `\n\n<b>${getDictionary("ru").checkout.orderBot.status}: ${getDictionary("ru").checkout.orderBot.statuses.new}</b>` : ""}`;
   // Conservative UTF-16/source budget includes markup and escaped characters;
   // it is below Telegram's parsed-message limit, even for emoji-heavy inputs.
-  const asFile = text.length > 4000 || html.length > 4000;
+  const asFile = text.length > 4000 || html.length > (managed ? 3000 : 4000);
   const params = {
     chat_id: chatId,
     ...(threadId ? { message_thread_id: threadId } : {}),
+    ...(managed
+      ? {
+          reply_markup: orderButtons(
+            order.requestId,
+            record?.workflowRevision ?? 1,
+            record?.status ?? "new",
+          ),
+        }
+      : {}),
   };
   let body: string | FormData;
   if (asFile) {
     const data = new FormData();
     for (const [key, value] of Object.entries(params))
-      data.set(key, String(value));
+      data.set(
+        key,
+        typeof value === "object" ? JSON.stringify(value) : String(value),
+      );
     data.set(
       "caption",
-      `${getDictionary("ru").checkout.telegram.title} ${order.number}`,
+      record
+        ? orderCaption(record)
+        : `${getDictionary("ru").checkout.telegram.title} ${order.number}`,
     );
     data.set(
       "document",
-      new Blob([text], { type: "text/plain;charset=utf-8" }),
+      new Blob(
+        [
+          record
+            ? `${text}\n\n${getDictionary("ru").checkout.orderBot.status}: ${getDictionary("ru").checkout.orderBot.statuses[record.status]}\n${record.history.map((event) => `${event.at}: ${event.status}${event.actor ? ` (${event.actor})` : ""}`).join("\n")}`
+            : text,
+        ],
+        { type: "text/plain;charset=utf-8" },
+      ),
       `${order.number}.txt`,
     );
     body = data;
@@ -206,27 +261,52 @@ export async function sendOrderToTelegram(order: OrderRequest): Promise<void> {
       link_preview_options: { is_disabled: true },
     });
   }
+  const result = await telegramApi(
+    asFile ? "sendDocument" : "sendMessage",
+    body,
+  );
+  const message = replySchema.safeParse({ ok: true, result });
+  if (!message.success) throw new DeliveryUncertainError();
+  return { messageId: message.data.result.message_id, asFile };
+}
+
+/** Sanitized transport shared with the private staff bot. */
+export async function telegramApi(
+  method: string,
+  body: object | string | FormData,
+): Promise<unknown> {
+  const { token } = telegramConfig();
+  const multipart = body instanceof FormData;
   let response: Response;
   let result: unknown;
   try {
-    response = await fetch(
-      `https://api.telegram.org/bot${token}/${asFile ? "sendDocument" : "sendMessage"}`,
-      {
-        method: "POST",
-        headers: asFile ? undefined : { "Content-Type": "application/json" },
-        body,
-        cache: "no-store",
-        redirect: "error",
-        signal: AbortSignal.timeout(12_000),
-      },
-    );
+    response = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
+      method: "POST",
+      headers: multipart ? undefined : { "Content-Type": "application/json" },
+      body: multipart || typeof body === "string" ? body : JSON.stringify(body),
+      cache: "no-store",
+      redirect: "error",
+      signal: AbortSignal.timeout(12_000),
+    });
     result = await response.json();
   } catch {
     // Do not propagate fetch errors: they can contain the token-bearing URL.
     throw new DeliveryUncertainError();
   }
-  if (z.object({ ok: z.literal(false) }).safeParse(result).success)
+  const rejected = z
+    .object({ ok: z.literal(false), description: z.string().optional() })
+    .safeParse(result);
+  if (rejected.success) {
+    if (
+      method.startsWith("editMessage") &&
+      rejected.data.description?.includes("message is not modified")
+    )
+      return true;
     throw new TelegramRejectedError();
-  if (!response.ok || !replySchema.safeParse(result).success)
-    throw new DeliveryUncertainError();
+  }
+  const reply = z
+    .object({ ok: z.literal(true), result: z.unknown() })
+    .safeParse(result);
+  if (!response.ok || !reply.success) throw new DeliveryUncertainError();
+  return reply.data.result;
 }

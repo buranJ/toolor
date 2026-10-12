@@ -8,6 +8,12 @@ import {
 } from "./order-request";
 import { requestNumber, type CheckoutRequest } from "./schema";
 import { TelegramRejectedError } from "./telegram";
+import type {
+  OrderRepository,
+  StoredOrder,
+  VersionedOrder,
+} from "@/features/orders/repository";
+import type { TelegramReceipt } from "./telegram";
 
 type Result = {
   status: number;
@@ -19,8 +25,8 @@ type Bucket = { count: number; expires: number };
 const hash = (value: string) =>
   createHash("sha256").update(value).digest("hex");
 
-/** Best-effort, bounded per-process protection. Not a durable order database
- * or distributed rate limiter: see docs/TELEGRAM_CHECKOUT.md before launch. */
+/** Bounded per-process coalescing and abuse protection supplement the optional
+ * durable repository. Rate limits are not distributed; see launch requirements. */
 export class CheckoutService {
   private readonly requests = new Map<string, Entry>();
   private readonly buckets = new Map<string, Bucket>();
@@ -29,7 +35,11 @@ export class CheckoutService {
     private readonly dependencies: {
       provider: CommerceProvider;
       ready: () => boolean;
-      send: (order: OrderRequest) => Promise<void>;
+      send: (
+        order: OrderRequest,
+        record?: StoredOrder,
+      ) => Promise<TelegramReceipt | void>;
+      repository?: () => OrderRepository | undefined;
       now?: () => number;
     },
   ) {}
@@ -83,9 +93,20 @@ export class CheckoutService {
   }
 
   private async deliver(input: CheckoutRequest): Promise<Result> {
+    let repository: OrderRepository | undefined;
+    let stored: VersionedOrder | null = null;
+    const fingerprint = hash(JSON.stringify(input));
+    try {
+      repository = this.dependencies.repository?.();
+      stored = repository ? await repository.get(input.requestId) : null;
+    } catch {
+      return { status: 503, body: { ok: false, code: "unavailable" } };
+    }
     let order: OrderRequest;
     try {
-      order = await resolveOrderRequest(input, this.dependencies.provider);
+      order =
+        stored?.record.order ??
+        (await resolveOrderRequest(input, this.dependencies.provider));
     } catch (error) {
       return {
         status: error instanceof CartChangedError ? 409 : 503,
@@ -96,22 +117,95 @@ export class CheckoutService {
         },
       };
     }
+    if (repository) {
+      try {
+        stored ??= await repository.create(order, fingerprint);
+        if (stored.record.fingerprint !== fingerprint)
+          return { status: 409, body: { ok: false, code: "request_conflict" } };
+        if (stored.record.delivery === "sent")
+          return {
+            status: 200,
+            body: { ok: true, number: stored.record.order.number },
+          };
+        if (!["pending", "rejected"].includes(stored.record.delivery))
+          return this.uncertain(input);
+        const claimed = await repository.replace(stored, {
+          ...stored.record,
+          delivery: "dispatching",
+          revision: stored.record.revision + 1,
+        });
+        if (!claimed) return this.uncertain(input);
+      } catch {
+        // Nothing was dispatched: fail closed and retain the cart.
+        return { status: 503, body: { ok: false, code: "unavailable" } };
+      }
+    }
     try {
-      await this.dependencies.send(order);
+      const current = repository
+        ? (await repository.get(input.requestId))?.record
+        : undefined;
+      const receipt = await this.dependencies.send(
+        order,
+        current ? { ...current, delivery: "sent" } : undefined,
+      );
+      if (repository)
+        await this.saveDelivery(repository, input.requestId, "sent", receipt);
       return { status: 200, body: { ok: true, number: order.number } };
     } catch (error) {
-      if (error instanceof TelegramRejectedError)
+      const rejected = error instanceof TelegramRejectedError;
+      if (repository) {
+        try {
+          await this.saveDelivery(
+            repository,
+            input.requestId,
+            rejected ? "rejected" : "uncertain",
+          );
+        } catch {
+          return this.uncertain(input);
+        }
+      }
+      if (rejected)
         return { status: 502, body: { ok: false, code: "delivery_rejected" } };
       // Unknown failures after dispatch are ambiguous. Never automatically
       // re-send the same request in this process, and do not clear the cart.
-      return {
-        status: 504,
-        body: {
-          ok: false,
-          code: "delivery_uncertain",
-          number: requestNumber(input.requestId),
-        },
-      };
+      return this.uncertain(input);
     }
+  }
+
+  private uncertain(input: CheckoutRequest): Result {
+    return {
+      status: 504,
+      body: {
+        ok: false,
+        code: "delivery_uncertain",
+        number: requestNumber(input.requestId),
+      },
+    };
+  }
+
+  private async saveDelivery(
+    repository: OrderRepository,
+    id: string,
+    delivery: StoredOrder["delivery"],
+    receipt?: TelegramReceipt | void,
+  ) {
+    // A specialist may already have clicked while the receipt was being saved.
+    // Merge only transport fields, preserving their status/audit changes.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const entry = await repository.get(id);
+      if (!entry) throw new Error("Order missing");
+      if (
+        await repository.replace(entry, {
+          ...entry.record,
+          delivery,
+          revision: entry.record.revision + 1,
+          ...(receipt
+            ? { messageId: receipt.messageId, asFile: receipt.asFile }
+            : {}),
+        })
+      )
+        return;
+    }
+    throw new Error("Order update conflict");
   }
 }

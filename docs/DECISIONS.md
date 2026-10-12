@@ -22,9 +22,14 @@ Status: updated on 2026-10-08 after the user's approval of Telegram purchase
 requests. Checkout sends contact/delivery details and server-resolved catalogue
 lines to a server-configured Telegram recipient, only with explicit customer
 consent. No payment is collected, stock reserved or commercial order confirmed.
-Missing credentials fail closed without clearing the cart. Durable storage,
-distributed abuse prevention and the receiving private chat/group still need
-configuration/approval; see `docs/TELEGRAM_CHECKOUT.md`. Wishlist is an empty
+Missing credentials fail closed without clearing the cart. On 2026-10-12 the user
+approved persistent order history on Netlify and processing by one employee,
+entirely within Telegram. Netlify Blobs uses a private production namespace and
+conditional writes; bot buttons allow new → working → shipped → completed, plus
+confirmed cancellation before shipment. Access is restricted to the configured
+private chat and operator ID. No ORM, general customer auth or payment SDK is added.
+Retention/deletion rules, distributed abuse protection and a self-hosted storage
+adapter/migration remain open; see `docs/TELEGRAM_CHECKOUT.md`. Wishlist is an empty
 placeholder. Account pages collect no personal data and provide no authentication.
 
 ## D-006 — Isolated native homepage motion

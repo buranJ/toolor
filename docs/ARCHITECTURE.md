@@ -22,8 +22,13 @@ and validates the body, rejects cross-origin submissions, and delegates to
 `features/checkout`. Product/variant identifiers and expected prices are checked
 through `CommerceProvider`; browser-provided product descriptions or prices are
 never authoritative. The Telegram transport runs only in the server route and
-uses server-only environment variables. It is an operator notification, not a
-payment, inventory reservation or durable order system. See
+uses server-only environment variables. With the approved Netlify storage driver,
+`features/orders` saves immutable request snapshots, workflow status and audit
+history in private site-wide Netlify Blobs. Its conditional storage contract is
+backend-neutral; a future self-hosted adapter can replace the Netlify adapter.
+`POST /api/telegram/webhook` validates a shared secret and the one authorized
+private Telegram account before reading or changing orders. These are purchase
+requests, not payments, inventory reservations or confirmed commercial orders. See
 `docs/TELEGRAM_CHECKOUT.md` for setup and remaining launch requirements.
 
 Homepage sections remain content-first and semantic. They expose stable `data-scroll-anchor` values. The hero isolates its scroll-driven WebCodecs player behind `FrameSource`, with a bounded still-image fallback and a static poster for reduced motion/Data Saver. It uses native browser APIs, not an animation library; see `docs/HERO_DELIVERY.md` for network and decoded-frame budgets.

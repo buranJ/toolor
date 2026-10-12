@@ -4,8 +4,10 @@
 
 The user approved a temporary, request-only checkout on 2026-10-08. The website
 collects name, phone, optional email, requested delivery option, city, address,
-comment and cart lines. After explicit sharing consent, its server sends these
-details to one configured Telegram chat. Online payment is not implemented.
+comment and cart lines. After explicit consent, its server stores the request
+and sends these details to one configured Telegram chat. On 2026-10-12 the owner
+approved durable history on Netlify and one employee working only in Telegram.
+Online payment is not implemented.
 Catalogue price, availability, delivery policies and legal terms remain pending
 verification. Operators must confirm them before agreeing to fulfil a request.
 
@@ -42,7 +44,7 @@ be used for initial testing.
    `netlify.toml`. Confirm receipt of one clearly marked synthetic request in
    the intended chat before enabling public use.
 
-The bot needs no polling daemon or webhook to send purchase requests: the
+The notification-only bot needs no polling daemon or webhook to send purchase requests: the
 website's Node route calls the HTTPS Bot API on submission. Do not stop another
 bot's polling/webhook to run discovery; use a separate bot or coordinate with
 its owner instead.
@@ -82,25 +84,93 @@ its owner instead.
 - Token-bearing fetch errors and Telegram response bodies are not logged or
   returned to the visitor. API replies use `Cache-Control: no-store`.
 
+## Telegram order management on Netlify
+
+Configure these **server-only production** environment variables, then redeploy:
+
+- `ORDER_STORAGE_DRIVER=netlify`
+- `ORDER_STORAGE_NAMESPACE=toolor-orders-production`
+- `TELEGRAM_OPERATOR_ID`: the numeric ID of the single authorized employee.
+- `TELEGRAM_CHAT_ID`: the same private numeric chat ID. Group/topic management is
+  deliberately not enabled; leave `TELEGRAM_MESSAGE_THREAD_ID` empty.
+- `TELEGRAM_WEBHOOK_SECRET`: a privately generated random string, 32–256 ASCII
+  letters/digits/underscores/hyphens. Never expose it in browser assets or logs.
+- `TELEGRAM_BOT_TOKEN`: the existing dedicated bot credential.
+
+Use a different namespace and bot for previews; don't copy production credentials
+into deploy previews. Site-wide Blobs otherwise spans deploy contexts. An empty
+storage driver keeps the legacy notification-only mode for local tests; an
+unknown nonempty driver or unavailable configured storage fails closed.
+
+After the production route exists, run `pnpm telegram:enable-orders` with the same
+private environment settings. This registers `/start`, `/orders`, `/new` and the
+HTTPS webhook with its secret header. It refuses to replace a different webhook
+and preserves pending updates. It is not a build hook. No always-running bot
+process is needed on Netlify: Telegram calls the server route when the employee
+sends a command or presses a button.
+
+`/start` opens the work panel. `/orders` shows newest-first history, ten results
+per page, with status filters and full request cards on demand. New cards have
+**Take into work → Mark shipped → Complete** buttons. Cancellation requires a
+separate confirmation and is allowed before shipment. Each change saves its UTC
+time and operator ID, updates the card and replaces the action buttons. Older
+buttons/repeated events cannot overwrite newer state. Requests received before
+this storage feature was enabled remain in Telegram but are **not imported**.
+
+The webhook checks its secret before parsing input, bounds streamed input to
+64 KiB/five seconds, and verifies both private chat and sender ID before accessing
+history. It returns generic errors and no customer records. Staff copy is Russian;
+the storefront's storage/sharing consent is translated into all three languages.
+Full names remain in order cards; short history previews are bounded for Telegram.
+
+Storage schema version 1 holds server-resolved catalogue/contact snapshots,
+workflow revision, notification outcome, message ID and status audit. Each UUID
+has a conditional immutable `references/` claim containing an initial snapshot
+and an `orders/` current record. Both contain personal data: future deletion,
+backup, export and migration must cover **both** prefixes. Strong reads and
+ETag-conditional writes guard concurrent cold starts and workflow changes.
+Notification receipt writes do not invalidate already visible action buttons.
+History reads are batched and bounded per interaction; all pages remain reachable.
+
 ## Important limitations before public launch
 
-This is a direct notification integration, **not durable order storage**. No
-database, payment service or new infrastructure dependency was added without
-approval. Per-process request IDs coalesce concurrent identical submissions and
+When the approved storage driver is configured, snapshots and status history
+persist across functions, restarts and site deploys. Per-process request IDs also coalesce concurrent identical submissions and
 retain successful/ambiguous outcomes for 30 minutes (at most 1024 entries).
-Changed payloads cannot reuse an active reference. Best-effort rate limits allow
+Changed payloads cannot reuse a durable reference. Best-effort rate limits allow
 three attempts per normalized phone per ten minutes and twenty per process per
 minute, with bounded hash-only buckets. These limits do **not** span Netlify
 instances, restarts, deploys or multiple self-hosted processes. They are not
 robust anti-spam protection or an exactly-once guarantee.
 
-Before accepting real public orders, agree on durable request storage/outbox,
+The durable record is claimed before contacting Telegram. A failed storage write
+cannot produce a successful checkout or clear the cart. Successful delivery is
+reused across instances; only an explicit Telegram rejection permits another
+dispatch. Timeout/network failure or a crash between dispatch and saving its
+receipt remains uncertain and is **not automatically resent**. Check its full
+reference in history and the recipient chat before taking any recovery action.
+There is no scheduled outbox worker or automatic recovery sweep. Telegram and
+Blobs are not one transaction; exactly-once notification is not claimed.
+
+Before accepting real public orders, agree on outbox recovery,
 distributed/edge abuse protection (and whether a CAPTCHA is appropriate),
 failure monitoring, operator access, retention/deletion rules and customer
-privacy information about Telegram. Without a durable store, an uncertain
-delivery must be checked by its reference in the recipient chat before anyone
-resubmits; reloading the form or a new server process can otherwise duplicate
-it. The site must not claim an order was paid, reserved or confirmed.
+privacy information about storage and Telegram. Revoke the exposed test token
+before accepting real customers and configure the employee's private account.
+The site must not claim an order was paid, reserved or confirmed.
+
+## Later move to the company computer
+
+The Next.js routes and bot presentation remain portable. Netlify Blobs credentials
+and runtime context must not be copied as though they were local files. Before
+switching the domain, choose and implement a durable self-hosted adapter for
+`ConditionalStore`, privately export/import both record prefixes, verify counts
+and workflow history with synthetic orders, and arrange backups. Quiesce checkout
+and bot changes during the final export so orders cannot be split between hosts.
+Only switch the webhook after the new HTTPS endpoint and operator authorization
+are verified. OS, ingress/firewall, uptime, autostart and backup setup must be
+checked on the actual machine. A local adapter/export tool is not yet implemented;
+the hosting migration is a separate step, not an automatic consequence of cloning.
 
 ## Verification
 
@@ -145,3 +215,13 @@ port 3100. No production deployment was performed.
 Primary references: [Telegram bot creation](https://core.telegram.org/bots/features#creating-a-new-bot),
 [Telegram Bot API](https://core.telegram.org/bots/api#sendmessage),
 [Netlify environment variables](https://docs.netlify.com/build/environment-variables/overview/).
+
+Local verification on 2026-10-12: lint, strict TypeScript, all 100 unit/component
+tests and the production build passed. All 72 checkout/store/i18n browser cases
+passed in Chromium, WebKit and Firefox. New tests cover concurrent durable claims,
+conditional workflow updates, stale/repeated callbacks, crash recovery, storage
+failure before dispatch, persistence after service recreation, unauthorized access,
+secret-header/body validation, pagination and expired callback acknowledgements.
+The configured bot/webhook secrets were absent from generated browser assets.
+Production deployment and an actual employee button click require separate
+end-to-end verification; these tests mock Telegram and durable storage.

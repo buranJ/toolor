@@ -18,10 +18,12 @@
     "hero:package": "tsx scripts/package-hero-tracks.ts",
     "hero:audit": "tsx scripts/audit-hero-motion.ts",
     "telegram:setup": "tsx scripts/telegram-setup.ts",
+    "telegram:enable-orders": "tsx scripts/telegram-enable-orders.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@netlify/blobs": "^11.1.4",
     "next": "16.2.10",
     "react": "19.2.4",
     "react-dom": "19.2.4",

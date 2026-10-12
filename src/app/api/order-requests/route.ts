@@ -2,6 +2,7 @@ import { commerce } from "@/lib/commerce";
 import { siteConfig } from "@/lib/config/site";
 import { checkoutRequestSchema } from "@/features/checkout/schema";
 import { CheckoutService } from "@/features/checkout/service";
+import { orderRepository } from "@/features/orders/netlify-store";
 import {
   sendOrderToTelegram,
   telegramConfig,
@@ -11,6 +12,7 @@ export const runtime = "nodejs";
 const service = new CheckoutService({
   provider: commerce,
   send: sendOrderToTelegram,
+  repository: orderRepository,
   ready: () => {
     try {
       telegramConfig();
