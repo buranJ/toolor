@@ -10,7 +10,33 @@ export function orderRepository(): OrderRepository | undefined {
   const name = process.env.ORDER_STORAGE_NAMESPACE?.trim();
   if (!name || !/^[a-zA-Z0-9_-]{1,64}$/.test(name))
     throw new Error("Configure order namespace");
-  const store = () => getStore({ name, consistency: "strong" });
+  const store = () =>
+    getStore({
+      name,
+      consistency: "strong",
+      fetch: async (input, init) => {
+        const method = init?.method?.toUpperCase() ?? "GET";
+        const started = Date.now();
+        const response = await fetch(input, {
+          ...init,
+          cache: "no-store",
+          signal: AbortSignal.timeout(5000),
+        });
+        // Temporary, value-free rollout diagnostics. Never log URLs, keys,
+        // headers, response bodies or customer snapshots.
+        console.info(
+          "Order storage HTTP",
+          method,
+          response.status,
+          Date.now() - started,
+        );
+        // The SDK's conditional-write branch can otherwise treat any non-412
+        // status as modified=true. Refuse to acknowledge a failed storage write.
+        if (method === "PUT" && ![200, 412].includes(response.status))
+          throw new Error("Order storage write rejected");
+        return response;
+      },
+    });
   const adapter: ConditionalStore = {
     async get(key) {
       const entry = await store().getWithMetadata(key, {

@@ -41,6 +41,7 @@ describe("Netlify order adapter", () => {
     expect(sdk.getStore).toHaveBeenCalledWith({
       name: "toolor-orders-test",
       consistency: "strong",
+      fetch: expect.any(Function),
     });
     expect(sdk.getWithMetadata).toHaveBeenCalledWith(
       "references/d00e1d21-8ef7-4c53-8fc2-9b88ded49511",
