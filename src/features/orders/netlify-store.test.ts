@@ -11,6 +11,7 @@ import { orderRepository } from "./netlify-store";
 
 afterEach(() => {
   vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
   vi.clearAllMocks();
 });
 describe("Netlify order adapter", () => {
@@ -54,5 +55,33 @@ describe("Netlify order adapter", () => {
     await expect(
       repo.get("d00e1d21-8ef7-4c53-8fc2-9b88ded49511"),
     ).rejects.toThrow("Storage returned no version");
+  });
+  it("opts out of framework caching/stream deduplication with a bounded fetch", async () => {
+    const repo = configured();
+    sdk.getWithMetadata.mockResolvedValue(null);
+    await repo.get("d00e1d21-8ef7-4c53-8fc2-9b88ded49511");
+    const options = sdk.getStore.mock.calls[0]![0] as { fetch: typeof fetch };
+    const network = vi.fn<typeof fetch>(
+      async () => new Response("", { status: 404 }),
+    );
+    vi.stubGlobal("fetch", network);
+    await options.fetch("https://storage.invalid/test", { method: "GET" });
+    expect(network.mock.calls[0]?.[1]).toMatchObject({
+      cache: "no-store",
+      signal: expect.any(AbortSignal),
+    });
+  });
+  it("refuses an error response that the SDK's conditional write branch could misclassify", async () => {
+    const repo = configured();
+    sdk.getWithMetadata.mockResolvedValue(null);
+    await repo.get("d00e1d21-8ef7-4c53-8fc2-9b88ded49511");
+    const options = sdk.getStore.mock.calls[0]![0] as { fetch: typeof fetch };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>(async () => new Response("", { status: 500 })),
+    );
+    await expect(
+      options.fetch("https://storage.invalid/test", { method: "PUT" }),
+    ).rejects.toThrow("Order storage write rejected");
   });
 });

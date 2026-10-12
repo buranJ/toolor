@@ -216,12 +216,30 @@ Primary references: [Telegram bot creation](https://core.telegram.org/bots/featu
 [Telegram Bot API](https://core.telegram.org/bots/api#sendmessage),
 [Netlify environment variables](https://docs.netlify.com/build/environment-variables/overview/).
 
-Local verification on 2026-10-12: lint, strict TypeScript, all 100 unit/component
+Local verification on 2026-10-12: lint, strict TypeScript, all 102 unit/component
 tests and the production build passed. All 72 checkout/store/i18n browser cases
 passed in Chromium, WebKit and Firefox. New tests cover concurrent durable claims,
 conditional workflow updates, stale/repeated callbacks, crash recovery, storage
 failure before dispatch, persistence after service recreation, unauthorized access,
 secret-header/body validation, pagination and expired callback acknowledgements.
 The configured bot/webhook secrets were absent from generated browser assets.
-Production deployment and an actual employee button click require separate
-end-to-end verification; these tests mock Telegram and durable storage.
+These automated cases mock Telegram and durable storage.
+
+Netlify production verification on 2026-10-12: deployed the workflow and configured
+the private operator, namespace and secret only in the production deploy context.
+Registered and verified the Telegram webhook without dropping pending updates.
+The first durable lookup exposed a runtime incompatibility: the Blobs SDK awaits
+`Response.body.cancel()` on a missing record, while Next's deduplicated fetch
+creates a stream tee. The SDK fetch now opts out with a signal and `no-store`,
+bounds network waits and refuses failed conditional-write HTTP responses. No
+security protection was disabled to resolve this problem.
+
+The same explicitly synthetic UUID then received HTTP 200 on `toolor.store`, with
+Telegram acknowledging a message ID in about 1.96 seconds. Netlify's private
+Blobs UI showed the matching current record and immutable reference prefixes.
+Trusted synthetic work-panel/history commands returned HTTP 200; unauthenticated
+webhook calls returned HTTP 403. The live 72-case browser suite initially passed
+70 cases: two WebKit cases reached Netlify's connection-verification page, not
+the storefront. Both passed on a focused one-worker rerun without changing the
+site's security settings. An actual employee button click inside Telegram remains
+an owner acceptance check; no real customer data was used.
