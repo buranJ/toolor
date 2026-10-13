@@ -27,7 +27,9 @@ uses server-only environment variables. With the approved Netlify storage driver
 history in private site-wide Netlify Blobs. Its conditional storage contract is
 backend-neutral; a future self-hosted adapter can replace the Netlify adapter.
 `POST /api/telegram/webhook` validates a shared secret and the one authorized
-private Telegram account before reading or changing orders. These are purchase
+private Telegram accounts on an explicit server-only allowlist before reading
+or changing orders. Each reply/card is scoped to the sender's own private chat;
+checkout notifications remain in the primary configured chat. These are purchase
 requests, not payments, inventory reservations or confirmed commercial orders. See
 `docs/TELEGRAM_CHECKOUT.md` for setup and remaining launch requirements.
 

@@ -21,8 +21,11 @@ import {
   statusSchema,
 } from "./repository";
 
-const user = z.object({ id: z.number().int() });
-const chat = z.object({ id: z.number().int(), type: z.string() });
+const user = z.object({ id: z.number().int().refine(Number.isSafeInteger) });
+const chat = z.object({
+  id: z.number().int().refine(Number.isSafeInteger),
+  type: z.string(),
+});
 export const telegramUpdateSchema = z.object({
   update_id: z.number().int().nonnegative(),
   message: z
@@ -57,6 +60,7 @@ export class OrderBot {
       repository: OrderRepository;
       operatorId: string;
       chatId: string;
+      notificationChatId?: string;
       api?: typeof telegramApi;
       sendOrder?: typeof sendOrderToTelegram;
     },
@@ -81,6 +85,7 @@ export class OrderBot {
       await (this.dependencies.sendOrder ?? sendOrderToTelegram)(
         record.order,
         record,
+        this.dependencies.chatId,
       );
       return;
     }
@@ -96,6 +101,7 @@ export class OrderBot {
       await (this.dependencies.sendOrder ?? sendOrderToTelegram)(
         record.order,
         record,
+        this.dependencies.chatId,
       );
       return;
     }
@@ -254,7 +260,9 @@ export class OrderBot {
     // a long order card. Update the original notification when we have its ID.
     const target =
       action[3] === "cancel"
-        ? result.record.messageId
+        ? result.record.messageId &&
+          this.dependencies.chatId ===
+            (this.dependencies.notificationChatId ?? this.dependencies.chatId)
           ? { id: result.record.messageId, file: result.record.asFile ?? false }
           : undefined
         : {

@@ -27,7 +27,11 @@ approved persistent order history on Netlify and processing by one employee,
 entirely within Telegram. Netlify Blobs uses a private production namespace and
 conditional writes; bot buttons allow new → working → shipped → completed, plus
 confirmed cancellation before shipment. Access is restricted to the configured
-private chat and operator ID. No ORM, general customer auth or payment SDK is added.
+private chat and operator ID. On 2026-10-13 the owner requested an additional
+employee: an explicit private-account allowlist now supports shared history and
+workflow changes without opening group/public access. Checkout notifications
+still have one primary recipient; additional staff open cards through /orders.
+No ORM, general customer auth or payment SDK is added.
 Retention/deletion rules, distributed abuse protection and a self-hosted storage
 adapter/migration remain open; see `docs/TELEGRAM_CHECKOUT.md`. Wishlist is an empty
 placeholder. Account pages collect no personal data and provide no authentication.

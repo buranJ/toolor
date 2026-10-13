@@ -7,6 +7,7 @@ import type { OrderRequest } from "./order-request";
 import { getDictionary as dictionary } from "@/i18n";
 import { orderButtons } from "@/features/orders/presentation";
 import type { StoredOrder } from "@/features/orders/repository";
+import { telegramOperatorIds } from "@/features/orders/operators";
 
 export class TelegramUnavailableError extends Error {}
 export class DeliveryUncertainError extends Error {}
@@ -202,8 +203,17 @@ export function orderCaption(record: StoredOrder) {
 export async function sendOrderToTelegram(
   order: OrderRequest,
   record?: StoredOrder,
+  recipientChatId?: string,
 ): Promise<TelegramReceipt> {
-  const { chatId, threadId } = telegramConfig();
+  const { chatId: primaryChatId, threadId } = telegramConfig();
+  // Only trusted bot sessions can select another approved private staff chat.
+  // Checkout never supplies this argument and still sends to one primary chat.
+  if (
+    recipientChatId &&
+    !telegramOperatorIds(primaryChatId).includes(recipientChatId)
+  )
+    throw new TelegramUnavailableError();
+  const chatId = recipientChatId ?? primaryChatId;
   const text = telegramRequestText(order);
   const managed =
     Boolean(record) || process.env.ORDER_STORAGE_DRIVER === "netlify";
@@ -215,7 +225,9 @@ export async function sendOrderToTelegram(
   const asFile = text.length > 4000 || html.length > (managed ? 3000 : 4000);
   const params = {
     chat_id: chatId,
-    ...(threadId ? { message_thread_id: threadId } : {}),
+    ...(threadId && chatId === primaryChatId
+      ? { message_thread_id: threadId }
+      : {}),
     ...(managed
       ? {
           reply_markup: orderButtons(

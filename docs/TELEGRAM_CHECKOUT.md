@@ -90,9 +90,16 @@ Configure these **server-only production** environment variables, then redeploy:
 
 - `ORDER_STORAGE_DRIVER=netlify`
 - `ORDER_STORAGE_NAMESPACE=toolor-orders-production`
-- `TELEGRAM_OPERATOR_ID`: the numeric ID of the single authorized employee.
+- `TELEGRAM_OPERATOR_ID`: the primary employee's numeric ID.
+- `TELEGRAM_OPERATOR_IDS`: optional comma-separated approved employee IDs,
+  **including the primary ID**. An empty value preserves single-employee access.
+  Each listed employee can see all customer details/history and change statuses;
+  do not include a customer, group ID, username, wildcard or discovery-bot ID.
 - `TELEGRAM_CHAT_ID`: the same private numeric chat ID. Group/topic management is
   deliberately not enabled; leave `TELEGRAM_MESSAGE_THREAD_ID` empty.
+  Checkout notifications still go only to this primary chat; other approved
+  employees open /start, /orders or /new in their own private chat with the bot.
+  They must first start the bot. This does not enable notification fan-out.
 - `TELEGRAM_WEBHOOK_SECRET`: a privately generated random string, 32–256 ASCII
   letters/digits/underscores/hyphens. Never expose it in browser assets or logs.
 - `TELEGRAM_BOT_TOKEN`: the existing dedicated bot credential.
@@ -122,6 +129,14 @@ The webhook checks its secret before parsing input, bounds streamed input to
 history. It returns generic errors and no customer records. Staff copy is Russian;
 the storefront's storage/sharing consent is translated into all three languages.
 Full names remain in order cards; short history previews are bounded for Telegram.
+An employee's sender ID must equal his private chat ID and appear in the allowlist.
+Replies and requested order cards never use another employee's message ID.
+Workflow/assignment/history are shared; stale buttons reload the current state.
+Two simultaneous "take" actions have only one durable winner. Other employees'
+already-open cards may show old text until refreshed; they cannot overwrite a
+newer revision. Cancellation by a secondary employee never edits the primary
+notification ID in the secondary chat. Removing an ID and redeploying revokes
+future bot access, but cannot erase customer data already delivered to that chat.
 
 Storage schema version 1 holds server-resolved catalogue/contact snapshots,
 workflow revision, notification outcome, message ID and status audit. Each UUID

@@ -2,6 +2,7 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { telegramConfig } from "@/features/checkout/telegram";
 import { OrderBot, telegramUpdateSchema } from "@/features/orders/bot";
 import { orderRepository } from "@/features/orders/netlify-store";
+import { telegramOperatorIds } from "@/features/orders/operators";
 
 export const runtime = "nodejs";
 const reply = (status: number) =>
@@ -61,13 +62,29 @@ export async function POST(request: Request) {
   if (!parsed.success) return reply(400);
   try {
     const { chatId } = telegramConfig();
-    const operatorId = process.env.TELEGRAM_OPERATOR_ID?.trim();
-    // This release supports one private operator only, never a public group.
-    if (!operatorId || !/^\d+$/.test(operatorId) || operatorId !== chatId)
-      return reply(503);
+    const operators = telegramOperatorIds(chatId);
+    const callback = parsed.data.callback_query;
+    const message = callback?.message ?? parsed.data.message;
+    const actor = callback?.from ?? parsed.data.message?.from;
+    // Private chat must belong to the actor himself. Authorize before opening
+    // storage; membership of a group or spoofed forwarded sender grants nothing.
+    if (
+      !message ||
+      !actor ||
+      message.chat.type !== "private" ||
+      String(message.chat.id) !== String(actor.id) ||
+      !operators.includes(String(actor.id))
+    )
+      return reply(200);
+    const operatorId = String(actor.id);
     const repository = orderRepository();
     if (!repository) return reply(503);
-    await new OrderBot({ repository, operatorId, chatId }).handle(parsed.data);
+    await new OrderBot({
+      repository,
+      operatorId,
+      chatId: operatorId,
+      notificationChatId: chatId,
+    }).handle(parsed.data);
     return reply(200);
   } catch {
     // No secrets, webhook payloads, buyer data or raw SDK errors in logs/replies.

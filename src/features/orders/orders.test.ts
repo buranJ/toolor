@@ -406,6 +406,83 @@ describe("private staff bot", () => {
       api.mock.calls.some((call) => call[0] === "editMessageCaption"),
     ).toBe(true);
   });
+  it("shows full cards to a second private employee and never edits primary-chat message IDs in his chat", async () => {
+    const { repository, record, api, sendOrder } = await setup();
+    const secondary = "8009931442";
+    const bot = new OrderBot({
+      repository,
+      chatId: secondary,
+      operatorId: secondary,
+      notificationChatId: "123",
+      api,
+      sendOrder,
+    });
+    await bot.handle({
+      update_id: 2,
+      callback_query: {
+        id: "synthetic-view",
+        from: { id: Number(secondary) },
+        message: {
+          message_id: 9,
+          chat: { id: Number(secondary), type: "private" },
+        },
+        data: `v:${record.order.requestId}`,
+      },
+    });
+    expect(sendOrder).toHaveBeenCalledWith(record.order, record, secondary);
+    const entry = (await repository.get(record.order.requestId))!;
+    await repository.replace(entry, {
+      ...entry.record,
+      revision: 2,
+      delivery: "sent",
+      messageId: 5000,
+      asFile: true,
+    });
+    const update = callback(record, "cancel", Number(secondary));
+    update.callback_query!.message!.chat.id = Number(secondary);
+    await bot.handle(update);
+    expect((await repository.get(record.order.requestId))?.record.status).toBe(
+      "cancelled",
+    );
+    expect(
+      (await repository.get(record.order.requestId))?.record.history.at(-1)
+        ?.actor,
+    ).toBe(secondary);
+    expect(
+      api.mock.calls.some(
+        ([, payload]) =>
+          typeof payload === "object" &&
+          payload !== null &&
+          "message_id" in payload &&
+          payload.message_id === 5000,
+      ),
+    ).toBe(false);
+    expect(sendOrder.mock.calls.at(-1)).toEqual([
+      record.order,
+      expect.objectContaining({ status: "cancelled" }),
+      secondary,
+    ]);
+  });
+  it("two employees cannot both take the same request with the same revision", async () => {
+    const { bot, repository, record, api, sendOrder } = await setup();
+    const second = new OrderBot({
+      repository,
+      chatId: "456",
+      operatorId: "456",
+      notificationChatId: "123",
+      api,
+      sendOrder,
+    });
+    const event = callback(record, "take", 456);
+    event.callback_query!.message!.chat.id = 456;
+    await Promise.all([bot.handle(callback(record)), second.handle(event)]);
+    const current = (await repository.get(record.order.requestId))!.record;
+    expect(current.status).toBe("working");
+    expect(current.workflowRevision).toBe(2);
+    expect(current.history).toHaveLength(2);
+    expect(["123", "456"]).toContain(current.assignedTo);
+    expect(current.history.at(-1)?.actor).toBe(current.assignedTo);
+  });
   it("still processes a durable action when Telegram cannot acknowledge an expired callback", async () => {
     const { bot, repository, record, api } = await setup();
     api.mockRejectedValueOnce(new Error("Query is too old"));

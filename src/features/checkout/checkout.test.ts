@@ -8,6 +8,7 @@ import { CartChangedError, resolveOrderRequest } from "./order-request";
 import { CheckoutService } from "./service";
 import {
   DeliveryUncertainError,
+  TelegramUnavailableError,
   TelegramRejectedError,
   sendOrderToTelegram,
   telegramRequestHtml,
@@ -109,6 +110,37 @@ describe("Telegram transport (all calls mocked)", () => {
     vi.stubEnv("TELEGRAM_CHAT_ID", "-100123456789");
     vi.stubEnv("TELEGRAM_MESSAGE_THREAD_ID", "");
   }
+  it("sends requested cards only to an explicitly allowed employee and keeps checkout on the primary recipient", async () => {
+    configure();
+    vi.stubEnv("TELEGRAM_CHAT_ID", "123");
+    vi.stubEnv("TELEGRAM_OPERATOR_ID", "123");
+    vi.stubEnv("TELEGRAM_OPERATOR_IDS", "123,8009931442");
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(
+        Response.json({ ok: true, result: { message_id: 12 } }),
+      );
+    vi.stubGlobal("fetch", fetcher);
+    const order = await resolveOrderRequest(await fixture(), commerce);
+    await sendOrderToTelegram(order, undefined, "8009931442");
+    const secondaryBody = JSON.parse(
+      fetcher.mock.calls[0]![1]!.body as string,
+    ) as { chat_id: string };
+    expect(secondaryBody.chat_id).toBe("8009931442");
+    // Each mock response has a body that can only be read once.
+    fetcher.mockResolvedValueOnce(
+      Response.json({ ok: true, result: { message_id: 13 } }),
+    );
+    await sendOrderToTelegram(order);
+    const primaryBody = JSON.parse(
+      fetcher.mock.calls[1]![1]!.body as string,
+    ) as { chat_id: string };
+    expect(primaryBody.chat_id).toBe("123");
+    await expect(
+      sendOrderToTelegram(order, undefined, "999"),
+    ).rejects.toBeInstanceOf(TelegramUnavailableError);
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
   it("uses only the server recipient, formatted HTML, hidden previews and confirmed message receipt", async () => {
     configure();
     const fetcher = vi
