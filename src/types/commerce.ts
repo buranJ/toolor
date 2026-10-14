@@ -16,6 +16,8 @@ export interface ProductImage {
 }
 
 export interface ProductVariant {
+  /** An unknown price uses amount 0 internally, never a free offer. */
+  priceStatus?: "known" | "unknown";
   id: string;
   title: string;
   sku: string;
@@ -42,6 +44,7 @@ export interface Collection {
 }
 
 export interface Product {
+  priceStatus?: "known" | "unknown";
   id: string;
   name: string;
   slug: string;

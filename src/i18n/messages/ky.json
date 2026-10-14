@@ -90,6 +90,7 @@
         "sets": "Комплекттер",
         "jackets": "Куртка",
         "scarves": "Жоолуктар",
+        "shirts": "Көйнөктөр",
         "tshirts": "Футболкалар",
         "trousers": "Шымдар"
       }
@@ -206,6 +207,8 @@
     "oneColor": "Бир түс",
     "sizeGuide": "Өлчөмдөр таблицасы",
     "inStock": "Бар",
+    "availabilityOnConfirmation": "Товардын бар-жогу өтүнмөнү ырастоодо такталат",
+    "priceOnRequest": "Баасы такталат",
     "addToCart": "Себетке",
     "addToCartPrice": "Себетке · {price}",
     "added": "Кошулду",
@@ -500,6 +503,10 @@
     "label": "Жүктөлүүдө"
   },
   "categories": {
+    "unisex": {
+      "name": "Унисекс",
+      "description": "TOOLOR унисекс моделдери."
+    },
     "men": {
       "name": "Эркектердин кийими",
       "description": "TOOLOR эркектер коллекциясы — шаар жана жол үчүн."

@@ -1,12 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
 
-import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
 import { format, getDictionary, localePath, type Locale } from "@/i18n";
 import { formatMoney, getProductColorHex } from "@/lib/utils";
 import type { Product } from "@/types";
 
 import { WishlistToggle } from "./wishlist-toggle";
+import { ProductCardMedia } from "./product-card-media";
 
 export function ProductCard({
   locale,
@@ -26,8 +25,6 @@ export function ProductCard({
   compact?: boolean;
 }) {
   const d = getDictionary(locale);
-  const image = product.images[0];
-  const hoverImage = product.images[1];
   const colors = product.colors ?? [];
   const radius = large ? "rounded-[1.75rem]" : "rounded-[1.25rem]";
   const href = localePath(locale, `/product/${product.slug}`);
@@ -40,33 +37,14 @@ export function ProductCard({
       <div
         className={`relative overflow-hidden bg-white shadow-[var(--shadow-soft)] transition-shadow duration-300 group-hover:shadow-[var(--shadow-card)] ${radius}`}
       >
-        <Link href={href} className="block">
-          <div className="bg-stone relative aspect-[3/4] overflow-hidden">
-            {image ? (
-              <ResilientEditorialImage
-                className="product-card-media object-cover group-hover:opacity-0"
-                images={product.images}
-                priority={imagePriority}
-                sizes={imageSizes}
-                fallbackLabel={product.productType ?? "TOOLOR"}
-              />
-            ) : (
-              <span className="text-muted absolute inset-0 grid place-items-center px-5 text-center text-xs tracking-[0.14em] uppercase">
-                {d.product.photoSoon}
-              </span>
-            )}
-            {hoverImage ? (
-              <Image
-                alt=""
-                aria-hidden="true"
-                className="product-card-media object-cover opacity-0 group-hover:opacity-100"
-                fill
-                sizes={imageSizes}
-                src={hoverImage.url}
-              />
-            ) : null}
-          </div>
-        </Link>
+        <ProductCardMedia
+          href={href}
+          images={product.images}
+          priority={imagePriority}
+          sizes={imageSizes}
+          fallbackLabel={product.productType ?? "TOOLOR"}
+          photoSoon={d.product.photoSoon}
+        />
         <div className="absolute top-3 right-3">
           <WishlistToggle
             locale={locale}
@@ -126,12 +104,16 @@ export function ProductCard({
               large ? "text-lg md:text-xl" : "text-[0.95rem] md:text-base"
             }`}
           >
-            {formatMoney(product.price, locale)}
+            {product.priceStatus === "unknown"
+              ? d.product.priceOnRequest
+              : formatMoney(product.price, locale)}
           </p>
         </div>
 
         {!compact && product.material ? (
-          <p className="text-muted mt-1 text-sm">{product.material}</p>
+          <p className="text-muted mt-1 line-clamp-2 text-sm">
+            {product.material}
+          </p>
         ) : null}
       </div>
     </article>

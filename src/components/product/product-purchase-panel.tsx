@@ -61,7 +61,7 @@ export function ProductPurchasePanel({
   }, []);
 
   function addToCart() {
-    if (!variant) return;
+    if (!variant || variant.priceStatus === "unknown") return;
     const cart = readLocalCart(window.localStorage.getItem(LOCAL_CART_KEY));
     const existing = cart.find((item) => item.variantId === variant.id);
     const next = existing
@@ -187,20 +187,25 @@ export function ProductPurchasePanel({
 
       <p className="product-availability">
         <span aria-hidden="true" style={{ background: "#2f9e44" }} />
-        {d.product.inStock}
+        {variant.availabilityStatus === "unknown"
+          ? d.product.availabilityOnConfirmation
+          : d.product.inStock}
       </p>
 
       <div className="product-purchase-actions hidden md:flex">
         <button
           className="product-add-button"
+          disabled={variant.priceStatus === "unknown"}
           onClick={addToCart}
           type="button"
         >
-          {added
-            ? d.product.added
-            : format(d.product.addToCartPrice, {
-                price: formatMoney(variant.price, locale),
-              })}
+          {variant.priceStatus === "unknown"
+            ? d.product.priceOnRequest
+            : added
+              ? d.product.added
+              : format(d.product.addToCartPrice, {
+                  price: formatMoney(variant.price, locale),
+                })}
         </button>
         <WishlistToggle
           locale={locale}
@@ -230,14 +235,17 @@ export function ProductPurchasePanel({
       <div className="border-line bg-paper/95 fixed inset-x-0 bottom-0 z-40 flex gap-3 border-t p-3 backdrop-blur-md md:hidden">
         <button
           className="product-add-button min-h-12 flex-1"
+          disabled={variant.priceStatus === "unknown"}
           onClick={addToCart}
           type="button"
         >
-          {added
-            ? d.product.added
-            : format(d.product.addToCartPrice, {
-                price: formatMoney(variant.price, locale),
-              })}
+          {variant.priceStatus === "unknown"
+            ? d.product.priceOnRequest
+            : added
+              ? d.product.added
+              : format(d.product.addToCartPrice, {
+                  price: formatMoney(variant.price, locale),
+                })}
         </button>
         <WishlistToggle
           locale={locale}

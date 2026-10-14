@@ -31,10 +31,15 @@ function paginate<T>(items: T[], page = 1, pageSize = 12): PaginatedResult<T> {
 function sortProducts(products: Product[], sort = "featured"): Product[] {
   const copy = [...products];
 
-  if (sort === "price-asc")
-    return copy.sort((a, b) => a.price.amount - b.price.amount);
-  if (sort === "price-desc")
-    return copy.sort((a, b) => b.price.amount - a.price.amount);
+  if (sort === "price-asc" || sort === "price-desc")
+    return copy.sort(
+      (a, b) =>
+        Number(a.priceStatus === "unknown") -
+          Number(b.priceStatus === "unknown") ||
+        (sort === "price-asc"
+          ? a.price.amount - b.price.amount
+          : b.price.amount - a.price.amount),
+    );
   if (sort === "newest") return copy.reverse();
   return copy.sort((a, b) => Number(b.featured) - Number(a.featured));
 }
@@ -109,12 +114,18 @@ export class MockCommerceProvider implements CommerceProvider {
 
     if (filters.minPrice !== undefined) {
       const minPrice = filters.minPrice;
-      products = products.filter((item) => item.price.amount >= minPrice);
+      products = products.filter(
+        (item) =>
+          item.priceStatus !== "unknown" && item.price.amount >= minPrice,
+      );
     }
 
     if (filters.maxPrice !== undefined) {
       const maxPrice = filters.maxPrice;
-      products = products.filter((item) => item.price.amount <= maxPrice);
+      products = products.filter(
+        (item) =>
+          item.priceStatus !== "unknown" && item.price.amount <= maxPrice,
+      );
     }
 
     return paginate(
@@ -169,6 +180,8 @@ export class MockCommerceProvider implements CommerceProvider {
     );
     const variant = product?.variants.find((item) => item.id === variantId);
     if (!product || !variant) throw new Error("Mock variant not found");
+    if (variant.priceStatus === "unknown")
+      throw new Error("Price requires confirmation");
 
     const existing = cart.items.find((item) => item.variantId === variantId);
     if (existing) {

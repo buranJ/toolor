@@ -38,6 +38,7 @@ export async function resolveOrderRequest(
         !product ||
         product.id !== line.productId ||
         !variant ||
+        variant.priceStatus === "unknown" ||
         variant.availabilityStatus === "unavailable" ||
         variant.price.currencyCode !== "KGS" ||
         variant.price.amount !== line.expectedUnitAmount

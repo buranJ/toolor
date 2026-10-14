@@ -90,6 +90,7 @@
         "sets": "Комплекты",
         "jackets": "Куртки",
         "scarves": "Платки",
+        "shirts": "Рубашки",
         "tshirts": "Футболки",
         "trousers": "Брюки"
       }
@@ -206,6 +207,8 @@
     "oneColor": "Один цвет",
     "sizeGuide": "Таблица размеров",
     "inStock": "В наличии",
+    "availabilityOnConfirmation": "Наличие уточняется при подтверждении заявки",
+    "priceOnRequest": "Цена уточняется",
     "addToCart": "В корзину",
     "addToCartPrice": "В корзину · {price}",
     "added": "Добавлено",
@@ -500,6 +503,10 @@
     "label": "Загрузка"
   },
   "categories": {
+    "unisex": {
+      "name": "Унисекс",
+      "description": "Модели унисекс TOOLOR."
+    },
     "men": {
       "name": "Мужская одежда",
       "description": "Мужская коллекция TOOLOR — для города и маршрута."

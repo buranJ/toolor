@@ -12,6 +12,7 @@ const CATEGORY_KEYS = {
   men: "men",
   women: "women",
   accessories: "accessories",
+  unisex: "unisex",
 } as const satisfies Record<string, keyof Dictionary["categories"]>;
 
 const COLLECTION_KEYS = {

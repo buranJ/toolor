@@ -1,8 +1,10 @@
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { basename, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 
 import ExcelJS, { type CellValue } from "exceljs";
+import { localizeCatalogImages } from "./product-image-assets";
 
 import {
   generatedProductFileSchema,
@@ -10,13 +12,23 @@ import {
   type ImportedProduct,
 } from "../src/lib/commerce/importers/toolor-product-schema";
 
-const SOURCE_PATH = resolve(process.cwd(), "bd/Toolor_2026.08.21_1.xlsx");
+function argument(name: string): string | undefined {
+  const index = process.argv.indexOf(name);
+  return index >= 0 ? process.argv[index + 1] : undefined;
+}
+const SOURCE_PATH = resolve(
+  process.cwd(),
+  argument("--source") ?? "bd/marketplace_catalog.xlsx",
+);
 const GENERATED_JSON_PATH = resolve(
   process.cwd(),
-  "src/data/toolor-products.generated.json",
+  argument("--output") ?? "src/data/toolor-products.generated.json",
 );
-const REPORT_PATH = resolve(process.cwd(), "docs/PRODUCT_IMPORT_REPORT.md");
-const SOURCE_LABEL = "bd/Toolor_2026.08.21_1.xlsx" as const;
+const REPORT_PATH = resolve(
+  process.cwd(),
+  argument("--report") ?? "docs/PRODUCT_IMPORT_REPORT.md",
+);
+const SOURCE_LABEL = basename(SOURCE_PATH);
 
 const BASE_HEADERS = {
   sku: ["уникальный идентификатор товара", "sku", "артикул"],
@@ -33,15 +45,16 @@ const BASE_HEADERS = {
     "размер",
     "размер головного убора",
   ],
-  color: ["цвет"],
+  color: ["название цвета от производителя", "цвет", "цвет для фильтра"],
   material: [
+    "состав материала в %",
     "состав",
     "состав материала",
     "материал",
     "материал верха",
     "тип ткани",
   ],
-  collection: ["коллекция"],
+  collection: ["серия/линейка", "коллекция"],
   gender: ["пол"],
   productUrl: ["ссылка на товар", "url товара", "ссылка на карточку товара"],
   care: ["уход", "рекомендации по уходу"],
@@ -87,6 +100,7 @@ interface NormalizedVariantRow {
   name: string;
   description: string;
   priceAmount: number;
+  priceStatus: "known" | "unknown";
   discountAmount?: number;
   imageUrls: string[];
   groupSkus: string[];
@@ -253,8 +267,16 @@ function inferGender(
   sheet: string,
 ): { gender: Gender; fallback?: Fallback } {
   const direct = `${explicitGender} ${name}`.toLocaleLowerCase("ru-RU");
+  if (/unisex|унисекс/.test(direct)) return { gender: "unisex" };
   if (/женск|жен\.|для женщин/.test(direct)) return { gender: "women" };
   if (/мужск|муж\.|для мужчин/.test(direct)) return { gender: "men" };
+
+  if (/unisex|унисекс/i.test(sheet))
+    return { gender: "unisex", fallback: "gender-inferred-from-sheet-group" };
+  if (/женск|\(ж\)/i.test(sheet))
+    return { gender: "women", fallback: "gender-inferred-from-sheet-group" };
+  if (/мужск/i.test(sheet))
+    return { gender: "men", fallback: "gender-inferred-from-sheet-group" };
 
   const id = sheetNumericId(sheet);
   if (id !== null && id >= 3437 && id <= 3462) {
@@ -266,7 +288,28 @@ function inferGender(
   return { gender: "unknown", fallback: "gender-unknown" };
 }
 
-function productTypeFromSheet(sheet: string): string {
+function productTypeFromSheet(sheet: string, name: string): string {
+  // Broad marketplace sheets are not garment types. Classify only from the
+  // source name; keep the original sheet in provenance for review.
+  const types: [RegExp, string][] = [
+    [/костюм|комплект|двойка|майка.*\/\s*шорты/i, "Комплекты"],
+    [/куртк|лайтдаун|пуховик|ветровк/i, "Куртки и пуховики"],
+    [/тренч/i, "Тренчи"],
+    [/жилет/i, "Жилеты"],
+    [/рубашк/i, "Рубашки"],
+    [/брюк/i, "Брюки"],
+    [/шорт/i, "Шорты"],
+    [/футболк/i, "Футболки"],
+    [/майк|топ/i, "Майки и топы"],
+    [/лонгслив|рашгард/i, "Лонгсливы и рашгарды"],
+    [/болеро/i, "Болеро"],
+    [/лосин|леггинс/i, "Лосины"],
+    [/юбк/i, "Юбки"],
+    [/худи|свитшот|толстовк|спортивный зип/i, "Толстовки и свитшоты"],
+    [/кепк|шапк/i, "Головные уборы"],
+    [/шарф|платок/i, "Шарфы и платки"],
+  ];
+  for (const [pattern, type] of types) if (pattern.test(name)) return type;
   return sheet.replace(/^\d+\s*/, "").trim();
 }
 
@@ -281,6 +324,7 @@ function categoryIdFor(
   if (isAccessoryType(productType)) return "category-accessories";
   if (gender === "men") return "category-men";
   if (gender === "women") return "category-women";
+  if (gender === "unisex") return "category-unisex";
   return "category-accessories";
 }
 
@@ -289,7 +333,12 @@ function slugFromSku(sku: string): string {
     .toLocaleLowerCase("en-US")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
-  return `toolor-${normalized || createHash("sha1").update(sku).digest("hex").slice(0, 10)}`;
+  // Cyrillic SKU prefixes must not disappear into the same ID as another
+  // prefix. Preserve ASCII IDs; give non-ASCII SKUs a deterministic hash.
+  const suffix = /[^\x00-\x7f]/.test(sku)
+    ? `-${createHash("sha256").update(sku).digest("hex").slice(0, 12)}`
+    : "";
+  return `toolor-${normalized || "sku"}${suffix}`;
 }
 
 function mostFrequent(values: string[]): string {
@@ -306,6 +355,17 @@ function mostFrequent(values: string[]): string {
 }
 
 function normalizedProductName(row: NormalizedVariantRow): string {
+  const details = [row.color, row.size].filter(Boolean).join(", ");
+  if (details) {
+    const escaped = details
+      .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+      .replace(/, /g, ",\\s*");
+    const withoutVariant = row.name.replace(
+      new RegExp(`\\s*\\(${escaped}\\)\\s*$`, "i"),
+      "",
+    );
+    if (withoutVariant !== row.name) return withoutVariant;
+  }
   return row.name.replace(/\s*\(([^()]*)\)\s*$/, (match, detail: string) => {
     const normalizedDetail = detail.toLocaleLowerCase("ru-RU");
     const carriesVariantData =
@@ -387,7 +447,7 @@ async function readWorkbookRows(): Promise<{
   return { sourceSha256, sheets, rawRows };
 }
 
-function normalizeRows(rawRows: RawWorkbookRow[]): {
+export function normalizeRows(rawRows: RawWorkbookRow[]): {
   rows: NormalizedVariantRow[];
   rejectedRows: RejectedRow[];
   duplicateRows: RejectedRow[];
@@ -403,9 +463,10 @@ function normalizeRows(rawRows: RawWorkbookRow[]): {
   for (const rawRow of rawRows) {
     const sku = getValue(rawRow, BASE_HEADERS.sku);
     const name = getValue(rawRow, BASE_HEADERS.name);
-    const priceAmount = parseMoney(getValue(rawRow, BASE_HEADERS.price));
+    const sourcePrice = getValue(rawRow, BASE_HEADERS.price);
+    const priceAmount = parseMoney(sourcePrice);
 
-    if (!sku || !name || priceAmount === null) {
+    if (!sku || !name || (sourcePrice && priceAmount === null)) {
       rejectedRows.push({
         sheet: rawRow.sheet,
         row: rawRow.rowNumber,
@@ -464,7 +525,8 @@ function normalizeRows(rawRows: RawWorkbookRow[]): {
       description: normalizeDescription(
         getValue(rawRow, BASE_HEADERS.description),
       ),
-      priceAmount,
+      priceAmount: priceAmount ?? 0,
+      priceStatus: priceAmount === null ? "unknown" : "known",
       discountAmount:
         parseMoney(getValue(rawRow, BASE_HEADERS.discount)) ?? undefined,
       imageUrls: parseImageUrls(
@@ -518,7 +580,9 @@ function groupKey(row: NormalizedVariantRow): string {
   return `${row.sheet}\u0000${groupedSkus}`;
 }
 
-function buildCandidates(rows: NormalizedVariantRow[]): ProductCandidate[] {
+export function buildCandidates(
+  rows: NormalizedVariantRow[],
+): ProductCandidate[] {
   const groups = new Map<string, NormalizedVariantRow[]>();
   for (const row of rows) {
     const key = groupKey(row);
@@ -530,7 +594,7 @@ function buildCandidates(rows: NormalizedVariantRow[]): ProductCandidate[] {
     if (!primary) throw new Error(`Empty product group: ${key}`);
 
     const canonicalSku = primary.sku;
-    const productType = productTypeFromSheet(primary.sheet);
+    const productType = productTypeFromSheet(primary.sheet, primary.name);
     const name =
       mostFrequent(groupRows.map(normalizedProductName)) || primary.name;
     const description =
@@ -550,6 +614,8 @@ function buildCandidates(rows: NormalizedVariantRow[]): ProductCandidate[] {
     const productUrl =
       groupRows.find((row) => row.productUrl)?.productUrl ?? null;
     const fallbacks = new Set<Fallback>(["availability-unknown"]);
+    if (groupRows.some((row) => row.priceStatus === "unknown"))
+      fallbacks.add("price-missing");
 
     for (const fallback of groupRows.map((row) => row.genderFallback)) {
       if (fallback) fallbacks.add(fallback);
@@ -559,7 +625,10 @@ function buildCandidates(rows: NormalizedVariantRow[]): ProductCandidate[] {
     if (sizes.length === 0) fallbacks.add("size-missing");
     if (colors.length === 0) fallbacks.add("color-missing");
 
-    const priceAmount = Math.min(...groupRows.map((row) => row.priceAmount));
+    const knownPrices = groupRows
+      .filter((row) => row.priceStatus === "known")
+      .map((row) => row.priceAmount);
+    const priceAmount = knownPrices.length ? Math.min(...knownPrices) : 0;
     const discountAmounts = groupRows
       .map((row) => row.discountAmount)
       .filter((amount): amount is number => amount !== undefined);
@@ -577,11 +646,11 @@ function buildCandidates(rows: NormalizedVariantRow[]): ProductCandidate[] {
     if (productUrl) score += 1;
 
     const product: ImportedProduct = {
-      id: `product-${canonicalSku.toLocaleLowerCase("en-US").replace(/[^a-z0-9]+/g, "-")}`,
+      priceStatus: knownPrices.length ? "known" : "unknown",
+      id: slugFromSku(canonicalSku).replace(/^toolor-/, "product-"),
       name,
       slug: slugFromSku(canonicalSku),
-      description:
-        description || "[Fallback] Описание отсутствует в исходном workbook.",
+      description,
       categoryId: categoryIdFor(gender, productType),
       productType,
       gender,
@@ -604,7 +673,8 @@ function buildCandidates(rows: NormalizedVariantRow[]): ProductCandidate[] {
             ].filter((entry): entry is [string, string] => entry !== null),
           );
           return {
-            id: `variant-${row.sku.toLocaleLowerCase("en-US").replace(/[^a-z0-9]+/g, "-")}`,
+            priceStatus: row.priceStatus,
+            id: slugFromSku(row.sku).replace(/^toolor-/, "variant-"),
             title:
               [row.color, row.size].filter(Boolean).join(" / ") ||
               `[Fallback] Вариант ${row.sku}`,
@@ -654,29 +724,27 @@ function buildCandidates(rows: NormalizedVariantRow[]): ProductCandidate[] {
   });
 }
 
-function selectCandidates(candidates: ProductCandidate[]): {
+export function selectCandidates(candidates: ProductCandidate[]): {
   selected: ProductCandidate[];
   unselected: ProductCandidate[];
 } {
-  const eligible = candidates
-    .filter((candidate) => candidate.score >= 7)
-    .sort(
-      (left, right) =>
-        right.score - left.score ||
-        right.product.images.length - left.product.images.length ||
-        right.product.variants.length - left.product.variants.length ||
-        left.sheet.localeCompare(right.sheet, "ru") ||
-        left.product.name.localeCompare(right.product.name, "ru"),
-    );
+  const eligible = candidates.sort(
+    (left, right) =>
+      right.score - left.score ||
+      right.product.images.length - left.product.images.length ||
+      right.product.variants.length - left.product.variants.length ||
+      left.sheet.localeCompare(right.sheet, "ru") ||
+      left.product.name.localeCompare(right.product.name, "ru"),
+  );
 
-  // Every sufficiently complete group ships. Nothing is dropped for sharing a
+  // Every valid group ships, even when optional fields are missing. Nothing is dropped for sharing a
   // name: the workbook's own grouping column splits a garment by colourway, so
   // same-name groups are separate colours of one model, and de-duplicating
   // them threw away every colour but the first.
   const selected = [...eligible];
 
   if (selected.length === 0) {
-    throw new Error("No sufficiently complete product groups were found.");
+    throw new Error("No valid product groups were found.");
   }
 
   const selectedKeys = new Set(selected.map((candidate) => candidate.key));
@@ -702,81 +770,6 @@ async function analyzeWorkbook(): Promise<Analysis> {
     selected,
     unselected,
   };
-}
-
-async function fetchImage(
-  url: string,
-  method: "HEAD" | "GET",
-): Promise<Response> {
-  return fetch(url, {
-    method,
-    redirect: "follow",
-    signal: AbortSignal.timeout(8_000),
-    headers: {
-      "user-agent": "ToolorProductImporter/1.0",
-      ...(method === "GET" ? { range: "bytes=0-1023" } : {}),
-    },
-  });
-}
-
-async function checkImageUrl(url: string): Promise<LinkCheck> {
-  try {
-    let response = await fetchImage(url, "HEAD");
-    let contentType = response.headers.get("content-type");
-
-    if (
-      !response.ok ||
-      !contentType?.toLocaleLowerCase().startsWith("image/")
-    ) {
-      response = await fetchImage(url, "GET");
-      contentType = response.headers.get("content-type");
-      await response.body?.cancel();
-    }
-
-    const reachable =
-      response.ok &&
-      Boolean(contentType?.toLocaleLowerCase().startsWith("image/"));
-    return {
-      url,
-      status: reachable ? "reachable" : "unreachable",
-      httpStatus: response.status,
-      contentType,
-      error: reachable ? null : `Unexpected status/content-type`,
-    };
-  } catch (error: unknown) {
-    return {
-      url,
-      status: "unreachable",
-      httpStatus: null,
-      contentType: null,
-      error: error instanceof Error ? error.message : "Network error",
-    };
-  }
-}
-
-async function checkSelectedImages(
-  selected: ProductCandidate[],
-): Promise<Map<string, LinkCheck>> {
-  const urls = unique(
-    selected.flatMap((candidate) =>
-      candidate.product.images.map((image) => image.url),
-    ),
-  );
-  const results = new Map<string, LinkCheck>();
-  let cursor = 0;
-
-  await Promise.all(
-    Array.from({ length: Math.min(10, urls.length) }, async () => {
-      while (cursor < urls.length) {
-        const url = urls[cursor];
-        cursor += 1;
-        if (!url) continue;
-        results.set(url, await checkImageUrl(url));
-      }
-    }),
-  );
-
-  return results;
 }
 
 function withLinkChecks(
@@ -823,18 +816,20 @@ function buildReport(
     (sheet) => sheet.name !== "metadata",
   );
   const allImageUrls = unique(analysis.rows.flatMap((row) => row.imageUrls));
-  const selectedImageUrls = unique(
-    products.flatMap((product) => product.images.map((image) => image.url)),
-  );
   const reachable = [...linkChecks.values()].filter(
     (check) => check.status === "reachable",
   );
   const unreachable = [...linkChecks.values()].filter(
     (check) => check.status === "unreachable",
   );
-  const prices = analysis.rows.map((row) => row.priceAmount);
-  const selectedPrices = products.map((product) => product.price.amount);
+  const prices = analysis.rows
+    .filter((row) => row.priceStatus === "known")
+    .map((row) => row.priceAmount);
+  const selectedPrices = products
+    .filter((product) => product.priceStatus === "known")
+    .map((product) => product.price.amount);
   const missing = {
+    price: analysis.rows.filter((row) => row.priceStatus === "unknown").length,
     description: analysis.rows.filter((row) => !row.description).length,
     images: analysis.rows.filter((row) => row.imageUrls.length === 0).length,
     size: analysis.rows.filter((row) => !row.size).length,
@@ -843,7 +838,7 @@ function buildReport(
     productUrl: analysis.rows.filter((row) => !row.productUrl).length,
   };
   const hosts = [
-    ...new Set(selectedImageUrls.map((url) => new URL(url).hostname)),
+    ...new Set(allImageUrls.map((url) => new URL(url).hostname)),
   ].sort();
   const categories = [
     ...new Set(products.map((product) => product.productType)),
@@ -903,7 +898,7 @@ function buildReport(
     )
     .map(
       (check) =>
-        `| ${check.status} | ${check.httpStatus ?? "—"} | ${markdownCell(check.contentType ?? "—")} | ${markdownCell(check.url)} | ${markdownCell(check.error ?? "—")} |`,
+        `| ${check.status} | ${check.httpStatus ?? "—"} | ${markdownCell(check.contentType ?? "—")} | ${new URL(check.url).hostname} / ${createHash("sha256").update(check.url).digest("hex").slice(0, 12)} | ${check.error ? "Image unavailable" : "—"} |`,
     )
     .join("\n");
 
@@ -916,9 +911,9 @@ Generated: ${generatedAt}
 - Workbook: \`${SOURCE_LABEL}\`
 - SHA-256: \`${analysis.sourceSha256}\`
 - Workbook was read in streaming/read-only mode and was not rewritten.
-- Sheets: ${analysis.sheets.length} total; ${productSheets.length} visible product sheets; 1 very-hidden \`metadata\` sheet.
-- Embedded workbook images: 0. Product imagery is supplied as external URLs in cells.
-- Product page URL columns found: none. No product pages were scraped.
+- Sheets: ${analysis.sheets.length} total; ${productSheets.length} product sheets.
+- Product imagery is read from URL cells. No product pages were scraped.
+- Reproduce: \`pnpm products:import --source /path/to/${SOURCE_LABEL} --local-images\`. Keep the workbook private; do not commit supplier signatures.
 
 ## Workbook structure
 
@@ -934,7 +929,7 @@ ${sheetTable}
 - Imported product groups: ${products.length} (${products.reduce((sum, product) => sum + product.variants.length, 0)} variants).
 - Rejected required-field rows: ${analysis.rejectedRows.length}.
 - Duplicate rows/SKUs removed: ${analysis.duplicateRows.length}.
-- Repeated normalized product names across groups: ${repeatedNames.length}; the final selection keeps names unique.
+- Repeated normalized product names across groups: ${repeatedNames.length}; all source groups are retained.
 - Syntactically invalid image links: ${analysis.invalidLinks.length}.
 - Unique syntactically valid image URLs in workbook: ${allImageUrls.length}.
 - Workbook price range: ${formatMoney(Math.min(...prices))}–${formatMoney(Math.max(...prices))}.
@@ -947,7 +942,8 @@ ${sheetTable}
 
 | Field | Missing rows | Fallback |
 |---|---:|---|
-| Description | ${missing.description} | Explicit \`[Fallback] Описание отсутствует…\` only when required |
+| Description | ${missing.description} | Empty source field; translated UI fallback and \`description-missing\` marker |
+| Price | ${missing.price} | \`priceStatus: unknown\`; zero is an internal sentinel only, never displayed or orderable |
 | Images | ${missing.images} | CSS-controlled image placeholder; no invented URL |
 | Size | ${missing.size} | Empty options plus \`size-missing\` marker |
 | Color | ${missing.color} | Empty options plus \`color-missing\` marker |
@@ -965,7 +961,7 @@ ${repeatedNamesTable || "| — | 0 | — |"}
 
 ## Imported products
 
-Every product group scoring at least 7 is imported, ordered by completeness; groups sharing a normalized name with an already-imported group are skipped. A group scores required identifiers/name/price plus description, images, variants, sizes, colors, material, main-row marker, collection and product URL.
+Every valid source group is imported, including products missing optional fields. Completeness affects ordering only, not inclusion. Same-name groups are not merged.
 
 | # | Product | Sheet | Source rows | SKUs | Variants | Images | Price | Score |
 |---:|---|---|---|---|---:|---:|---:|---:|
@@ -974,7 +970,7 @@ ${products
     const candidate = analysis.selected.find(
       (item) => item.product.id === product.id,
     );
-    return `| ${index + 1} | ${markdownCell(product.name)} | ${markdownCell(product.source.sheet)} | ${rowsLabel(product.source.rows)} | ${markdownCell(product.source.originalSkus.join(", "))} | ${product.variants.length} | ${product.images.length} | ${formatMoney(product.price.amount)} | ${candidate?.score ?? "—"} |`;
+    return `| ${index + 1} | ${markdownCell(product.name)} | ${markdownCell(product.source.sheet)} | ${rowsLabel(product.source.rows)} | ${markdownCell(product.source.originalSkus.join(", "))} | ${product.variants.length} | ${product.images.length} | ${product.priceStatus === "unknown" ? "Unknown (not orderable)" : formatMoney(product.price.amount)} | ${candidate?.score ?? "—"} |`;
   })
   .join("\n")}
 
@@ -986,7 +982,7 @@ Rows with invalid required fields or duplicates:
 |---|---:|---|---|
 ${invalidRowsTable || "| — | — | — | None |"}
 
-Valid product groups excluded by the 24-product limit:
+Valid product groups excluded:
 
 | Sheet | Rows | Product | Score | Reason |
 |---|---|---|---:|---|
@@ -998,7 +994,7 @@ ${unselectedTable || "| — | — | — | — | None |"}
 - Reachable image responses: ${reachable.length}.
 - Unreachable or non-image responses: ${unreachable.length}.
 - Allowed source hostnames: ${hosts.join(", ")}.
-- Verification is a point-in-time network check; availability can change.
+- With \`--local-images\`, all image bodies are downloaded and decoded before replacing the catalog. Browser payloads contain local paths only, not supplier signatures. Local WebP copies use quality 92, Lanczos downscaling with a maximum 2400px edge and no upscaling; Next Image serves responsive AVIF/WebP versions.
 
 | Result | HTTP | Content-Type | URL | Note |
 |---|---:|---|---|---|
@@ -1011,7 +1007,7 @@ ${
     ? analysis.invalidLinks
         .map(
           (link) =>
-            `- ${link.sheet}!${link.row}: \`${link.value}\` — ${link.reason}`,
+            `- ${link.sheet}!${link.row}: invalid image URL (value withheld)`,
         )
         .join("\n")
     : "No syntactically invalid image URLs were found."
@@ -1019,10 +1015,10 @@ ${
 
 ## Normalization decisions and explicit assumptions
 
-1. Each row is treated as a SKU/variant. The \`Объединить карточки в одну по SKU\` list defines a product group; an absent group list creates a one-variant product.
+1. Each row is treated as a SKU/variant. The grouping list defines a product group; when absent, the SKU stem and normalized name define grouping. Source SKU spelling is preserved, including Cyrillic characters; non-ASCII IDs receive a deterministic hash suffix.
 2. Prices are taken verbatim from \`Цена товара\` and converted from KGS major units to integer minor units. \`Сумма скидки\` is stored as a discount amount but is not used to derive a sale price because its commercial semantics were not supplied.
-3. Inventory is absent, so availability is explicitly unknown and \`availableForSale\` is false.
-4. Gender first uses an explicit \`Пол\` value or product-name wording. Where absent, numeric sheet groups 3437–3462 → men and 3476–3511 → women are marked with \`gender-inferred-from-sheet-group\`. Headwear/scarves remain accessory products.
+3. Store-specific stock columns are not treated as verified current sellability. Availability is unknown and \`availableForSale\` is false; the website accepts requests for specialist confirmation.
+4. Gender first uses explicit values or product-name wording, then named men/women/unisex sheets. Inference is marked with \`gender-inferred-from-sheet-group\`. Legacy numeric sheet ranges remain supported. Headwear/scarves are accessories; unisex garments have their own category. Garment types are classified from source names, not broad gender/promotional sheet titles.
 5. Missing descriptions, images, sizes and colors use only the explicit fallback markers recorded in each generated product.
 6. The first six products are marked \`featured\` by import completeness ordering; this is an editorial UI choice, not a workbook business flag.
 7. Image dimensions, alt copy, care details and model facts are not invented. Alt text contains only the source product name and image index.
@@ -1035,13 +1031,57 @@ ${
 - Approved product taxonomy and gender mapping for sheet IDs.
 - Image ownership, intended order/roles, intrinsic dimensions and final alt text.
 - Complete color, size, material, care and model information where cells are empty.
-- Confirmation that the external image hosts are suitable for production delivery.
+- Missing photos where the supplied workbook has no image URL. After localization, the storefront does not request supplier images.
 `;
 }
 
 async function writeOutputs(analysis: Analysis): Promise<void> {
-  const linkChecks = await checkSelectedImages(analysis.selected);
+  if (
+    analysis.rejectedRows.length ||
+    analysis.duplicateRows.length ||
+    analysis.invalidLinks.length
+  ) {
+    throw new Error(
+      "Source rows or images need review; refusing a partial catalog replacement. Use --inspect.",
+    );
+  }
+  const urls = unique(
+    analysis.selected.flatMap((candidate) =>
+      candidate.product.images.map((image) => image.url),
+    ),
+  );
+  // Local assets are mandatory on write: omitting a flag must never publish
+  // signed supplier URLs or a catalog dependent on expiring image links.
+  const assets = await localizeCatalogImages(urls);
+  const linkChecks: Map<string, LinkCheck> = new Map(
+    [...assets].map(([url]) => [
+      url,
+      {
+        url,
+        status: "reachable",
+        httpStatus: 200,
+        contentType: "image/webp",
+        error: null,
+      },
+    ]),
+  );
   const products = withLinkChecks(analysis.selected, linkChecks);
+  for (const product of products)
+    for (const image of product.images) {
+      const asset = assets.get(image.url);
+      if (!asset) throw new Error("Missing localized image");
+      image.url = asset.path;
+    }
+  for (const values of [
+    products.map((p) => p.id),
+    products.map((p) => p.slug),
+    products.flatMap((p) => p.variants.map((v) => v.id)),
+  ]) {
+    if (new Set(values).size !== values.length)
+      throw new Error(
+        "Product or variant ID collision; catalog was not replaced.",
+      );
+  }
   const generatedAt = new Date().toISOString();
   const generated: GeneratedProductFile = generatedProductFileSchema.parse({
     source: {
@@ -1057,12 +1097,6 @@ async function writeOutputs(analysis: Analysis): Promise<void> {
   });
   const report = buildReport(analysis, products, linkChecks, generatedAt);
 
-  await writeFile(
-    GENERATED_JSON_PATH,
-    `${JSON.stringify(generated, null, 2)}\n`,
-  );
-  await writeFile(REPORT_PATH, report);
-
   const sourceAfterWrite = createHash("sha256")
     .update(await readFile(SOURCE_PATH))
     .digest("hex");
@@ -1071,6 +1105,11 @@ async function writeOutputs(analysis: Analysis): Promise<void> {
       "Source workbook changed during import; outputs are unsafe.",
     );
   }
+  await writeFile(
+    GENERATED_JSON_PATH,
+    `${JSON.stringify(generated, null, 2)}\n`,
+  );
+  await writeFile(REPORT_PATH, report);
 
   console.log(
     JSON.stringify(
@@ -1121,6 +1160,13 @@ async function main(): Promise<void> {
           validVariantRows: analysis.rows.length,
           rejectedRows: analysis.rejectedRows.length,
           duplicateRows: analysis.duplicateRows.length,
+          invalidImageLinks: analysis.invalidLinks.map((link) => ({
+            sheet: link.sheet,
+            row: link.row,
+            reason: "Invalid image URL",
+          })),
+          rejectedDetails: analysis.rejectedRows,
+          duplicateDetails: analysis.duplicateRows,
           candidateProductGroups: analysis.candidates.length,
           selectedProducts: analysis.selected.map((candidate) => ({
             name: candidate.product.name,
@@ -1148,7 +1194,12 @@ async function main(): Promise<void> {
   throw new Error("Use --inspect or --write.");
 }
 
-main().catch((error: unknown) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(resolve(process.argv[1])).href
+) {
+  main().catch((error: unknown) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}

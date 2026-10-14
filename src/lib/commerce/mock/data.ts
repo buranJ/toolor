@@ -1,5 +1,6 @@
 import generatedProductData from "@/data/toolor-products.generated.json";
 import { generatedProductFileSchema } from "@/lib/commerce/importers";
+import { getDictionary } from "@/i18n";
 import type { Category, Collection, Product } from "@/types";
 
 const parsed = generatedProductFileSchema.parse(generatedProductData);
@@ -11,6 +12,11 @@ export const mockProducts: Product[] = parsed.products.map((product) => ({
 }));
 
 export const mockCategories: Category[] = [
+  {
+    id: "category-unisex",
+    slug: "unisex",
+    ...getDictionary("ru").categories.unisex,
+  },
   {
     id: "category-men",
     name: "Мужская одежда",

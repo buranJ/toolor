@@ -51,6 +51,30 @@ afterEach(() => {
 });
 
 describe("order request validation and catalogue boundary", () => {
+  it("rejects an unknown source price even when a forged cart submits zero", async () => {
+    const input = await fixture();
+    const { items } = await commerce.getProducts({ pageSize: 100 });
+    const unknown = items.find((p) => p.priceStatus === "unknown");
+    expect(unknown).toBeDefined();
+    if (!unknown?.variants[0]) throw new Error("Missing unknown-price fixture");
+    await expect(
+      resolveOrderRequest(
+        {
+          ...input,
+          items: [
+            {
+              productId: unknown.id,
+              slug: unknown.slug,
+              variantId: unknown.variants[0].id,
+              quantity: 1,
+              expectedUnitAmount: 0,
+            },
+          ],
+        },
+        commerce,
+      ),
+    ).rejects.toBeInstanceOf(CartChangedError);
+  });
   it("accepts validated contacts, but no client-provided product names or payment mode", async () => {
     const input = await fixture();
     expect(checkoutRequestSchema.safeParse(input).success).toBe(true);

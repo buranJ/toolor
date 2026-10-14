@@ -17,6 +17,7 @@ const importedImageSchema = z.object({
 });
 
 const importedVariantSchema = z.object({
+  priceStatus: z.enum(["known", "unknown"]).default("known"),
   id: z.string().min(1),
   title: z.string().min(1),
   sku: z.string().min(1),
@@ -28,14 +29,17 @@ const importedVariantSchema = z.object({
 });
 
 export const importedProductSchema = z.object({
+  priceStatus: z.enum(["known", "unknown"]).default("known"),
   id: z.string().min(1),
   name: z.string().min(1),
   slug: z.string().regex(/^[a-z0-9-]+$/),
-  description: z.string().min(1),
+  // Optional source copy stays empty; the presentation layer translates its fallback.
+  description: z.string(),
   categoryId: z.enum([
     "category-men",
     "category-women",
     "category-accessories",
+    "category-unisex",
   ]),
   productType: z.string().min(1),
   gender: z.enum(["men", "women", "unisex", "unknown"]),
@@ -56,6 +60,7 @@ export const importedProductSchema = z.object({
   fallbacks: z.array(
     z.enum([
       "availability-unknown",
+      "price-missing",
       "description-missing",
       "gender-inferred-from-sheet-group",
       "gender-unknown",

@@ -416,7 +416,6 @@ export function HeroScrollVideo({
       } ${className}`}
       style={
         {
-          "--hero-logo-shift": mediaMode === "desktop" ? "-22svh" : "-15svh",
           "--hero-progress": "0",
         } as CSSVars
       }
@@ -468,27 +467,22 @@ export function HeroScrollVideo({
 
         {/* Centre brand logo — leads over the scene, fades before the reveal. */}
         <div
+          data-testid="hero-brand-logo"
           className="absolute inset-0 flex items-center justify-center px-6"
           style={
             {
               opacity:
                 "clamp(0, calc((var(--logo-fade-end) - var(--hero-progress, 0)) / (var(--logo-fade-end) - var(--logo-fade-start))), 1)",
-              transform: "translateY(var(--hero-logo-shift))",
               "--logo-fade-start": String(LOGO_FADE_START),
               "--logo-fade-end": String(LOGO_FADE_END),
             } as CSSVars
           }
         >
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.4),transparent_62%)]"
-          />
-          {/* The radial shade already gives contrast. A filtered wordmark
-              forced WebKit to rerasterize the large mask on every scroll. */}
-          <h1 className="relative">
+          {/* Unfiltered wordmark: no shadow layer or vertical offset. */}
+          <h1 className="relative max-w-full">
             <BrandLogo
               tone="white"
-              className="w-[clamp(18rem,58vw,52rem)]"
+              className="w-[clamp(18rem,58vw,52rem)] max-w-full"
               title="TOOLOR"
             />
             <span className="sr-only">{content.title}</span>

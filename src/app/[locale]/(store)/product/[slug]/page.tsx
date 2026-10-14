@@ -71,13 +71,16 @@ export default async function ProductPage({
     sku: variant.sku,
     image: product.images.map((image) => image.url),
     brand: { "@type": "Brand", name: "TOOLOR" },
-    offers: {
-      "@type": "Offer",
-      priceCurrency: product.price.currencyCode,
-      price: (product.price.amount / 100).toFixed(2),
-      availability: "https://schema.org/InStock",
-      url: localePath(locale, `/product/${product.slug}`),
-    },
+    ...(product.priceStatus === "unknown"
+      ? {}
+      : {
+          offers: {
+            "@type": "Offer",
+            priceCurrency: product.price.currencyCode,
+            price: (product.price.amount / 100).toFixed(2),
+            url: localePath(locale, `/product/${product.slug}`),
+          },
+        }),
   };
 
   return (
@@ -130,7 +133,9 @@ export default async function ProductPage({
               {product.name}
             </h1>
             <p className="mt-6 text-2xl font-semibold">
-              {formatMoney(product.price, locale)}
+              {product.priceStatus === "unknown"
+                ? d.product.priceOnRequest
+                : formatMoney(product.price, locale)}
             </p>
             <div className="mt-8">
               <ProductPurchasePanel locale={locale} product={product} />

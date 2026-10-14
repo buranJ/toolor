@@ -90,7 +90,9 @@ export function FeaturedProductsSection({
               <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 p-6">
                 <div>
                   <p className="text-sm text-white/80">
-                    {formatMoney(lead.price, locale)}
+                    {lead.priceStatus === "unknown"
+                      ? d.product.priceOnRequest
+                      : formatMoney(lead.price, locale)}
                   </p>
                   <p className="headline-serif mt-2 max-w-sm text-2xl">
                     {lead.name}

@@ -33,9 +33,9 @@ export const featuredCategoryMosaicItems = [
     imageOffset: 0,
   },
   {
-    labelKey: "scarves",
-    productType: "Шарфы и платки",
-    href: "/catalog?q=Шарфы+и+платки",
+    labelKey: "shirts",
+    productType: "Рубашки",
+    href: "/catalog?q=Рубашки",
     column: 2,
     size: "compact",
     imageOffset: 1,

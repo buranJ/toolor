@@ -123,7 +123,11 @@ export function FeaturedCollectionSlider({
                       {product.productType ?? "TOOLOR"}
                     </span>
                     <strong>{product.name}</strong>
-                    <span>{formatMoney(product.price, locale)}</span>
+                    <span>
+                      {product.priceStatus === "unknown"
+                        ? getDictionary(locale).product.priceOnRequest
+                        : formatMoney(product.price, locale)}
+                    </span>
                   </Link>
                 ) : (
                   <button

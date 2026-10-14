@@ -90,6 +90,7 @@
         "sets": "Sets",
         "jackets": "Jackets",
         "scarves": "Scarves",
+        "shirts": "Shirts",
         "tshirts": "T-shirts",
         "trousers": "Trousers"
       }
@@ -206,6 +207,8 @@
     "oneColor": "One colour",
     "sizeGuide": "Size guide",
     "inStock": "In stock",
+    "availabilityOnConfirmation": "Availability is confirmed by a specialist",
+    "priceOnRequest": "Price on request",
     "addToCart": "Add to cart",
     "addToCartPrice": "Add to cart · {price}",
     "added": "Added",
@@ -500,6 +503,10 @@
     "label": "Loading"
   },
   "categories": {
+    "unisex": {
+      "name": "Unisex",
+      "description": "TOOLOR unisex styles."
+    },
     "men": {
       "name": "Men's clothing",
       "description": "The TOOLOR men's collection — for the city and the trail."
