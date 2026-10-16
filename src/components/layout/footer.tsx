@@ -92,8 +92,11 @@ export function Footer({ locale }: { locale: Locale }) {
             <ul className="mt-6 space-y-2 text-sm text-white/75">
               <li>{d.footer.address}</li>
               <li>
-                <a className="hover:text-white" href="mailto:info@toolorkg.com">
-                  info@toolorkg.com
+                <a
+                  className="hover:text-white"
+                  href="mailto:sales@toolor.store"
+                >
+                  sales@toolor.store
                 </a>
               </li>
             </ul>

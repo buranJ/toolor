@@ -96,8 +96,8 @@ describe("routing helpers", () => {
 
   it("passes external and non-app hrefs through untouched", () => {
     expect(localePath("en", "https://example.com")).toBe("https://example.com");
-    expect(localePath("en", "mailto:info@toolorkg.com")).toBe(
-      "mailto:info@toolorkg.com",
+    expect(localePath("en", "mailto:sales@toolor.store")).toBe(
+      "mailto:sales@toolor.store",
     );
     expect(localePath("en", "#app")).toBe("#app");
   });
