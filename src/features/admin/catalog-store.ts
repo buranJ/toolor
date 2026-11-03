@@ -53,24 +53,40 @@ export function assertCatalogWritable() {
     throw new Error("Admin writes are disabled outside production");
 }
 
+function missingBlobsEnvironment(error: unknown) {
+  return error instanceof Error && error.name === "MissingBlobsEnvironmentError";
+}
+
 export async function getActiveCatalog() {
   if (!catalogStorageEnabled()) return null;
-  const pointer = await store().get("catalog/active", { type: "json" });
-  if (!pointer) return null;
-  const active = activeSchema.parse(pointer as unknown);
-  const raw = await store().get(`catalog/versions/${active.id}`, {
-    type: "json",
-  });
-  if (!raw) throw new Error("Published catalog version is missing");
-  return { active, catalog: generatedProductFileSchema.parse(raw as unknown) };
+  try {
+    const pointer = await store().get("catalog/active", { type: "json" });
+    if (!pointer) return null;
+    const active = activeSchema.parse(pointer as unknown);
+    const raw = await store().get(`catalog/versions/${active.id}`, {
+      type: "json",
+    });
+    if (!raw) throw new Error("Published catalog version is missing");
+    return { active, catalog: generatedProductFileSchema.parse(raw as unknown) };
+  } catch (error: unknown) {
+    // Next.js pre-renders ISR pages before Netlify installs the runtime Blobs
+    // context. Those pages start from the bundled catalog and revalidate later.
+    if (missingBlobsEnvironment(error)) return null;
+    throw error;
+  }
 }
 
 export async function getPriorities(): Promise<CatalogPriorities> {
   if (!catalogStorageEnabled()) return { productIds: [], collectionIds: [] };
-  const raw = await store().get("catalog/priorities", { type: "json" });
-  return raw
-    ? prioritiesSchema.parse(raw as unknown)
-    : { productIds: [], collectionIds: [] };
+  try {
+    const raw = await store().get("catalog/priorities", { type: "json" });
+    return raw
+      ? prioritiesSchema.parse(raw as unknown)
+      : { productIds: [], collectionIds: [] };
+  } catch (error: unknown) {
+    if (missingBlobsEnvironment(error)) return { productIds: [], collectionIds: [] };
+    throw error;
+  }
 }
 
 export async function savePriorities(value: CatalogPriorities) {
