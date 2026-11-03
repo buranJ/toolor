@@ -47,3 +47,14 @@ Status: temporary. Geist and system fallbacks stand in for the unprovided brand 
 ## D-008 — Canonical base
 
 Status: updated on 2026-10-08. `https://toolor.store` is the current public site supplied by the user and is used consistently for metadata, sitemap and robots. A different production host or redirect migration requires confirmation; the earlier provisional `toolorkg.com` base is no longer used.
+
+## D-009 — Owner-only Netlify catalog console
+
+Status: approved by the owner on 2026-11-02. `/admin` accepts a production-only
+password secret. Workbook uploads create a draft and require an explicit final
+publish action. Catalog versions, photo assets and ordering persist in Netlify
+Blobs; the first six priority products feed the homepage selection. No CMS SDK,
+ORM, general customer authentication or payment system is introduced. The
+preexisting bundled catalog remains a fallback until an owner publishes an
+import. Source photo URLs remain private and are localized before publication.
+The initial release has one admin password, not per-person accounts or roles.

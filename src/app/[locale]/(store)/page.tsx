@@ -14,6 +14,10 @@ import { getDictionary, isLocale, localeAlternates } from "@/i18n";
 import { commerce } from "@/lib/commerce";
 import type { Product } from "@/types";
 
+// Keep the landing page fully rendered without JavaScript while still picking
+// up an admin-published catalog shortly after publication.
+export const revalidate = 30;
+
 export async function generateMetadata({
   params,
 }: {

@@ -7,6 +7,8 @@ import { Container } from "@/components/ui/container";
 import { getDictionary, isLocale } from "@/i18n";
 import { commerce } from "@/lib/commerce";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {
@@ -30,7 +32,7 @@ export default async function WishlistPage({
   if (!isLocale(locale)) notFound();
   const d = getDictionary(locale);
 
-  const { items } = await commerce.getProducts({ pageSize: 100 });
+  const { items } = await commerce.getProducts({ pageSize: 2_000 });
 
   return (
     <>

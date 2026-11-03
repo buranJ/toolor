@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+
 import { notFound } from "next/navigation";
 
 import { ResilientEditorialImage } from "@/components/media/resilient-editorial-image";
@@ -17,6 +18,8 @@ import {
   type Dictionary,
 } from "@/i18n";
 import { commerce } from "@/lib/commerce";
+
+export const revalidate = 30;
 
 export async function generateMetadata({
   params,

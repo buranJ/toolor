@@ -78,7 +78,7 @@ export const config = {
   // variants; without the exemption the locale redirect would send it to
   // /ru/links, where nothing is served.
   matcher: [
-    "/((?!_next|api|links|favicon.ico|robots.txt|sitemap.xml|.*\\.[\\w]+$).*)",
+    "/((?!_next|api|admin|links|favicon.ico|robots.txt|sitemap.xml|.*\\.[\\w]+$).*)",
   ],
 };
 

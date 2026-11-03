@@ -11,6 +11,8 @@ import { getDictionary, isLocale, localePath } from "@/i18n";
 import { commerce } from "@/lib/commerce";
 import { parseProductQuery, type RawSearchParams } from "@/lib/validation";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {

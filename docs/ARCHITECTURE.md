@@ -35,6 +35,15 @@ requests, not payments, inventory reservations or confirmed commercial orders. S
 
 Homepage sections remain content-first and semantic. They expose stable `data-scroll-anchor` values. The hero isolates its scroll-driven WebCodecs player behind `FrameSource`, with a bounded still-image fallback and a static poster for reduced motion/Data Saver. It uses native browser APIs, not an animation library; see `docs/HERO_DELIVERY.md` for network and decoded-frame budgets.
 
+The owner-only `/admin` route is a deliberate non-localized exception to the
+storefront routing contract. It never mounts storefront analytics. Server-only
+password authentication protects API endpoints, and Netlify Blobs stores
+private workbook drafts, content-addressed photos, published catalog versions
+and display priorities. The commerce provider reads the active version at
+request time, so a confirmed admin change affects catalog, product pages and
+checkout without rebuilding or changing the UI/backend seam. See
+`docs/ADMIN.md` for setup, upload limits and remaining CMS scope.
+
 ## Error and cache policy
 
 Missing products/categories use Next.js `notFound()`. Provider errors propagate to the route error boundary. Cache/revalidation semantics are deferred until a real backend describes freshness requirements; the in-memory mock is deterministic and process-local.

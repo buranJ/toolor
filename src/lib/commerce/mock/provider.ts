@@ -2,6 +2,8 @@ import type { CommerceProvider } from "@/lib/commerce/contracts";
 import type {
   Cart,
   CartItem,
+  Category,
+  Collection,
   Money,
   PaginatedResult,
   Product,
@@ -10,6 +12,26 @@ import type {
 } from "@/types";
 
 import { mockCategories, mockCollections, mockProducts } from "./data";
+
+export interface CatalogData {
+  products: Product[];
+  categories: Category[];
+  collections: Collection[];
+  productOrder: string[];
+  collectionOrder: string[];
+}
+
+const staticCatalog = async (): Promise<CatalogData> => ({
+  products: mockProducts,
+  categories: mockCategories,
+  collections: mockCollections,
+  productOrder: [],
+  collectionOrder: [],
+});
+
+function orderRank(ids: string[]) {
+  return new Map(ids.map((id, index) => [id, index]));
+}
 
 const emptyMoney = (): Money => ({ amount: 0, currencyCode: "KGS" });
 
@@ -28,7 +50,7 @@ function paginate<T>(items: T[], page = 1, pageSize = 12): PaginatedResult<T> {
   };
 }
 
-function sortProducts(products: Product[], sort = "featured"): Product[] {
+function sortProducts(products: Product[], sort = "featured", order: string[] = []): Product[] {
   const copy = [...products];
 
   if (sort === "price-asc" || sort === "price-desc")
@@ -41,7 +63,12 @@ function sortProducts(products: Product[], sort = "featured"): Product[] {
           : b.price.amount - a.price.amount),
     );
   if (sort === "newest") return copy.reverse();
-  return copy.sort((a, b) => Number(b.featured) - Number(a.featured));
+  const rank = orderRank(order);
+  return copy.sort((a, b) =>
+    (rank.get(a.id) ?? Number.MAX_SAFE_INTEGER) -
+      (rank.get(b.id) ?? Number.MAX_SAFE_INTEGER) ||
+    Number(b.featured) - Number(a.featured),
+  );
 }
 
 function cartTotals(
@@ -57,16 +84,18 @@ function cartTotals(
 }
 
 export class MockCommerceProvider implements CommerceProvider {
+  constructor(private readonly loadCatalog: () => Promise<CatalogData> = staticCatalog) {}
   private readonly carts = new Map<string, Cart>();
   private wishlist: WishlistItem[] = [];
 
   async getProducts(
     filters: ProductFilters = {},
   ): Promise<PaginatedResult<Product>> {
-    let products = [...mockProducts];
+    const catalog = await this.loadCatalog();
+    let products = [...catalog.products];
 
     if (filters.category) {
-      const category = mockCategories.find(
+      const category = catalog.categories.find(
         (item) => item.slug === filters.category,
       );
       products = category
@@ -75,7 +104,7 @@ export class MockCommerceProvider implements CommerceProvider {
     }
 
     if (filters.collection) {
-      const collection = mockCollections.find(
+      const collection = catalog.collections.find(
         (item) => item.slug === filters.collection,
       );
       products = collection
@@ -129,22 +158,28 @@ export class MockCommerceProvider implements CommerceProvider {
     }
 
     return paginate(
-      sortProducts(products, filters.sort),
+      sortProducts(products, filters.sort, catalog.productOrder),
       filters.page,
       filters.pageSize,
     );
   }
 
   async getProductBySlug(slug: string): Promise<Product | null> {
-    return mockProducts.find((item) => item.slug === slug) ?? null;
+    return (await this.loadCatalog()).products.find((item) => item.slug === slug) ?? null;
   }
 
   async getCategories() {
+    // Categories are stable storefront taxonomy, independent of the uploaded workbook.
     return [...mockCategories];
   }
 
   async getCollections() {
-    return [...mockCollections];
+    const catalog = await this.loadCatalog();
+    const rank = orderRank(catalog.collectionOrder);
+    return [...catalog.collections].sort((a, b) =>
+      (rank.get(a.id) ?? Number.MAX_SAFE_INTEGER) -
+      (rank.get(b.id) ?? Number.MAX_SAFE_INTEGER),
+    );
   }
 
   async searchProducts(query: string, filters: ProductFilters = {}) {
@@ -152,7 +187,8 @@ export class MockCommerceProvider implements CommerceProvider {
   }
 
   async getFeaturedProducts(limit = 4) {
-    return mockProducts.filter((item) => item.featured).slice(0, limit);
+    const catalog = await this.loadCatalog();
+    return sortProducts(catalog.products.filter((item) => item.featured), "featured", catalog.productOrder).slice(0, limit);
   }
 
   async createCart(): Promise<Cart> {
@@ -175,7 +211,7 @@ export class MockCommerceProvider implements CommerceProvider {
 
   async addCartItem(cartId: string, variantId: string, quantity: number) {
     const cart = this.requireCart(cartId);
-    const product = mockProducts.find((item) =>
+    const product = (await this.loadCatalog()).products.find((item) =>
       item.variants.some((variant) => variant.id === variantId),
     );
     const variant = product?.variants.find((item) => item.id === variantId);
@@ -228,7 +264,7 @@ export class MockCommerceProvider implements CommerceProvider {
   }
 
   async addWishlistItem(productId: string) {
-    if (!mockProducts.some((item) => item.id === productId)) {
+    if (!(await this.loadCatalog()).products.some((item) => item.id === productId)) {
       throw new Error("Mock product not found");
     }
     if (!this.wishlist.some((item) => item.productId === productId)) {

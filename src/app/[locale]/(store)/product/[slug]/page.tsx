@@ -13,6 +13,8 @@ import { getDictionary, isLocale, localeAlternates, localePath } from "@/i18n";
 import { commerce, localizeCategory } from "@/lib/commerce";
 import { formatMoney } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {

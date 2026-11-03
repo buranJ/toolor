@@ -89,7 +89,7 @@ async function download(value: string): Promise<Buffer> {
 
 async function isValidWebp(path: string): Promise<boolean> {
   try {
-    const bytes = await readFile(path);
+    const bytes = await readFile(/* turbopackIgnore: true */ path);
     return (
       bytes.length > 12 &&
       bytes.toString("ascii", 0, 4) === "RIFF" &&
@@ -104,7 +104,7 @@ async function isValidWebp(path: string): Promise<boolean> {
 export async function localizeCatalogImages(
   urls: string[],
 ): Promise<Map<string, LocalImageAsset>> {
-  const outDir = resolve(process.cwd(), "public/media/products");
+  const outDir = resolve(/* turbopackIgnore: true */ process.cwd(), "public/media/products");
   const temporary = await mkdtemp(resolve(tmpdir(), "toolor-product-images-"));
   const assets = new Map<string, LocalImageAsset>();
   const entries = [...new Set(urls)];
@@ -172,7 +172,7 @@ export async function localizeCatalogImages(
             }
             assets.set(url, {
               path: `/media/products/${id}.webp`,
-              bytes: (await stat(destination)).size,
+              bytes: (await stat(/* turbopackIgnore: true */ destination)).size,
             });
           } catch {
             // Do not log query strings (supplier signatures) or decoder commands.

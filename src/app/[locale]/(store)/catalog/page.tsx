@@ -21,6 +21,8 @@ import {
 } from "@/lib/commerce";
 import { parseProductQuery, type RawSearchParams } from "@/lib/validation";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {
@@ -56,7 +58,7 @@ export default async function CatalogPage({
     commerce.getProducts(filters),
     commerce.getCategories(),
     commerce.getCollections(),
-    commerce.getProducts({ pageSize: 100 }),
+    commerce.getProducts({ pageSize: 2_000 }),
   ]);
   // Colour and size values come from the workbook; sort them with the active
   // locale's collation so the filter lists read naturally in each language.

@@ -4,13 +4,15 @@ import { localeAlternates, localePath, locales } from "@/i18n";
 import { commerce } from "@/lib/commerce";
 import { siteConfig } from "@/lib/config/site";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Every public route is emitted once per locale, each entry carrying the full
  * `alternates.languages` set so search engines can pair the translations.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [products, categories] = await Promise.all([
-    commerce.getProducts({ pageSize: 100 }),
+    commerce.getProducts({ pageSize: 2_000 }),
     commerce.getCategories(),
   ]);
 

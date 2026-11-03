@@ -19,7 +19,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: locales.flatMap((locale) =>
         PRIVATE_ROUTES.map((route) => `/${locale}${route}`),
-      ),
+      ).concat("/admin", "/api/admin"),
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,
     host: siteConfig.url,

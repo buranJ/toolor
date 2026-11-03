@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 
 import { CatalogControls } from "@/components/catalog/catalog-controls";
@@ -68,7 +70,7 @@ export default async function CategoryPage({
   const [categories, collections, allProducts] = await Promise.all([
     commerce.getCategories(),
     commerce.getCollections(),
-    commerce.getProducts({ pageSize: 100 }),
+    commerce.getProducts({ pageSize: 2_000 }),
   ]);
   const category = categories.find((item) => item.slug === slug);
   if (!category) notFound();
