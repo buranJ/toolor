@@ -14,9 +14,8 @@ export interface HeroSectionContent {
 export function HeroSection({ locale }: { locale: Locale }) {
   const d = getDictionary(locale);
 
-  // The poster covers hydration. The client then fetches small, immutable
-  // keyframe groups around the scroll target, without a full-track preload
-  // competing with the JavaScript needed to start the hero.
+  // The first visit immediately shows the poster. Motion is enabled only
+  // after compressed samples are buffered and a native frame draws correctly.
 
   const content: HeroSectionContent = {
     kicker: d.home.hero.kicker,

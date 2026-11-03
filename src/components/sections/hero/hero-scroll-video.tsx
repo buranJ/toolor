@@ -8,17 +8,10 @@ import { ButtonLink } from "@/components/ui/button";
 import {
   type FrameSource,
   type Painter,
-  StillSequenceSource,
   VideoTrackSource,
   videoTrackSupported,
 } from "./hero-frame-sources";
-import {
-  HERO_DESKTOP_QUERY,
-  HERO_STILLS,
-  HERO_TRACK,
-  type HeroMode,
-  heroStillUrl,
-} from "./hero-media";
+import { HERO_DESKTOP_QUERY, HERO_TRACK, type HeroMode } from "./hero-media";
 import type { HeroSectionContent } from "./hero-section";
 
 const HERO_POSTER = "/media/hero/hero-poster.webp";
@@ -104,9 +97,8 @@ const serverFalse = () => false;
  * Full-bleed, scroll-controlled cinematic hero.
  *
  * Page scroll drives the clip painted to a canvas. Frames come from an H.264
- * track decoded with WebCodecs — every frame of the source, so scrubbing
- * reads as video rather than a flip-book — or, where WebCodecs is missing,
- * from WebP stills. The poster stays underneath until the first frame lands.
+ * track decoded with WebCodecs after its compressed samples are buffered.
+ * Unsupported/failed decoders keep the poster instead of a sparse slideshow.
  *
  * `prefers-reduced-motion` and Data Saver collapse the tall scroll area to one
  * screen and keep the poster.
@@ -133,6 +125,9 @@ export function HeroScrollVideo({
   const refreshRef = useRef<(() => void) | null>(null);
 
   const [painted, setPainted] = useState(false);
+  const [readyMode, setReadyMode] = useState<HeroMode | null>(null);
+  const [enabledMode, setEnabledMode] = useState<HeroMode | null>(null);
+  const [failedMode, setFailedMode] = useState<HeroMode | null>(null);
   const still = useSyncExternalStore(
     subscribeStill,
     stillSnapshot,
@@ -144,13 +139,42 @@ export function HeroScrollVideo({
     serverFalse,
   );
   const mediaMode: HeroMode = isDesktop ? "desktop" : "mobile";
+  const posterOnly = still || failedMode === mediaMode;
+  const animated =
+    !posterOnly && readyMode === mediaMode && enabledMode === mediaMode;
+  // Expanding only at the top cannot move visible content. Once expanded,
+  // never collapse because of a decoder error or a breakpoint change.
+  const expanded = !still && enabledMode !== null;
 
-  // ---- frame source: video track, stills as the fallback ----
   useEffect(() => {
-    if (still) {
+    if (posterOnly || readyMode !== mediaMode) return;
+    let cancelled = false;
+    const enableAtTop = () => {
+      const section = sectionRef.current;
+      if (cancelled || !section || document.hidden) return;
+      const top = section.getBoundingClientRect().top + window.scrollY;
+      if (window.scrollY <= top + 2) setEnabledMode(mediaMode);
+    };
+    // Do not expand underneath somebody who already continued to the catalog.
+    queueMicrotask(enableAtTop);
+    window.addEventListener("scroll", enableAtTop, { passive: true });
+    document.addEventListener("visibilitychange", enableAtTop);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("scroll", enableAtTop);
+      document.removeEventListener("visibilitychange", enableAtTop);
+    };
+  }, [readyMode, mediaMode, posterOnly]);
+
+  // ---- frame source: prepare before motion, poster as the fallback ----
+  useEffect(() => {
+    if (still || stillSnapshot()) {
       sourceRef.current?.dispose();
       sourceRef.current = null;
       sourceModeRef.current = null;
+      queueMicrotask(() => {
+        if (!sourceRef.current) setReadyMode(null);
+      });
       return;
     }
     // Read the breakpoint here rather than trusting the rendered value: the
@@ -165,18 +189,16 @@ export function HeroScrollVideo({
     if (sourceRef.current && sourceModeRef.current === mode) return;
     sourceRef.current?.dispose();
     sourceModeRef.current = mode;
+    queueMicrotask(() => {
+      if (sourceModeRef.current === mode) setReadyMode(null);
+    });
 
     const paint: Painter = (image, width, height) =>
       paintRef.current?.(image, width, height);
-    const startStills = () => {
-      frameSizeRef.current = HERO_STILLS[mode];
-      sourceRef.current = new StillSequenceSource(
-        HERO_STILLS.count,
-        (index) => heroStillUrl(mode, index),
-        paint,
-      );
-      sourceRef.current.setActive(sourceActiveRef.current);
-      refreshRef.current?.();
+    const keepPoster = () => {
+      sourceRef.current?.dispose();
+      sourceRef.current = null;
+      setFailedMode(mode);
     };
 
     if (videoTrackSupported()) {
@@ -187,14 +209,23 @@ export function HeroScrollVideo({
         // Codec refused or decoder broken: fall back only if this source is
         // still the current one.
         () => {
-          if (sourceRef.current === source) startStills();
+          if (sourceRef.current === source) keepPoster();
+        },
+        () => {
+          if (sourceRef.current !== source) return;
+          setFailedMode(null);
+          setReadyMode(mode);
         },
       );
       sourceRef.current = source;
       source.setActive(sourceActiveRef.current);
       refreshRef.current?.();
     } else {
-      startStills();
+      // A sparse still sequence cannot reproduce the source's motion density.
+      // Unsupported browsers keep the useful poster instead of a slideshow.
+      queueMicrotask(() => {
+        if (sourceModeRef.current === mode && !sourceRef.current) keepPoster();
+      });
     }
   }, [isDesktop, still]);
 
@@ -211,7 +242,10 @@ export function HeroScrollVideo({
   useEffect(() => {
     const section = sectionRef.current;
     const canvas = canvasRef.current;
-    if (!section || !canvas || still) return;
+    if (!section || !canvas || posterOnly) {
+      section?.style.setProperty("--hero-progress", "0");
+      return;
+    }
 
     const context = canvas.getContext("2d", { alpha: false });
     if (!context) return;
@@ -253,6 +287,12 @@ export function HeroScrollVideo({
       const pending = pendingPaint;
       pendingPaint = null;
       if (!pending) return;
+      if (!animated) {
+        pending.release();
+        canvas.style.opacity = "0";
+        canvas.dataset.painted = "false";
+        return;
+      }
       try {
         // CSS object-fit performs cover cropping in the compositor. At
         // native resolution this is a direct frame copy, not a costly
@@ -313,6 +353,7 @@ export function HeroScrollVideo({
     };
 
     const draw = (progress: number) => {
+      if (!animated) progress = 0;
       section.style.setProperty("--hero-progress", progress.toFixed(4));
       if (canvas.width) sourceRef.current?.show(progress);
     };
@@ -392,6 +433,7 @@ export function HeroScrollVideo({
     readTarget();
     rendered.current = target.current;
     draw(rendered.current);
+    if (animated) sourceRef.current?.repaint();
 
     return () => {
       paintRef.current = null;
@@ -404,16 +446,23 @@ export function HeroScrollVideo({
       window.removeEventListener("resize", onResize);
       document.removeEventListener("visibilitychange", updateActive);
     };
-  }, [mediaMode, still]);
+  }, [mediaMode, posterOnly, animated]);
 
   return (
     <div
       ref={sectionRef}
       data-testid="hero-scroll-video"
-      data-still={still}
-      className={`relative h-[300svh] motion-reduce:h-[100dvh] lg:h-[340svh] ${
-        still ? "!h-[100dvh]" : ""
-      } ${className}`}
+      data-still={posterOnly}
+      data-hero-state={
+        posterOnly
+          ? "poster"
+          : animated
+            ? "ready"
+            : readyMode === mediaMode
+              ? "buffered"
+              : "loading"
+      }
+      className={`relative ${expanded ? "h-[300svh] lg:h-[340svh]" : "h-[100dvh]"} motion-reduce:h-[100dvh] ${className}`}
       style={
         {
           "--hero-progress": "0",
@@ -442,14 +491,14 @@ export function HeroScrollVideo({
             />
           </picture>
 
-          {!still ? (
+          {!posterOnly ? (
             <canvas
               ref={canvasRef}
               aria-hidden="true"
-              data-painted={painted}
+              data-painted={painted && animated}
               data-testid="hero-scroll-media"
               className={`absolute inset-0 block h-full w-full object-cover object-center transition-opacity duration-500 ${
-                painted ? "opacity-100" : "opacity-0"
+                painted && animated ? "opacity-100" : "opacity-0"
               }`}
             />
           ) : null}
@@ -524,7 +573,7 @@ export function HeroScrollVideo({
         {/* Scroll indicator — visible only at the very start. */}
         <div
           aria-hidden="true"
-          className={`absolute inset-x-0 bottom-6 flex justify-center motion-reduce:hidden ${still ? "hidden" : ""}`}
+          className={`absolute inset-x-0 bottom-6 flex justify-center motion-reduce:hidden ${!animated ? "hidden" : ""}`}
           style={
             {
               opacity:

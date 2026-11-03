@@ -81,11 +81,14 @@ export class VideoTrackSource implements FrameSource {
   private active = true;
   private idleTimer = 0;
   private backwards = false;
+  private preparationSent = false;
+  private lagTimer = 0;
 
   constructor(
     track: HeroTrack,
     private readonly paint: Painter,
     private readonly onFail: () => void,
+    private readonly onPrepared?: () => void,
   ) {
     this.loader = new HeroTrackLoader(
       track,
@@ -95,7 +98,8 @@ export class VideoTrackSource implements FrameSource {
     void this.configure(track)
       .then(() => {
         if (this.disposed) return;
-        this.loader.request(this.requested);
+        if (this.onPrepared) this.loader.prepare(() => this.notifyPrepared());
+        else this.loader.request(this.requested);
       })
       .catch(() => this.fail());
   }
@@ -103,6 +107,7 @@ export class VideoTrackSource implements FrameSource {
   show(progress: number) {
     if (progress !== this.progress) this.backwards = progress < this.progress;
     this.progress = progress;
+    this.checkMotionHealth();
     for (const [index, frame] of this.forwardFrames) {
       if (
         !this.backwards &&
@@ -124,10 +129,20 @@ export class VideoTrackSource implements FrameSource {
   }
 
   setActive(active: boolean) {
-    if (this.disposed || this.active === active) return;
+    if (this.disposed) return;
+    // Finish the one bounded compressed download while the visitor browses
+    // lower sections. Decoding still pauses offscreen; hidden tabs pause both.
+    this.loader.setActive(
+      active ||
+        (Boolean(this.onPrepared) && !this.loader.prepared && !document.hidden),
+    );
+    if (this.active === active) return;
     this.active = active;
+    if (!active) {
+      window.clearTimeout(this.lagTimer);
+      this.lagTimer = 0;
+    }
     window.clearTimeout(this.idleTimer);
-    this.loader.setActive(active);
     if (active) {
       if (this.config) this.loader.request(this.requested);
       this.pump();
@@ -170,6 +185,7 @@ export class VideoTrackSource implements FrameSource {
   }
 
   dispose() {
+    window.clearTimeout(this.lagTimer);
     window.clearTimeout(this.idleTimer);
     this.disposed = true;
     this.loader.dispose();
@@ -582,6 +598,38 @@ export class VideoTrackSource implements FrameSource {
     this.shownFrame = frame;
     this.shown = { image, width, height };
     this.shownIndex = index;
+    this.checkMotionHealth();
+    this.notifyPrepared();
+  }
+
+  private notifyPrepared() {
+    if (
+      !this.onPrepared ||
+      this.preparationSent ||
+      this.disposed ||
+      !this.verified ||
+      this.shownIndex < 0 ||
+      !this.loader.prepared
+    )
+      return;
+    this.preparationSent = true;
+    this.onPrepared();
+  }
+
+  /** If a device cannot keep up, keep a usable poster instead of frozen motion. */
+  private checkMotionHealth() {
+    if (!this.preparationSent || !this.active || this.disposed) return;
+    const behind = Math.abs(this.requested - this.shownIndex) > 8;
+    if (!behind) {
+      window.clearTimeout(this.lagTimer);
+      this.lagTimer = 0;
+    } else if (!this.lagTimer) {
+      this.lagTimer = window.setTimeout(() => {
+        this.lagTimer = 0;
+        if (this.active && Math.abs(this.requested - this.shownIndex) > 8)
+          this.fail();
+      }, 750);
+    }
   }
 
   /** Flush a decoder that sits on frames, so the scrub lands where it stopped. */

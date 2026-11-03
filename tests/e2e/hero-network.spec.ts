@@ -55,81 +55,71 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("cold mobile seek fetches the requested end without waiting for earlier groups", async ({
+test("buffered mobile seek reaches the end without additional network requests", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  // A delayed early group models a slow cold CDN response. It must never
-  // block a seek to an independently decodable group at the end.
-  let release = () => {};
-  const gate = new Promise<void>((resolve) => {
-    release = resolve;
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (/\/tracks\/mobile-.*\.bin$/.test(request.url()))
+      requests.push(request.url());
   });
-  await page.route(/\/tracks\/mobile-[a-f0-9]+\/g001\.bin$/, async (route) => {
-    await gate;
-    await route.continue().catch(() => {});
-  });
-  try {
-    await page.goto("/ru", { waitUntil: "domcontentloaded" });
-    await expect(page.getByTestId("hero-scroll-media")).toHaveAttribute(
-      "data-painted",
-      "true",
-    );
-    await page.evaluate(() => {
-      const hero = document.querySelector<HTMLElement>(
-        '[data-testid="hero-scroll-video"]',
-      )!;
-      window.scrollTo({
-        top:
-          hero.getBoundingClientRect().top +
-          scrollY +
-          (hero.offsetHeight - innerHeight) * 0.9,
-        behavior: "instant",
-      });
+  await page.goto("/ru", { waitUntil: "domcontentloaded" });
+  await expect(page.getByTestId("hero-scroll-media")).toHaveAttribute(
+    "data-painted",
+    "true",
+  );
+  await page.evaluate(() => {
+    const hero = document.querySelector<HTMLElement>(
+      '[data-testid="hero-scroll-video"]',
+    )!;
+    window.scrollTo({
+      top:
+        hero.getBoundingClientRect().top +
+        scrollY +
+        (hero.offsetHeight - innerHeight) * 0.9,
+      behavior: "instant",
     });
-    await expect
-      .poll(
-        () =>
-          page.evaluate(
-            () =>
-              (window as unknown as AuditedWindow).heroAudit.frames.at(-1)
-                ?.index,
-          ),
-        { timeout: 5000 },
-      )
-      .toBeGreaterThanOrEqual(320);
-    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-    await expect
-      .poll(
-        () =>
-          page.evaluate(
-            () =>
-              (window as unknown as AuditedWindow).heroAudit.frames.at(-1)
-                ?.index,
-          ),
-        { timeout: 5000 },
-      )
-      .toBe(0);
-  } finally {
-    release();
-    await page.unrouteAll({ behavior: "wait" });
-  }
+  });
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            (window as unknown as AuditedWindow).heroAudit.frames.at(-1)?.index,
+        ),
+      { timeout: 5000 },
+    )
+    .toBeGreaterThanOrEqual(320);
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            (window as unknown as AuditedWindow).heroAudit.frames.at(-1)?.index,
+        ),
+      { timeout: 5000 },
+    )
+    .toBe(0);
+  expect(requests).toHaveLength(1);
+  expect(requests[0]).toMatch(/\/complete\.bin$/);
 });
 
-test("a missing video segment falls back to full-resolution stills", async ({
+test("failed video preparation keeps the poster instead of a sparse slideshow", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.route(/\/tracks\/mobile-.*\.bin$/, (route) =>
     route.fulfill({ status: 503, body: "Unavailable" }),
   );
-  const still = page.waitForRequest(/\/frames\/mobile\/f001\.webp$/);
   await page.goto("/ru", { waitUntil: "domcontentloaded" });
-  await still;
-  await expect(page.getByTestId("hero-scroll-media")).toHaveAttribute(
-    "data-painted",
-    "true",
+  await expect(page.getByTestId("hero-scroll-video")).toHaveAttribute(
+    "data-hero-state",
+    "poster",
   );
+  await expect(page.getByTestId("hero-scroll-media")).toHaveCount(0);
+  await expect(page.locator(".hero-copy a")).toBeVisible();
 });
 
 test("reduced motion does not request video or frame sequences", async ({
@@ -175,7 +165,7 @@ test("data saver keeps the hero CTA and does not load animation", async ({
   ).toEqual([]);
 });
 
-test("stationary mobile hero downloads only a small neighbourhood", async ({
+test("stationary mobile hero prepares exactly one immutable compressed track", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -189,8 +179,8 @@ test("stationary mobile hero downloads only a small neighbourhood", async ({
     "true",
   );
   await page.waitForTimeout(1500);
-  expect(requests.length).toBeGreaterThan(0);
-  expect(requests.length).toBeLessThanOrEqual(3);
+  expect(requests).toHaveLength(1);
+  expect(requests[0]).toMatch(/\/complete\.bin$/);
 });
 
 test("decoder bursts produce at most one hero draw per display tick", async ({
@@ -395,7 +385,7 @@ test("desktop and phone canvases survive a breakpoint change", async ({
     "data-painted",
     "true",
   );
-  const mobile = page.waitForResponse(/\/tracks\/mobile-.*\/g000\.bin$/);
+  const mobile = page.waitForResponse(/\/tracks\/mobile-.*\/complete\.bin$/);
   await page.setViewportSize({ width: 390, height: 844 });
   await mobile;
   await expect

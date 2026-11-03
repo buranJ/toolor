@@ -49,6 +49,77 @@ afterEach(() => {
 });
 
 describe("hero loading over a cold network", () => {
+  it("prepares exact samples in one request and never abandons it as the scroll target moves", async () => {
+    const requests = network();
+    const ready = vi.fn();
+    const prepared = vi.fn();
+    const loader = new HeroTrackLoader(track, ready, vi.fn());
+    loader.setActive(true);
+    expect(requests).toHaveLength(0);
+    loader.prepare(prepared);
+    for (const index of [1, 7, 0, 6, 2]) loader.request(index);
+    expect(requests).toHaveLength(1);
+    expect(requests[0]?.url).toBe(`${track.baseUrl}/complete.bin`);
+    expect(requests[0]?.signal.aborted).toBe(false);
+    expect(prepared).not.toHaveBeenCalled();
+    await complete(
+      requests[0]!,
+      Array.from({ length: 12 }, (_, index) => index + 1),
+    );
+    expect(loader.prepared).toBe(true);
+    expect(loader.sample(0)).toEqual(Uint8Array.from([1, 2]));
+    expect(loader.sample(7)).toEqual(Uint8Array.from([12]));
+    expect(prepared).toHaveBeenCalledOnce();
+    expect(ready).toHaveBeenCalledOnce();
+    loader.request(7);
+    expect(requests).toHaveLength(1);
+    expect(prepared).toHaveBeenCalledOnce();
+    loader.dispose();
+  });
+
+  it("keeps partial/corrupt preparation hidden, retries once and fails closed", async () => {
+    const requests = network();
+    const prepared = vi.fn();
+    const fail = vi.fn();
+    const loader = new HeroTrackLoader(track, vi.fn(), fail);
+    loader.prepare(prepared);
+    await complete(requests[0]!);
+    expect(requests).toHaveLength(2);
+    expect(loader.sample(0)).toBeUndefined();
+    await complete(requests[1]!);
+    expect(fail).toHaveBeenCalledOnce();
+    expect(prepared).not.toHaveBeenCalled();
+  });
+
+  it("pauses preparation in hidden tabs and ignores stale aborted results", async () => {
+    const requests = network();
+    const prepared = vi.fn();
+    const loader = new HeroTrackLoader(track, vi.fn(), vi.fn());
+    loader.prepare(prepared);
+    loader.setActive(false);
+    expect(requests[0]?.signal.aborted).toBe(true);
+    loader.setActive(true);
+    expect(requests).toHaveLength(2);
+    await complete(requests[0]!, new Array<number>(12).fill(0));
+    expect(prepared).not.toHaveBeenCalled();
+    await complete(requests[1]!, new Array<number>(12).fill(1));
+    expect(prepared).toHaveBeenCalledOnce();
+    loader.dispose();
+  });
+
+  it("limits a stalled preparation to 20s instead of leaving frozen motion", async () => {
+    vi.useFakeTimers();
+    const requests = network();
+    const fail = vi.fn();
+    const prepared = vi.fn();
+    const loader = new HeroTrackLoader(track, vi.fn(), fail);
+    loader.prepare(prepared);
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(requests).toHaveLength(1);
+    expect(requests[0]?.signal.aborted).toBe(true);
+    expect(fail).toHaveBeenCalledOnce();
+    expect(prepared).not.toHaveBeenCalled();
+  });
   it("stops at the local neighbourhood when the visitor is stationary", async () => {
     const requests = network();
     const loader = new HeroTrackLoader(track, vi.fn(), vi.fn());

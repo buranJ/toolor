@@ -1,5 +1,46 @@
 # Hero delivery on a cold connection
 
+## Current poster-first policy — 2026-10-14
+
+The owner approved preparing motion behind the initial mountain/logo image.
+The homepage no longer has the blocking brand preloader. Its initial hero is
+one viewport tall, with the existing responsive poster and centered wordmark.
+Other content and navigation remain usable throughout preparation.
+
+The player fetches one immutable `tracks/{mode}-{hash}/complete.bin`: all
+compressed samples, exactly 4,777,797 bytes mobile / 5,602,195 bytes desktop.
+The packager and asset tests verify byte-for-byte equality with the previously
+published samples and decoder settings. Resolution, compression, colors and
+frame counts are unchanged; there is no synthetic interpolation. This replaces
+31/21 small requests during the first scroll, eliminating their round-trip and
+cancellation starvation. Compressed data is bounded by the manifest's byte
+count and streamed into one buffer; decoded memory retains the existing small
+look-ahead and bounded reverse GOP caches, not an entire decoded clip.
+
+Motion is enabled only after every compressed sample is present and the first
+native frame has decoded and passed its draw probe. Expansion to the original
+scroll range happens only at the top. If the visitor already moved below the
+hero, preparation cannot expand the page underneath them or reset their scroll.
+After activation, decoder errors cannot collapse the page height. A sustained
+lag of over eight source frames for 750ms returns to the poster rather than
+showing frozen motion; ordinary short seeks and decoder recovery remain allowed.
+
+The compressed preparation may finish while scrolling lower on the same page.
+Decoded work still pauses offscreen; hidden tabs pause requests and decoding.
+Navigation/breakpoint replacement disposes obsolete work. Each preparation
+request has a 20s deadline; transient/corrupt responses retry once, while a
+timeout, unsupported codec or repeated failure keeps the poster with accessible
+CTA. Sparse 96-still playback is no longer the live browser fallback. Reduced
+motion and Data Saver do not download animation data.
+
+HTTP immutable caching enables repeat visits to reuse the compressed bundle,
+but users/browsers may clear or evict it. On a cold 5 Mbit/s link, downloading
+the mobile data alone needs about eight seconds: a fast static first screen is
+not a promise of immediate animation on a slow link. Temporal density is still
+limited by the existing 24fps masters. The earlier progressive-loading policy
+and its laboratory measurements below are historical comparisons, not the new
+first-visit download budget or a field guarantee.
+
 ## Observed problem
 
 On 2026-10-01 (America/Phoenix), `https://toolor.store/ru` already returned
@@ -162,5 +203,6 @@ frames per second. Faster rendering cannot manufacture missing intermediate
 motion. Changing to time-driven playback or synthesizing intermediate frames
 would change the interaction or imagery and requires an explicit decision.
 
-The 2026-10-08 changes are tested locally; they have not been redeployed to the
-live site by this task.
+The earlier 2026-10-08 implementation was included in the 2026-10-14 catalog
+deployment. The poster-first changes above are published in the next site
+release and still require field verification on physical devices and the CDN.

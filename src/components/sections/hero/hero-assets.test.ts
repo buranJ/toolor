@@ -27,6 +27,9 @@ describe("lossless packaging of the published hero encodes", () => {
         ),
       );
       expect(samples.equals(original.subarray(end))).toBe(true);
+      expect(
+        readFileSync(resolve(`public${baseUrl}/complete.bin`)).equals(samples),
+      ).toBe(true);
     });
   }
 });

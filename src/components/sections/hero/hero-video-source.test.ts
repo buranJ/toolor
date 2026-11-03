@@ -78,6 +78,25 @@ afterEach(() => {
 });
 
 describe("video frame scheduling", () => {
+  it("reports preparation only after the full track and a drawable first frame are ready", async () => {
+    const { live } = decoderHarness();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(new Uint8Array(36))),
+    );
+    const prepared = vi.fn();
+    const paint = vi.fn();
+    const source = new VideoTrackSource(track, paint, vi.fn(), prepared);
+    expect(prepared).not.toHaveBeenCalled();
+    await vi.waitFor(() => expect(prepared).toHaveBeenCalledOnce());
+    expect(paint).toHaveBeenCalled();
+    expect(vi.mocked(fetch).mock.calls[0]?.[0]).toBe("/track/complete.bin");
+    source.show(0.5);
+    await drain();
+    expect(prepared).toHaveBeenCalledOnce();
+    source.dispose();
+    expect(live.size).toBe(0);
+  });
   it("reuses forward look-ahead frames instead of decoding a GOP at every scroll tick", async () => {
     const { submitted, live } = decoderHarness();
     const paint = vi.fn();

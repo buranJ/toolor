@@ -10,9 +10,9 @@ export interface HeroTrack {
 }
 
 /**
- * Compressed frames stay cheap (~5 MB for the whole clip). Only two network
- * requests run at once; the scroll target takes precedence over prefetches.
- * A seek never has to download the unrelated beginning of the video first.
+ * Compressed frames stay cheap (~5 MB for the whole clip). Poster-first mode
+ * buffers one complete immutable asset. The legacy progressive mode keeps
+ * at most two requests in flight and prioritizes the current scroll target.
  */
 export class HeroTrackLoader {
   private readonly samples = new Map<number, Uint8Array>();
@@ -25,6 +25,20 @@ export class HeroTrackLoader {
   private active = true;
   private lastUrgentAt = -Infinity;
   private rescheduleTimer = 0;
+  private prepareCallback: (() => void) | null = null;
+  private preparing = false;
+  private bundleAttempts = 0;
+
+  /** Buffer compressed samples before displaying motion; never decode a whole clip. */
+  prepare(onPrepared: () => void) {
+    this.preparing = true;
+    this.prepareCallback = onPrepared;
+    this.schedule();
+  }
+
+  get prepared() {
+    return this.samples.size === this.track.sizes.length;
+  }
 
   constructor(
     readonly track: HeroTrack,
@@ -45,6 +59,7 @@ export class HeroTrackLoader {
   }
 
   setActive(active: boolean) {
+    if (this.active === active) return;
     this.active = active;
     if (active) this.schedule();
     else {
@@ -91,6 +106,14 @@ export class HeroTrackLoader {
 
   private schedule() {
     if (this.disposed || !this.active) return;
+    if (this.preparing) {
+      if (this.prepared) {
+        const callback = this.prepareCallback;
+        this.prepareCallback = null;
+        callback?.();
+      } else if (!this.pending.size) this.startBundle();
+      return;
+    }
     if (!this.loaded.has(this.target)) {
       if (!this.pending.has(this.target)) {
         // A fast wheel/touch gesture can cross a GOP every animation frame.
@@ -137,6 +160,74 @@ export class HeroTrackLoader {
         (this.attempts.get(group) ?? 0) < 2,
     );
     if (next !== undefined) this.start(next);
+  }
+
+  private startBundle() {
+    const controller = new AbortController();
+    // A separate key reuses the existing pause/dispose cancellation contract.
+    this.pending.set(-1, controller);
+    void this.loadBundle(controller).finally(() => {
+      if (this.pending.get(-1) === controller) this.pending.delete(-1);
+      this.schedule();
+    });
+  }
+
+  private async loadBundle(controller: AbortController) {
+    let timedOut = false;
+    const timeout = window.setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 20_000);
+    try {
+      const response = await fetch(`${this.track.baseUrl}/complete.bin`, {
+        signal: controller.signal,
+        // The already-visible poster and application JS take priority.
+        priority: "low",
+      });
+      if (!response.ok) throw new Error("Hero preparation unavailable");
+      const expected = this.track.sizes.reduce((sum, size) => sum + size, 0);
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("Missing hero preparation body");
+      const bytes = new Uint8Array(expected);
+      let received = 0;
+      let finished = false;
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            finished = true;
+            break;
+          }
+          if (received + value.byteLength > expected)
+            throw new Error("Oversized hero preparation");
+          bytes.set(value, received);
+          received += value.byteLength;
+        }
+      } finally {
+        if (!finished) await reader.cancel().catch(() => {});
+        reader.releaseLock();
+      }
+      if (this.disposed || controller.signal.aborted) return;
+      if (received !== expected) throw new Error("Truncated hero preparation");
+      let offset = 0;
+      for (const [index, size] of this.track.sizes.entries()) {
+        this.samples.set(index, bytes.subarray(offset, offset + size));
+        offset += size;
+      }
+      for (let group = 0; group < this.track.keys.length; group++)
+        this.loaded.add(group);
+      this.onReady();
+    } catch {
+      if (this.disposed || (controller.signal.aborted && !timedOut)) return;
+      // One retry for network errors/truncation; on a stalled connection keep
+      // the useful poster instead of spending another 20s on background data.
+      if (timedOut || ++this.bundleAttempts >= 2) {
+        this.dispose();
+        this.onFail();
+      }
+    } finally {
+      window.clearTimeout(timeout);
+    }
   }
 
   private start(group: number) {

@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Manrope } from "next/font/google";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
+import { AnalyticsNoscript } from "@/components/analytics/analytics-noscript";
+import { SiteAnalytics } from "@/components/analytics/site-analytics";
 import { BrandPreloader } from "@/components/layout/brand-preloader";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
@@ -114,6 +117,7 @@ export default async function LocaleLayout({
         />
       </head>
       <body className="flex min-h-full flex-col">
+        {process.env.NODE_ENV === "production" ? <AnalyticsNoscript /> : null}
         <a
           href="#main-content"
           className="sr-only z-[100] bg-white px-4 py-3 focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
@@ -127,6 +131,11 @@ export default async function LocaleLayout({
           {children}
         </main>
         <Footer locale={activeLocale} />
+        {process.env.NODE_ENV === "production" ? (
+          <Suspense fallback={null}>
+            <SiteAnalytics />
+          </Suspense>
+        ) : null}
       </body>
     </html>
   );

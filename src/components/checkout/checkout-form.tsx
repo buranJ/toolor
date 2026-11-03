@@ -297,7 +297,7 @@ export function CheckoutForm({ locale }: { locale: Locale }) {
 
   return (
     <form
-      className="grid gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(21rem,0.85fr)]"
+      className="ym-hide-content ym-disable-submit grid gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(21rem,0.85fr)]"
       noValidate
       onSubmit={handleSubmit}
       aria-busy={submitting}

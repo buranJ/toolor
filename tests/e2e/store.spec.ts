@@ -19,7 +19,7 @@ test("mobile hero paints its frame sequence and follows scroll", async ({
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   const track = page.waitForRequest(
-    /\/media\/hero\/tracks\/mobile-[a-f0-9]+\/g000\.bin$/,
+    /\/media\/hero\/tracks\/mobile-[a-f0-9]+\/complete\.bin$/,
   );
   await page.goto("/", { waitUntil: "domcontentloaded" });
   // The phone's own track, not the 1440p desktop one.
@@ -66,7 +66,7 @@ test("mobile hero paints its frame sequence and follows scroll", async ({
     .toBeGreaterThan(0);
 });
 
-test("hero falls back to stills where WebCodecs is missing", async ({
+test("hero keeps a static poster where WebCodecs is missing", async ({
   page,
 }) => {
   await page.addInitScript(() => {
@@ -74,15 +74,13 @@ test("hero falls back to stills where WebCodecs is missing", async ({
     delete (globalThis as { VideoDecoder?: unknown }).VideoDecoder;
   });
   await page.setViewportSize({ width: 390, height: 844 });
-  const still = page.waitForRequest(/\/media\/hero\/frames\/mobile\//);
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await still;
-
-  await expect(page.getByTestId("hero-scroll-media")).toHaveAttribute(
-    "data-painted",
-    "true",
-    { timeout: 20_000 },
+  await expect(page.getByTestId("hero-scroll-video")).toHaveAttribute(
+    "data-hero-state",
+    "poster",
   );
+  await expect(page.getByTestId("hero-scroll-media")).toHaveCount(0);
+  await expect(page.locator(".hero-copy a")).toBeVisible();
 });
 
 test("app promotion is available on home and about pages", async ({ page }) => {

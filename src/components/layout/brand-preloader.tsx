@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 import { BrandLogo } from "@/components/ui/brand-logo";
+import { isLocale } from "@/i18n";
 
 /** Long enough for the wordmark to finish drawing itself. */
 const MIN_VISIBLE = 950;
@@ -23,10 +25,15 @@ const heroPainted = () =>
  * finish drawing rather than flashing.
  */
 export function BrandPreloader({ label }: { label: string }) {
+  const pathname = usePathname();
+  const isHome =
+    pathname !== null && isLocale(pathname.replace(/^\/|\/$/g, ""));
   const [leaving, setLeaving] = useState(false);
   const [gone, setGone] = useState(false);
 
   useEffect(() => {
+    // Homepage immediately presents its mountain poster, not a blocking overlay.
+    if (isHome) return;
     let raf = 0;
 
     const check = () => {
@@ -51,7 +58,7 @@ export function BrandPreloader({ label }: { label: string }) {
     raf = requestAnimationFrame(check);
 
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [isHome]);
 
   useEffect(() => {
     if (!leaving) return;
@@ -59,7 +66,7 @@ export function BrandPreloader({ label }: { label: string }) {
     return () => window.clearTimeout(timer);
   }, [leaving]);
 
-  if (gone) return null;
+  if (isHome || gone) return null;
 
   return (
     <div

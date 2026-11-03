@@ -33,6 +33,9 @@ async function packageTrack(mode: "mobile" | "desktop") {
   const baseUrl = `/media/hero/tracks/${mode}-${hash}`;
   const directory = resolve(`public${baseUrl}`);
   await mkdir(directory, { recursive: true });
+  // One immutable request for poster-first preparation. Exact existing H.264
+  // samples: no re-encode, resize, frame synthesis or second copy in JS.
+  await writeFile(`${directory}/complete.bin`, original.subarray(headerEnd));
   const pieces: Buffer[] = [];
   for (const [group, start] of header.keys.entries()) {
     const end = header.keys[group + 1] ?? header.sizes.length;
