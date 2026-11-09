@@ -14,9 +14,10 @@ import { getDictionary, isLocale, localeAlternates } from "@/i18n";
 import { commerce } from "@/lib/commerce";
 import type { Product } from "@/types";
 
-// Keep the landing page fully rendered without JavaScript while still picking
-// up an admin-published catalog shortly after publication.
-export const revalidate = 30;
+// Read the active catalog on each request. Netlify's ISR regeneration for this
+// route can time out after a catalog update; server rendering keeps the page
+// current without relying on the durable regeneration path.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

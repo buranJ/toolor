@@ -88,7 +88,9 @@ test("prefetching a translation cannot overwrite the chosen language", async ({
   await page.goto("/en/about", { waitUntil: "domcontentloaded" });
   await page
     .context()
-    .request.get("/ky/about", { headers: { "next-router-prefetch": "1" } });
+    .request.get("/ky/about", {
+      headers: { RSC: "1", "next-router-prefetch": "1" },
+    });
   await page.waitForTimeout(800);
   await page.goto("/about", { waitUntil: "domcontentloaded" });
   await expect(page).toHaveURL(/\/en\/about$/);

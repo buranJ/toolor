@@ -19,7 +19,9 @@ import {
 } from "@/i18n";
 import { commerce } from "@/lib/commerce";
 
-export const revalidate = 30;
+// Keep editorial product images in sync with admin-published catalogs without
+// relying on Netlify's ISR regeneration path.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

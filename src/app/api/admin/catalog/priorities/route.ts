@@ -1,12 +1,10 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 
 import {
   prioritiesSchema,
   savePriorities,
 } from "@/features/admin/catalog-store";
 import { adminGate, privateJson } from "@/features/admin/http";
-import { locales } from "@/i18n";
 import { loadPublishedCatalog } from "@/lib/commerce/catalog-data";
 
 export const runtime = "nodejs";
@@ -36,10 +34,6 @@ export async function POST(request: NextRequest) {
       return privateJson({ error: "Каталог изменился. Обновите страницу." }, 409);
     }
     await savePriorities(parsed.data);
-    for (const locale of locales) {
-      revalidatePath(`/${locale}`);
-      revalidatePath(`/${locale}/about`);
-    }
     return privateJson({ ok: true });
   } catch {
     return privateJson({ error: "Не удалось сохранить порядок" }, 503);

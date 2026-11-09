@@ -1,9 +1,7 @@
 import { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 
 import { getDraft, imageUrlKey, publishDraft } from "@/features/admin/catalog-store";
 import { adminGate, privateJson } from "@/features/admin/http";
-import { locales } from "@/i18n";
 
 export const runtime = "nodejs";
 
@@ -37,10 +35,6 @@ export async function POST(request: NextRequest) {
       },
     };
     await publishDraft(published, current.etag);
-    for (const locale of locales) {
-      revalidatePath(`/${locale}`);
-      revalidatePath(`/${locale}/about`);
-    }
     return privateJson({ ok: true, productCount: published.catalog.products.length });
   } catch (error: unknown) {
     return privateJson({ error: error instanceof Error ? error.message : "Публикация не удалась" }, 503);
