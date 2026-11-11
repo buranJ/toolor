@@ -10,18 +10,18 @@ type AnalyticsWindow = Window & {
   ym?: TrackingFunction;
   fbq?: TrackingFunction;
   dataLayer?: unknown[];
-  __toolorAnalytics?: { previousUrl?: string };
+  __toolorAnalytics?: { initialUrl: string; previousUrl?: string };
 };
 
 /**
- * Standard vendor queues, loaded after hydration. Initial pageviews are owned
- * by the App Router observer, not both vendor initialization and an effect.
- * Meta's automatic history listener is disabled for the same reason.
+ * Standard vendor queues, loaded after hydration. Metrika sends the initial
+ * pageview on init; the App Router observer sends only subsequent route hits.
+ * Meta's automatic history listener is disabled to avoid duplicate views.
  */
 export const analyticsBootstrap = `
 (function(w,d){
   if(w.__toolorAnalytics)return;
-  w.__toolorAnalytics={};
+  w.__toolorAnalytics={initialUrl:w.location.origin+w.location.pathname+w.location.search};
   w.dataLayer=w.dataLayer||[];
   w.gtag=w.gtag||function(){w.dataLayer.push(arguments)};
   function load(src){
@@ -33,7 +33,7 @@ export const analyticsBootstrap = `
   w.ym(${analyticsIds.metrika},'init',{
     ssr:true,webvisor:true,clickmap:true,ecommerce:'dataLayer',
     referrer:d.referrer,url:w.location.href,accurateTrackBounce:true,
-    trackLinks:true,defer:true
+    trackLinks:true
   });
   load('https://mc.yandex.ru/metrika/tag.js?id=${analyticsIds.metrika}');
   if(!w.fbq){
@@ -61,12 +61,16 @@ export function trackPageView() {
     browser.location.pathname +
     browser.location.search;
   if (state.previousUrl === url) return;
-  const referrer = state.previousUrl ?? document.referrer;
+  const isInitialView =
+    state.previousUrl === undefined && state.initialUrl === url;
+  const referrer =
+    state.previousUrl ?? (isInitialView ? document.referrer : state.initialUrl);
   state.previousUrl = url;
-  browser.ym?.(analyticsIds.metrika, "hit", url, {
-    referer: referrer,
-    title: document.title,
-  });
+  if (!isInitialView)
+    browser.ym?.(analyticsIds.metrika, "hit", url, {
+      referer: referrer,
+      title: document.title,
+    });
   browser.fbq?.("track", "PageView");
   // This is a routing signal, not a second automatic GA4 page_view. The GTM
   // owner chooses either this custom trigger or GA4 enhanced/history tracking.

@@ -42,7 +42,7 @@ test("production analytics load once and count client navigation without duplica
       };
     });
   await expect.poll(counts).toEqual({
-    hits: 1,
+    hits: 0,
     views: 1,
     gtm: 1,
     routes: 1,
@@ -51,7 +51,7 @@ test("production analytics load once and count client navigation without duplica
   await page.locator('a[href="/ru/catalog"]').first().click();
   await expect(page).toHaveURL(/\/ru\/catalog$/);
   await expect.poll(counts).toEqual({
-    hits: 2,
+    hits: 1,
     views: 2,
     gtm: 1,
     routes: 2,
@@ -60,7 +60,7 @@ test("production analytics load once and count client navigation without duplica
   await page.goBack();
   await expect(page).toHaveURL(/\/ru$/);
   await expect.poll(counts).toEqual({
-    hits: 3,
+    hits: 2,
     views: 3,
     gtm: 1,
     routes: 3,

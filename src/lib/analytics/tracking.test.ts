@@ -6,10 +6,17 @@ import { analyticsBootstrap, analyticsIds, trackPageView } from "./tracking";
 afterEach(() => vi.unstubAllGlobals());
 
 describe("site analytics", () => {
-  it("initializes each vendor once with the supplied IDs and deferred pageviews", () => {
+  it("initializes each vendor once and lets Metrika send the first pageview", () => {
     const scripts: { src: string }[] = [];
     const context = {
-      window: { location: { href: "https://toolor.store/ru" } },
+      window: {
+        location: {
+          href: "https://toolor.store/ru",
+          origin: "https://toolor.store",
+          pathname: "/ru",
+          search: "",
+        },
+      },
       document: {
         referrer: "https://example.org/",
         scripts,
@@ -36,9 +43,9 @@ describe("site analytics", () => {
         ecommerce: "dataLayer",
         accurateTrackBounce: true,
         trackLinks: true,
-        defer: true,
       }),
     ]);
+    expect(runInNewContext("window.ym.a[0][2].defer", context)).toBeUndefined();
     expect(runInNewContext("window.fbq.disablePushState", context)).toBe(true);
     expect(runInNewContext("Array.from(window.fbq.queue[1])", context)).toEqual(
       ["init", analyticsIds.meta],
@@ -49,7 +56,7 @@ describe("site analytics", () => {
     });
   });
 
-  it("tracks the first view, SPA queries and back without duplicate effects or hash hits", () => {
+  it("does not duplicate the initial Metrika view but tracks SPA queries and back", () => {
     const browser = {
       location: {
         origin: "https://toolor.store",
@@ -57,7 +64,7 @@ describe("site analytics", () => {
         search: "",
         hash: "",
       },
-      __toolorAnalytics: {},
+      __toolorAnalytics: { initialUrl: "https://toolor.store/ru" },
       ym: vi.fn(),
       fbq: vi.fn(),
       dataLayer: [] as unknown[],
@@ -71,16 +78,7 @@ describe("site analytics", () => {
     trackPageView();
     browser.location.hash = "#collection";
     trackPageView();
-    expect(browser.ym).toHaveBeenCalledTimes(1);
-    expect(browser.ym).toHaveBeenLastCalledWith(
-      analyticsIds.metrika,
-      "hit",
-      "https://toolor.store/ru",
-      {
-        referer: "https://example.org/",
-        title: "TOOLOR",
-      },
-    );
+    expect(browser.ym).not.toHaveBeenCalled();
     browser.location.pathname = "/ru/catalog";
     browser.location.search = "?page=2";
     trackPageView();
@@ -93,9 +91,36 @@ describe("site analytics", () => {
     browser.location.pathname = "/ru";
     browser.location.search = "";
     trackPageView();
-    expect(browser.ym).toHaveBeenCalledTimes(3);
+    expect(browser.ym).toHaveBeenCalledTimes(2);
     expect(browser.fbq.mock.calls).toEqual(
       new Array(3).fill(["track", "PageView"]),
+    );
+  });
+
+  it("tracks a route change that happens before the first observer effect", () => {
+    const browser = {
+      location: {
+        origin: "https://toolor.store",
+        pathname: "/ru/catalog",
+        search: "",
+      },
+      __toolorAnalytics: { initialUrl: "https://toolor.store/ru" },
+      ym: vi.fn(),
+      fbq: vi.fn(),
+    };
+    vi.stubGlobal("window", browser);
+    vi.stubGlobal("document", {
+      referrer: "https://example.org/",
+      title: "Catalog",
+    });
+
+    trackPageView();
+
+    expect(browser.ym).toHaveBeenCalledWith(
+      analyticsIds.metrika,
+      "hit",
+      "https://toolor.store/ru/catalog",
+      { referer: "https://toolor.store/ru", title: "Catalog" },
     );
   });
 
@@ -103,7 +128,7 @@ describe("site analytics", () => {
     vi.stubGlobal("window", {});
     expect(() => trackPageView()).not.toThrow();
     vi.stubGlobal("window", {
-      __toolorAnalytics: {},
+      __toolorAnalytics: { initialUrl: "https://toolor.store/ru" },
       location: { origin: "https://toolor.store", pathname: "/ru", search: "" },
     });
     expect(() => trackPageView()).not.toThrow();
