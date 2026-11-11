@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Manrope } from "next/font/google";
 import { notFound } from "next/navigation";
-import Script from "next/script";
 import { Suspense } from "react";
 
 import { AnalyticsNoscript } from "@/components/analytics/analytics-noscript";
@@ -103,9 +102,10 @@ export default async function LocaleLayout({
     >
       <head>
         {process.env.NODE_ENV === "production" ? (
-          <Script id="toolor-metrika" strategy="beforeInteractive">
-            {metrikaBootstrap}
-          </Script>
+          <script
+            id="toolor-metrika"
+            dangerouslySetInnerHTML={{ __html: metrikaBootstrap }}
+          />
         ) : null}
         {/* Preload the two most-used brand weights to cut first-paint swap. */}
         <link

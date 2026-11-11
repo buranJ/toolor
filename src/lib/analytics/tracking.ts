@@ -14,9 +14,9 @@ type AnalyticsWindow = Window & {
 };
 
 /**
- * Rendered in the locale root layout's initial HTML. The vendor snippet is
- * intentionally kept here, rather than injected after hydration, so Metrika
- * can initialize Webvisor as the document loads and can be found in View Source.
+ * Rendered as a literal inline script in the locale root layout's initial HTML.
+ * Keep it out of next/script's client queue so both Metrika's checker and a
+ * browser can discover the tag directly in View Source.
  */
 export const metrikaBootstrap = `
 if (!window.__toolorAnalytics) {

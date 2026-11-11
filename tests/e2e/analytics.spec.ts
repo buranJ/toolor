@@ -22,6 +22,7 @@ test("production analytics load once and count client navigation without duplica
     "Analytics intentionally disabled in development; run against pnpm build/start.",
   );
   expect(html).toContain("webvisor:true");
+  expect(html).toMatch(/<script[^>]*id="toolor-metrika"[^>]*>/);
   await expect(page.locator("#toolor-metrika")).toHaveCount(1);
   await expect(page.locator("#toolor-site-analytics")).toHaveCount(1);
   const counts = () =>
