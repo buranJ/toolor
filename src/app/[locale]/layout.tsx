@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Manrope } from "next/font/google";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 import { Suspense } from "react";
 
 import { AnalyticsNoscript } from "@/components/analytics/analytics-noscript";
@@ -19,6 +20,7 @@ import {
   type Locale,
 } from "@/i18n";
 import { siteConfig } from "@/lib/config/site";
+import { metrikaBootstrap } from "@/lib/analytics/tracking";
 
 import "../globals.css";
 
@@ -100,6 +102,11 @@ export default async function LocaleLayout({
       className={`${brandFallback.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        {process.env.NODE_ENV === "production" ? (
+          <Script id="toolor-metrika" strategy="beforeInteractive">
+            {metrikaBootstrap}
+          </Script>
+        ) : null}
         {/* Preload the two most-used brand weights to cut first-paint swap. */}
         <link
           rel="preload"

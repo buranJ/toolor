@@ -1,7 +1,12 @@
 import { runInNewContext } from "node:vm";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { analyticsBootstrap, analyticsIds, trackPageView } from "./tracking";
+import {
+  analyticsBootstrap,
+  analyticsIds,
+  metrikaBootstrap,
+  trackPageView,
+} from "./tracking";
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -21,11 +26,29 @@ describe("site analytics", () => {
         referrer: "https://example.org/",
         scripts,
         createElement: () => ({ src: "", async: false }),
+        getElementsByTagName: () => [
+          {
+            parentNode: {
+              insertBefore: (script: { src: string }) => scripts.push(script),
+            },
+          },
+        ],
         head: {
           appendChild: (script: { src: string }) => scripts.push(script),
         },
       },
+      location: {
+        href: "https://toolor.store/ru",
+        origin: "https://toolor.store",
+        pathname: "/ru",
+        search: "",
+      },
     };
+    Object.defineProperty(context, "ym", {
+      get: () => (context.window as { ym?: (...args: unknown[]) => void }).ym,
+    });
+    runInNewContext(metrikaBootstrap, context);
+    runInNewContext(metrikaBootstrap, context);
     runInNewContext(analyticsBootstrap, context);
     runInNewContext(analyticsBootstrap, context);
     expect(scripts.map((script) => script.src)).toEqual([

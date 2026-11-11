@@ -16,10 +16,13 @@ test("production analytics load once and count client navigation without duplica
     },
   );
   const response = await page.goto("/ru", { waitUntil: "domcontentloaded" });
+  const html = await response?.text();
   test.skip(
-    !(await response?.text())?.includes("mc.yandex.ru/watch/113868680"),
+    !html?.includes("mc.yandex.ru/watch/113868680"),
     "Analytics intentionally disabled in development; run against pnpm build/start.",
   );
+  expect(html).toContain("webvisor:true");
+  await expect(page.locator("#toolor-metrika")).toHaveCount(1);
   await expect(page.locator("#toolor-site-analytics")).toHaveCount(1);
   const counts = () =>
     page.evaluate(() => {

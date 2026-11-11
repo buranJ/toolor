@@ -14,28 +14,37 @@ type AnalyticsWindow = Window & {
 };
 
 /**
- * Standard vendor queues, loaded after hydration. Metrika sends the initial
- * pageview on init; the App Router observer sends only subsequent route hits.
- * Meta's automatic history listener is disabled to avoid duplicate views.
+ * Rendered in the locale root layout's initial HTML. The vendor snippet is
+ * intentionally kept here, rather than injected after hydration, so Metrika
+ * can initialize Webvisor as the document loads and can be found in View Source.
  */
+export const metrikaBootstrap = `
+if (!window.__toolorAnalytics) {
+  window.__toolorAnalytics = {
+    initialUrl: location.origin + location.pathname + location.search
+  };
+  (function(m,e,t,r,i,k,a){
+      m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+  })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=${analyticsIds.metrika}', 'ym');
+
+  ym(${analyticsIds.metrika}, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+}
+`;
+
+/** Meta and GTM can wait until hydration; Metrika's first hit is automatic. */
 export const analyticsBootstrap = `
 (function(w,d){
-  if(w.__toolorAnalytics)return;
-  w.__toolorAnalytics={initialUrl:w.location.origin+w.location.pathname+w.location.search};
+  if(w.__toolorMarketing)return;
+  w.__toolorMarketing=true;
   w.dataLayer=w.dataLayer||[];
   w.gtag=w.gtag||function(){w.dataLayer.push(arguments)};
   function load(src){
     if(Array.prototype.some.call(d.scripts,function(s){return s.src===src}))return;
     var s=d.createElement('script');s.async=true;s.src=src;d.head.appendChild(s);
   }
-  w.ym=w.ym||function(){(w.ym.a=w.ym.a||[]).push(arguments)};
-  w.ym.l=Date.now();
-  w.ym(${analyticsIds.metrika},'init',{
-    ssr:true,webvisor:true,clickmap:true,ecommerce:'dataLayer',
-    referrer:d.referrer,url:w.location.href,accurateTrackBounce:true,
-    trackLinks:true
-  });
-  load('https://mc.yandex.ru/metrika/tag.js?id=${analyticsIds.metrika}');
   if(!w.fbq){
     var n=w.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
     if(!w._fbq)w._fbq=n;
