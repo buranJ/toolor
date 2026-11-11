@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 // Never allow a test to contact Telegram, even if the developer configured env.
 vi.mock("@/features/checkout/telegram", () => ({
@@ -9,6 +9,7 @@ vi.mock("@/features/checkout/telegram", () => ({
   },
 }));
 import { POST } from "./route";
+afterEach(() => vi.unstubAllEnvs());
 
 function request(body: string, headers: Record<string, string> = {}) {
   return new Request("http://localhost:3100/api/order-requests", {
@@ -23,6 +24,13 @@ function request(body: string, headers: Record<string, string> = {}) {
 }
 
 describe("public request endpoint", () => {
+  it("pauses new requests during migration without parsing customer input", async () => {
+    vi.stubEnv("ORDER_MAINTENANCE", "1");
+    const response = await POST(request("invalid body"));
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ ok: false, code: "unavailable" });
+    expect(response.headers.get("cache-control")).toBe("no-store");
+  });
   it("rejects cross-origin and missing-origin submissions", async () => {
     expect(
       (await POST(request("{}", { origin: "https://evil.example" }))).status,

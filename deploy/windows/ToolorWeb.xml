@@ -1,0 +1,29 @@
+<!-- Template only. Copy alongside the official WinSW v2.12.0 binary,
+     renamed ToolorWeb.exe, after reviewing paths and granting narrow ACLs. -->
+<service>
+  <id>ToolorWeb</id>
+  <name>TOOLOR Web</name>
+  <description>TOOLOR storefront bound to loopback; published only through Cloudflare Tunnel.</description>
+  <executable>C:\TOOLOR\runtime\node.exe</executable>
+  <arguments>"C:\TOOLOR\app\scripts\start-self-hosted.mjs"</arguments>
+  <workingdirectory>C:\TOOLOR\app</workingdirectory>
+  <env name="TOOLOR_ENV_FILE" value="C:\ProgramData\TOOLOR\secrets\production.env" />
+  <env name="TOOLOR_PORT" value="3100" />
+  <env name="NEXT_TELEMETRY_DISABLED" value="1" />
+  <serviceaccount>
+    <domain>NT AUTHORITY</domain>
+    <user>LocalService</user>
+  </serviceaccount>
+  <startmode>Automatic</startmode>
+  <delayedAutoStart />
+  <onfailure action="restart" delay="10 sec" />
+  <onfailure action="restart" delay="30 sec" />
+  <resetfailure>1 hour</resetfailure>
+  <stopparentprocessfirst>true</stopparentprocessfirst>
+  <stoptimeout>60 sec</stoptimeout>
+  <logpath>C:\ProgramData\TOOLOR\logs\web</logpath>
+  <log mode="roll-by-size">
+    <sizeThreshold>10240</sizeThreshold>
+    <keepFiles>8</keepFiles>
+  </log>
+</service>

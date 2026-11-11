@@ -70,7 +70,7 @@ export interface ConditionalStore {
   ): Promise<boolean>;
   keys(prefix: string): Promise<string[]>;
 }
-const referenceSchema = z.object({
+export const referenceSchema = z.object({
   key: z.string().regex(/^orders\/\d{15}-[a-f0-9-]{36}$/),
   initial: storedOrderSchema,
 });

@@ -13,5 +13,9 @@
 11. Which analytics, consent, monitoring, search and transactional email tools are approved?
 12. What frame count, art direction, mobile/desktop assets and performance target define the cinematic homepage?
 13. What retention/deletion period and customer privacy notice are approved for Telegram order history?
+<<<<<<< Updated upstream
 14. What OS, public ingress, backup destination and always-on policy does the company's self-hosted computer provide? Which durable storage adapter will replace Netlify Blobs?
 15. Who approves new workbook prices, inventory and image rights before pressing Publish in `/admin`? What retention and rollback procedure should apply to previous catalog and photo blobs?
+=======
+14. Windows Server 2022 and 24/7 uptime were reported/observed for the company PC. SQLite and Cloudflare Tunnel preparation exists; actual service ACLs, restart/reboot behavior, tunnel setup, off-machine backup destination and restore/retention policy still require verification before cutover.
+>>>>>>> Stashed changes

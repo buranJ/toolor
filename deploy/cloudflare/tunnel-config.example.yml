@@ -1,0 +1,11 @@
+# Not usable until a named tunnel is created with the user's approval.
+# Save the actual config and credentials outside the application checkout.
+tunnel: REPLACE_WITH_VERIFIED_TUNNEL_UUID
+credentials-file: C:\ProgramData\TOOLOR\secrets\REPLACE_WITH_VERIFIED_TUNNEL_UUID.json
+metrics: 127.0.0.1:20241
+ingress:
+  - hostname: toolor.store
+    service: http://127.0.0.1:3100
+  - hostname: www.toolor.store
+    service: http://127.0.0.1:3100
+  - service: http_status:404

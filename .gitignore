@@ -46,3 +46,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Private migration/backup data must never be committed.
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.orders-backup.json
+production.env
+migration.env
+**/secrets/

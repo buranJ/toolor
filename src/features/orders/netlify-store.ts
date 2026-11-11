@@ -1,18 +1,30 @@
 import { getStore } from "@netlify/blobs";
 import { OrderRepository, type ConditionalStore } from "./repository";
+import { configuredSqliteStore } from "./sqlite-store";
 
 /** Lazily create the SDK store in request scope, not at build time. Contexts
  * have separate namespaces: previews cannot read production customer data. */
 export function orderRepository(): OrderRepository | undefined {
   const driver = process.env.ORDER_STORAGE_DRIVER?.trim();
   if (!driver) return undefined;
+  if (driver === "sqlite") return new OrderRepository(configuredSqliteStore());
   if (driver !== "netlify") throw new Error("Unsupported order storage driver");
   const name = process.env.ORDER_STORAGE_NAMESPACE?.trim();
   if (!name || !/^[a-zA-Z0-9_-]{1,64}$/.test(name))
     throw new Error("Configure order namespace");
+  return new OrderRepository(netlifyConditionalStore(name));
+}
+
+export function netlifyConditionalStore(
+  name: string,
+  credentials?: { siteID: string; token: string },
+): ConditionalStore {
+  if (!/^[a-zA-Z0-9_-]{1,64}$/.test(name))
+    throw new Error("Configure order namespace");
   const store = () =>
     getStore({
       name,
+      ...credentials,
       consistency: "strong",
       fetch: async (input, init) => {
         const method = init?.method?.toUpperCase() ?? "GET";
@@ -49,5 +61,5 @@ export function orderRepository(): OrderRepository | undefined {
       return (await store().list({ prefix })).blobs.map((blob) => blob.key);
     },
   };
-  return new OrderRepository(adapter);
+  return adapter;
 }

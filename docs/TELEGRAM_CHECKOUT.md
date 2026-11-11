@@ -176,16 +176,15 @@ The site must not claim an order was paid, reserved or confirmed.
 
 ## Later move to the company computer
 
-The Next.js routes and bot presentation remain portable. Netlify Blobs credentials
-and runtime context must not be copied as though they were local files. Before
-switching the domain, choose and implement a durable self-hosted adapter for
-`ConditionalStore`, privately export/import both record prefixes, verify counts
-and workflow history with synthetic orders, and arrange backups. Quiesce checkout
-and bot changes during the final export so orders cannot be split between hosts.
-Only switch the webhook after the new HTTPS endpoint and operator authorization
-are verified. OS, ingress/firewall, uptime, autostart and backup setup must be
-checked on the actual machine. A local adapter/export tool is not yet implemented;
-the hosting migration is a separate step, not an automatic consequence of cloning.
+The prepared SQLite driver and offline archive CLI are described in
+`docs/SELF_HOSTED_MIGRATION.md`. Production is still on Netlify. Netlify runtime
+context is not a local database; preserve both `references/` and `orders/` and
+pause checkout AND Telegram mutations for the final export. Never copy migration
+API credentials into the web service. A same-domain webhook URL can stay unchanged;
+verify the new HTTPS endpoint, matching secret and authorized operator before
+enabling it. Actual machine permissions, autostart, reboot recovery, tunnel and
+off-machine backups must still be checked. A code clone alone does not migrate
+existing order data.
 
 ## Verification
 
@@ -258,3 +257,21 @@ webhook calls returned HTTP 403. The live 72-case browser suite initially passed
 the storefront. Both passed on a focused one-worker rerun without changing the
 site's security settings. An actual employee button click inside Telegram remains
 an owner acceptance check; no real customer data was used.
+
+On 2026-10-13 the owner explicitly confirmed full access for a second employee.
+The isolated bot-only update (commit `1e1fe95`, production deploy
+`6ace58c28458c019bb4121ca`) is published; migration/SQLite changes remain local.
+The approved CSV allowlist is a secret production-only Netlify variable;
+preview/branch/local contexts have no added production staff value. Primary
+notifications remain unchanged. Telegram confirmed the additional chat exists;
+the live work-panel probe returned HTTP 200. An initial live probe was
+inconclusive; the subsequent menu-only verification succeeded without creating
+or replaying purchase requests. The user must still verify /orders and real
+button interaction in the employee's own chat. Unauthorized accounts are ignored
+before opening storage; wrong webhook secrets are rejected.
+
+The deployed bot-only version passed lint, typecheck, 120 tests, production build,
+72 local checkout/store/i18n browser cases and seven live Chromium checkout cases
+with the purchase endpoint intercepted. The migration checkout also passed all
+134 tests; its subprocess-heavy CLI test has a bounded 30-second case timeout
+to avoid a five-second false timeout under concurrent browser/build load.

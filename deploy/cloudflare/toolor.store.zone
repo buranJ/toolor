@@ -1,0 +1,17 @@
+; PREPARATION ONLY, verified 2026-10-13. No registrar/NS changes today.
+; Import into the NEW pending Cloudflare zone with proxying UNCHECKED.
+; This is the verified website + GoDaddy mail inventory, NOT a full export
+; of the inaccessible old Cloudflare account. Check other subdomains first.
+$ORIGIN toolor.store.
+$TTL 300
+@ IN CNAME toolor.netlify.app.
+www IN CNAME toolor.netlify.app.
+email IN CNAME email.secureserver.net.
+secureserver1._domainkey IN CNAME s1.dkim.toolor_store.e19.onsecureserver.net.
+secureserver2._domainkey IN CNAME s2.dkim.toolor_store.e19.onsecureserver.net.
+@ IN MX 0 smtp.secureserver.net.
+@ IN MX 10 mailstore1.secureserver.net.
+_autodiscover._tcp IN SRV 100 1 443 autodiscover.secureserver.net.
+@ IN TXT "T5292953"
+@ IN TXT "v=spf1 include:secureserver.net -all"
+_dmarc IN TXT "v=DMARC1; p=reject; rua=mailto:dmarc_rua@onsecureserver.net; adkim=r; aspf=r;"

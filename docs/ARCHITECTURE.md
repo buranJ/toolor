@@ -25,7 +25,10 @@ never authoritative. The Telegram transport runs only in the server route and
 uses server-only environment variables. With the approved Netlify storage driver,
 `features/orders` saves immutable request snapshots, workflow status and audit
 history in private site-wide Netlify Blobs. Its conditional storage contract is
-backend-neutral; a future self-hosted adapter can replace the Netlify adapter.
+backend-neutral. The prepared self-hosted adapter uses Node 24's built-in SQLite
+with atomic conditional writes, WAL and a private path outside the checkout.
+It is not active on production yet. Offline archive tools preserve both record
+prefixes and reject incomplete or inconsistent exports; see `docs/SELF_HOSTED_MIGRATION.md`.
 `POST /api/telegram/webhook` validates a shared secret and the one authorized
 private Telegram accounts on an explicit server-only allowlist before reading
 or changing orders. Each reply/card is scoped to the sender's own private chat;

@@ -65,6 +65,7 @@ async function readBody(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (process.env.ORDER_MAINTENANCE === "1") return error("unavailable", 503);
   if (
     ![siteConfig.url, new URL(request.url).origin].includes(
       request.headers.get("origin") ?? "",

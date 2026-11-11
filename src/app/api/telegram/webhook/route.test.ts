@@ -57,6 +57,12 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 describe("authenticated Telegram webhook", () => {
+  it("does not acknowledge/process workflow changes while final export is paused", async () => {
+    vi.stubEnv("ORDER_MAINTENANCE", "1");
+    expect((await POST(request())).status).toBe(503);
+    expect(repository).not.toHaveBeenCalled();
+    expect(handle).not.toHaveBeenCalled();
+  });
   it("fails closed without a secret and rejects spoofed/oversized secrets before reading orders", async () => {
     expect((await POST(request("{}", "wrong"))).status).toBe(403);
     expect((await POST(request("{}", "x".repeat(257)))).status).toBe(403);

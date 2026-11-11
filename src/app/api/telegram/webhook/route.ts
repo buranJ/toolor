@@ -11,6 +11,8 @@ const reply = (status: number) =>
     { status, headers: { "Cache-Control": "no-store" } },
   );
 export async function POST(request: Request) {
+  // Telegram retains/retries updates; do not acknowledge changes during export.
+  if (process.env.ORDER_MAINTENANCE === "1") return reply(503);
   const secret = process.env.TELEGRAM_WEBHOOK_SECRET?.trim();
   if (!secret || !/^[A-Za-z0-9_-]{32,256}$/.test(secret)) return reply(503);
   const supplied = request.headers.get("x-telegram-bot-api-secret-token") ?? "";
