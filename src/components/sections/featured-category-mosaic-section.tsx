@@ -4,6 +4,7 @@ import { ResilientEditorialImage } from "@/components/media/resilient-editorial-
 import { Container } from "@/components/ui/container";
 import { ScrollRevealMark } from "@/components/ui/scroll-reveal-mark";
 import { featuredCategoryMosaicItems } from "@/data/featured-category-mosaic";
+import type { CategoryMosaicImages } from "@/features/admin/catalog-store";
 import { getDictionary, localePath, type Locale } from "@/i18n";
 import type { Product } from "@/types";
 
@@ -14,9 +15,11 @@ function leadImages(product: Product | undefined, offset: number) {
 }
 
 export function FeaturedCategoryMosaicSection({
+  categoryImages,
   locale,
   products,
 }: {
+  categoryImages: CategoryMosaicImages;
   locale: Locale;
   products: Product[];
 }) {
@@ -26,6 +29,7 @@ export function FeaturedCategoryMosaicSection({
   const items = featuredCategoryMosaicItems.map((item) => ({
     ...item,
     label: copy.items[item.labelKey],
+    customImage: categoryImages[item.labelKey],
     product: products.find(
       (product) => product.productType === item.productType,
     ),
@@ -71,7 +75,18 @@ export function FeaturedCategoryMosaicSection({
                     <ResilientEditorialImage
                       className="featured-category-image object-cover"
                       fallbackLabel=""
-                      images={leadImages(item.product, item.imageOffset)}
+                      images={[
+                        ...(item.customImage
+                          ? [
+                              {
+                                id: item.customImage,
+                                url: `/api/catalog-image/${item.customImage}`,
+                                alt: "",
+                              },
+                            ]
+                          : []),
+                        ...leadImages(item.product, item.imageOffset),
+                      ]}
                       sizes="(max-width: 767px) 50vw, 33vw"
                     />
                     <span

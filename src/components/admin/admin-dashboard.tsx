@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { AdminCategoryImages, type CategoryTile } from "@/components/admin/admin-category-images";
 import type { Dictionary } from "@/i18n";
 
 type Copy = Dictionary["admin"];
@@ -33,6 +34,7 @@ type AdminState = {
   products: ProductRow[];
   collections: CollectionRow[];
   priorities: { productIds: string[]; collectionIds: string[] };
+  categoryTiles: CategoryTile[];
   draft: Draft | null;
 };
 
@@ -296,6 +298,8 @@ export function AdminDashboard({
                   </div>
                 ) : null}
               </section>
+
+              <AdminCategoryImages copy={d} onChanged={refresh} tiles={state.categoryTiles} />
 
               <section className="rounded-3xl bg-white p-6 shadow-sm sm:p-8" aria-labelledby="admin-priority-title">
                 <div className="mb-6 flex flex-wrap items-end justify-between gap-4"><div><h2 id="admin-priority-title" className="text-2xl font-semibold">{d.priorityTitle}</h2><p className="mt-2 text-sm text-[#647084]">{d.priorityHint}</p></div><button className="rounded-xl bg-[#161b21] px-5 py-3 text-sm font-semibold text-white hover:bg-[#323940] disabled:opacity-50" disabled={Boolean(busy)} onClick={saveOrder} type="button">{d.saveOrder}</button></div>

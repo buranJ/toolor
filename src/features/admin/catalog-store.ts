@@ -15,6 +15,20 @@ export const prioritiesSchema = z.object({
   collectionIds: z.array(z.string()).max(200),
 });
 
+const imageIdSchema = z.string().regex(/^[a-f0-9]{64}$/);
+export const categoryMosaicImagesSchema = z.object({
+  hats: imageIdSchema.optional(),
+  sets: imageIdSchema.optional(),
+  jackets: imageIdSchema.optional(),
+  shirts: imageIdSchema.optional(),
+  tshirts: imageIdSchema.optional(),
+  trousers: imageIdSchema.optional(),
+});
+export type CategoryMosaicImageKey = keyof z.infer<
+  typeof categoryMosaicImagesSchema
+>;
+export type CategoryMosaicImages = z.infer<typeof categoryMosaicImagesSchema>;
+
 const draftSchema = z.object({
   id: z.uuid(),
   createdAt: z.iso.datetime(),
@@ -36,7 +50,10 @@ function store() {
         cache: "no-store",
         signal: AbortSignal.timeout(15_000),
       });
-      if (init?.method?.toUpperCase() === "PUT" && ![200, 412].includes(response.status))
+      if (
+        init?.method?.toUpperCase() === "PUT" &&
+        ![200, 412].includes(response.status)
+      )
         throw new Error("Catalog storage write rejected");
       return response;
     },
@@ -54,7 +71,9 @@ export function assertCatalogWritable() {
 }
 
 function missingBlobsEnvironment(error: unknown) {
-  return error instanceof Error && error.name === "MissingBlobsEnvironmentError";
+  return (
+    error instanceof Error && error.name === "MissingBlobsEnvironmentError"
+  );
 }
 
 export async function getActiveCatalog() {
@@ -67,7 +86,10 @@ export async function getActiveCatalog() {
       type: "json",
     });
     if (!raw) throw new Error("Published catalog version is missing");
-    return { active, catalog: generatedProductFileSchema.parse(raw as unknown) };
+    return {
+      active,
+      catalog: generatedProductFileSchema.parse(raw as unknown),
+    };
   } catch (error: unknown) {
     // Next.js pre-renders ISR pages before Netlify installs the runtime Blobs
     // context. Those pages start from the bundled catalog and revalidate later.
@@ -84,7 +106,8 @@ export async function getPriorities(): Promise<CatalogPriorities> {
       ? prioritiesSchema.parse(raw as unknown)
       : { productIds: [], collectionIds: [] };
   } catch (error: unknown) {
-    if (missingBlobsEnvironment(error)) return { productIds: [], collectionIds: [] };
+    if (missingBlobsEnvironment(error))
+      return { productIds: [], collectionIds: [] };
     throw error;
   }
 }
@@ -92,6 +115,45 @@ export async function getPriorities(): Promise<CatalogPriorities> {
 export async function savePriorities(value: CatalogPriorities) {
   assertCatalogWritable();
   await store().setJSON("catalog/priorities", prioritiesSchema.parse(value));
+}
+
+export async function getCategoryMosaicImages(): Promise<CategoryMosaicImages> {
+  if (!catalogStorageEnabled()) return {};
+  try {
+    const raw = await store().get("homepage/category-mosaic-images", {
+      type: "json",
+    });
+    return raw ? categoryMosaicImagesSchema.parse(raw as unknown) : {};
+  } catch (error: unknown) {
+    if (missingBlobsEnvironment(error)) return {};
+    throw error;
+  }
+}
+
+export async function updateCategoryMosaicImage(
+  key: CategoryMosaicImageKey,
+  imageId: string | null,
+) {
+  assertCatalogWritable();
+  if (imageId !== null) imageIdSchema.parse(imageId);
+  const current = await store().getWithMetadata(
+    "homepage/category-mosaic-images",
+    {
+      type: "json",
+      consistency: "strong",
+    },
+  );
+  const next = categoryMosaicImagesSchema.parse(current?.data ?? {});
+  if (imageId === null) delete next[key];
+  else next[key] = imageId;
+  const result = await store().setJSON(
+    "homepage/category-mosaic-images",
+    next,
+    {
+      ...(current?.etag ? { onlyIfMatch: current.etag } : { onlyIfNew: true }),
+    },
+  );
+  return result.modified;
 }
 
 export async function getDraft() {

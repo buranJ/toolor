@@ -11,7 +11,7 @@ write routes also check Origin. Admin API routes require the cookie.
 
 The catalog is stored in a private, site-wide Netlify Blobs store,
 `toolor-catalog-production`, separate from order records. No active blob means
-the bundled, verified-by-import *mock* catalog remains in use. The admin can
+the bundled, verified-by-import _mock_ catalog remains in use. The admin can
 upload a marketplace `.xlsx` file up to 4 MB and 5,000 rows; the existing
 importer's SKU/variant normalization is reused. Duplicate or rejected rows and
 invalid links fail the upload rather than replacing part of the catalog.
@@ -31,6 +31,15 @@ collection names are retained. Price and availability are still pending
 business verification, just as before. Uploading a workbook does not verify
 inventory or turn purchase requests into paid orders.
 
+The six category tiles on the homepage have separate photo controls in `/admin`.
+An owner can preview, upload and replace each tile with a JPG, PNG, WebP or AVIF
+file up to 4 MB, or return it to the current catalog photo. The server checks
+the decoded image, bounds it to 40 megapixels, and saves a 2400px WebP at
+quality 92 in the same private Blobs store. Each tile points to its own
+content-addressed photo, so replacing one does not affect the catalog or other
+tiles. The homepage reads the current tile pointers on each request. Uploaded
+photos persist across Netlify deployments; older images are not pruned yet.
+
 The store is read by server-rendered catalog pages and by checkout's existing
 commerce-provider contract. Admin changes persist across Netlify deployments.
 Next navigation may keep an already-open client page in memory; refresh the
@@ -41,6 +50,6 @@ Photo URL errors stop the draft from publication until a corrected workbook is
 uploaded. Monitor Netlify Blobs and Functions usage if the catalog grows.
 
 This is an owner-only first release, not a multi-user CMS. It does not include
-role management, an audit UI, image editing, collection text editing or
+role management, an audit UI, image cropping, collection text editing or
 automatic pruning of old blobs. Set a strong temporary password and rotate it
 after acceptance testing; do not use the Telegram bot token as the password.

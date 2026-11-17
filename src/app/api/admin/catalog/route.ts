@@ -1,7 +1,17 @@
 import { NextRequest } from "next/server";
 
 import { adminGate, privateJson } from "@/features/admin/http";
-import { getActiveCatalog, getDraft, imageUrlKey } from "@/features/admin/catalog-store";
+import {
+  categoryMosaicProductImage,
+  featuredCategoryMosaicItems,
+} from "@/data/featured-category-mosaic";
+import {
+  getActiveCatalog,
+  getCategoryMosaicImages,
+  getDraft,
+  imageUrlKey,
+} from "@/features/admin/catalog-store";
+import { getDictionary } from "@/i18n";
 import { loadPublishedCatalog } from "@/lib/commerce/catalog-data";
 
 export const runtime = "nodejs";
@@ -10,10 +20,11 @@ export async function GET(request: NextRequest) {
   const denied = adminGate(request);
   if (denied) return denied;
   try {
-    const [active, draftRecord, catalog] = await Promise.all([
+    const [active, draftRecord, catalog, categoryImages] = await Promise.all([
       getActiveCatalog(),
       getDraft(),
       loadPublishedCatalog(),
+      getCategoryMosaicImages(),
     ]);
     const draft = draftRecord?.draft;
     const visibleDraft = draft && draft.id !== active?.active.id ? draft : null;
@@ -37,16 +48,34 @@ export async function GET(request: NextRequest) {
         productIds: catalog.productOrder,
         collectionIds: catalog.collectionOrder,
       },
+      categoryTiles: featuredCategoryMosaicItems.map((item) => {
+        const customId = categoryImages[item.labelKey] ?? null;
+        const fallbackUrl =
+          categoryMosaicProductImage(item, catalog.products)?.url ?? null;
+        return {
+          key: item.labelKey,
+          label: getDictionary("ru").home.categoryMosaic.items[item.labelKey],
+          image: customId ? `/api/catalog-image/${customId}` : fallbackUrl,
+          custom: Boolean(customId),
+        };
+      }),
       draft: visibleDraft
         ? {
             id: visibleDraft.id,
             createdAt: visibleDraft.createdAt,
             workbook: visibleDraft.catalog.source.workbook,
             productCount: visibleDraft.catalog.products.length,
-            variantCount: visibleDraft.catalog.products.reduce((sum, product) => sum + product.variants.length, 0),
+            variantCount: visibleDraft.catalog.products.reduce(
+              (sum, product) => sum + product.variants.length,
+              0,
+            ),
             imageCount: visibleDraft.imageUrls.length,
-            preparedCount: visibleDraft.imageUrls.filter((url) => visibleDraft.prepared[imageUrlKey(url)]).length,
-            sample: visibleDraft.catalog.products.slice(0, 12).map((product) => product.name),
+            preparedCount: visibleDraft.imageUrls.filter(
+              (url) => visibleDraft.prepared[imageUrlKey(url)],
+            ).length,
+            sample: visibleDraft.catalog.products
+              .slice(0, 12)
+              .map((product) => product.name),
             preview: visibleDraft.catalog.products.map((product) => ({
               id: product.id,
               name: product.name,

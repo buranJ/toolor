@@ -10,6 +10,7 @@ import { HeroSection } from "@/components/sections/hero/hero-section";
 import { ModernNomadsSection } from "@/components/sections/modern-nomads-section";
 import { ReviewsSection } from "@/components/sections/reviews-section";
 import { SustainabilitySection } from "@/components/sections/sustainability-section";
+import { getCategoryMosaicImages } from "@/features/admin/catalog-store";
 import { getDictionary, isLocale, localeAlternates } from "@/i18n";
 import { commerce } from "@/lib/commerce";
 import type { Product } from "@/types";
@@ -54,7 +55,10 @@ export default async function HomePage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const { items: products } = await commerce.getProducts({ pageSize: 100 });
+  const [{ items: products }, categoryImages] = await Promise.all([
+    commerce.getProducts({ pageSize: 100 }),
+    getCategoryMosaicImages(),
+  ]);
   const withImages = products.filter((product) => product.images.length > 0);
   const byImageWealth = [...withImages].sort(
     (a, b) => b.images.length - a.images.length,
@@ -89,7 +93,11 @@ export default async function HomePage({
   return (
     <div data-page="home">
       <HeroSection locale={locale} />
-      <FeaturedCategoryMosaicSection locale={locale} products={products} />
+      <FeaturedCategoryMosaicSection
+        categoryImages={categoryImages}
+        locale={locale}
+        products={products}
+      />
       <CategorySplitSection
         locale={locale}
         menProduct={menProduct}

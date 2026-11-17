@@ -1,4 +1,5 @@
 import type { Dictionary } from "@/i18n";
+import type { Product } from "@/types";
 
 /**
  * Homepage category mosaic.
@@ -64,3 +65,14 @@ export const featuredCategoryMosaicItems = [
   size: "compact" | "tall";
   imageOffset: number;
 }>;
+
+export function categoryMosaicProductImage(
+  item: (typeof featuredCategoryMosaicItems)[number],
+  products: Product[],
+) {
+  const product = products.find(
+    (entry) => entry.productType === item.productType,
+  );
+  const images = product?.images ?? [];
+  return images[item.imageOffset] ?? images[0] ?? null;
+}
