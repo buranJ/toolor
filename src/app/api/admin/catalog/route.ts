@@ -10,6 +10,7 @@ import {
   getCategoryMosaicImages,
   getDraft,
   imageUrlKey,
+  missingCatalogImage,
 } from "@/features/admin/catalog-store";
 import { getDictionary } from "@/i18n";
 import { loadPublishedCatalog } from "@/lib/commerce/catalog-data";
@@ -72,6 +73,10 @@ export async function GET(request: NextRequest) {
             imageCount: visibleDraft.imageUrls.length,
             preparedCount: visibleDraft.imageUrls.filter(
               (url) => visibleDraft.prepared[imageUrlKey(url)],
+            ).length,
+            skippedCount: visibleDraft.imageUrls.filter(
+              (url) =>
+                visibleDraft.prepared[imageUrlKey(url)] === missingCatalogImage,
             ).length,
             sample: visibleDraft.catalog.products
               .slice(0, 12)

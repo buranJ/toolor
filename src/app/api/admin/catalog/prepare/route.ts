@@ -3,11 +3,15 @@ import { NextRequest } from "next/server";
 import {
   getDraft,
   imageUrlKey,
+  missingCatalogImage,
   replaceDraft,
   saveImage,
 } from "@/features/admin/catalog-store";
 import { adminGate, privateJson } from "@/features/admin/http";
-import { prepareCatalogImage } from "@/features/admin/image-import";
+import {
+  MissingCatalogImageError,
+  prepareCatalogImage,
+} from "@/features/admin/image-import";
 
 export const runtime = "nodejs";
 
@@ -16,24 +20,65 @@ export async function POST(request: NextRequest) {
   if (denied) return denied;
   try {
     const current = await getDraft();
-    if (!current) return privateJson({ error: "Сначала загрузите таблицу" }, 404);
+    if (!current)
+      return privateJson({ error: "Сначала загрузите таблицу" }, 404);
     const pending = current.draft.imageUrls
       .filter((url) => !current.draft.prepared[imageUrlKey(url)])
       .slice(0, 3);
     if (!pending.length)
-      return privateJson({ done: true, prepared: current.draft.imageUrls.length, total: current.draft.imageUrls.length });
+      return privateJson({
+        done: true,
+        prepared: current.draft.imageUrls.length,
+        skipped: current.draft.imageUrls.filter(
+          (url) =>
+            current.draft.prepared[imageUrlKey(url)] === missingCatalogImage,
+        ).length,
+        total: current.draft.imageUrls.length,
+      });
     const entries = await Promise.all(
-      pending.map(async (url) => [imageUrlKey(url), await saveImage(await prepareCatalogImage(url))] as const),
+      pending.map(async (url) => {
+        try {
+          return [
+            imageUrlKey(url),
+            await saveImage(await prepareCatalogImage(url)),
+          ] as const;
+        } catch (error: unknown) {
+          if (error instanceof MissingCatalogImageError)
+            return [imageUrlKey(url), missingCatalogImage] as const;
+          throw error;
+        }
+      }),
     );
     const next = {
       ...current.draft,
       prepared: { ...current.draft.prepared, ...Object.fromEntries(entries) },
     };
     if (!(await replaceDraft(next, current.etag)))
-      return privateJson({ error: "Черновик изменился. Обновите страницу." }, 409);
-    const prepared = next.imageUrls.filter((url) => next.prepared[imageUrlKey(url)]).length;
-    return privateJson({ done: prepared === next.imageUrls.length, prepared, total: next.imageUrls.length });
+      return privateJson(
+        { error: "Черновик изменился. Обновите страницу." },
+        409,
+      );
+    const prepared = next.imageUrls.filter(
+      (url) => next.prepared[imageUrlKey(url)],
+    ).length;
+    const skipped = next.imageUrls.filter(
+      (url) => next.prepared[imageUrlKey(url)] === missingCatalogImage,
+    ).length;
+    return privateJson({
+      done: prepared === next.imageUrls.length,
+      prepared,
+      skipped,
+      total: next.imageUrls.length,
+    });
   } catch (error: unknown) {
-    return privateJson({ error: error instanceof Error ? error.message : "Фото не удалось подготовить" }, 422);
+    return privateJson(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Фото не удалось подготовить",
+      },
+      422,
+    );
   }
 }

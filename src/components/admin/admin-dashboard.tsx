@@ -26,6 +26,7 @@ type Draft = {
   variantCount: number;
   imageCount: number;
   preparedCount: number;
+  skippedCount: number;
   sample: string[];
   preview: { id: string; name: string; sku: string; variants: number }[];
 };
@@ -180,11 +181,11 @@ export function AdminDashboard({
   async function prepare() {
     await perform("prepare", async () => {
       for (;;) {
-        const response = await readResponse<{ done: boolean; prepared: number; total: number }>(
+        const response = await readResponse<{ done: boolean; prepared: number; skipped: number; total: number }>(
           await fetch("/api/admin/catalog/prepare", { method: "POST" }),
         );
         setState((current) => current?.draft
-          ? { ...current, draft: { ...current.draft, preparedCount: response.prepared } }
+          ? { ...current, draft: { ...current.draft, preparedCount: response.prepared, skippedCount: response.skipped } }
           : current);
         if (response.done) break;
       }
@@ -280,6 +281,7 @@ export function AdminDashboard({
                     <h3 className="text-lg font-semibold">{d.draftTitle}: {state.draft.workbook}</h3>
                     <p className="mt-1 text-sm text-[#53647c]">{d.draftDescription}</p>
                     <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm"><span>{d.products}: <b>{state.draft.productCount}</b></span><span>{d.variants}: <b>{state.draft.variantCount}</b></span><span>{d.photos}: <b>{state.draft.imageCount}</b></span><span>{d.prepared}: <b>{state.draft.preparedCount}</b></span></div>
+                    {state.draft.skippedCount > 0 ? <p className="mt-3 text-sm text-[#821d2a]">{d.unavailablePhotos}: {state.draft.skippedCount}</p> : null}
                     <p className="mt-4 text-sm text-[#53647c]">{state.draft.sample.join(" · ")}</p>
                     <ol className="mt-4 max-h-56 space-y-1 overflow-y-auto rounded-xl border border-[#d7e1f7] bg-white p-3 text-sm">
                       {state.draft.preview.map((product, index) => (

@@ -15,6 +15,11 @@ the bundled, verified-by-import _mock_ catalog remains in use. The admin can
 upload a marketplace `.xlsx` file up to 4 MB and 5,000 rows; the existing
 importer's SKU/variant normalization is reused. Duplicate or rejected rows and
 invalid links fail the upload rather than replacing part of the catalog.
+The `Ассортимент` export is also accepted: `Артикул` groups a product,
+`Артикул варианта` identifies its variants, and all rows are imported,
+including `Активен: Нет`, as the owner requested. Its zero prices are treated
+as unknown rather than free; a valid `Цена со скидкой` becomes the current
+price. The preview shows the resulting product and variant counts.
 Upload creates a private draft. Signed supplier photo URLs remain in that
 private draft only. If a workbook matches the bundled source hash, existing
 local optimized photos are reused. Otherwise the admin prepares photos in
@@ -46,8 +51,10 @@ Next navigation may keep an already-open client page in memory; refresh the
 storefront after publishing. The 2,000-product / 2,000-photo cap is deliberate.
 Netlify's 6 MB buffered request limit motivates the 4 MB workbook limit; a
 large photo import can take minutes and requires the admin tab to remain open.
-Photo URL errors stop the draft from publication until a corrected workbook is
-uploaded. Monitor Netlify Blobs and Functions usage if the catalog grows.
+Photos that return HTTP 404 or 410 are counted in the draft and omitted from
+the published product; other network and processing errors stop preparation
+until the source is corrected. Monitor Netlify Blobs and Functions usage if the
+catalog grows.
 
 This is an owner-only first release, not a multi-user CMS. It does not include
 role management, an audit UI, image cropping, collection text editing or

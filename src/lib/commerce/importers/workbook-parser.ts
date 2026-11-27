@@ -8,11 +8,15 @@ const SOURCE_LABEL = "marketplace_catalog.xlsx";
 
 const BASE_HEADERS = {
   sku: ["уникальный идентификатор товара", "sku", "артикул"],
-  name: ["наименование товара", "название товара"],
+  name: ["наименование товара", "название товара", "название"],
   description: ["описание товара", "описание"],
   price: ["цена товара", "цена"],
   discount: ["сумма скидки", "скидка"],
-  images: ["ссылки на изображения товара (через запятую)", "изображения"],
+  images: [
+    "ссылки на изображения товара (через запятую)",
+    "изображения",
+    "фото",
+  ],
   group: ["объединить карточки в одну по sku"],
   main: ["главный товар"],
   size: [
@@ -36,6 +40,14 @@ const BASE_HEADERS = {
   care: ["уход", "рекомендации по уходу"],
   modelHeight: ["рост модели на фото", "рост модели"],
   modelSize: ["размер на модели на фото", "размер на модели"],
+} as const;
+
+const ASSORTMENT_HEADERS = {
+  parentSku: ["артикул"],
+  variantSku: ["артикул варианта"],
+  category: ["категория"],
+  subcategory: ["подкатегория"],
+  salePrice: ["цена со скидкой"],
 } as const;
 
 type Gender = "men" | "women" | "unisex" | "unknown";
@@ -73,6 +85,8 @@ interface NormalizedVariantRow {
   sheet: string;
   rowNumber: number;
   sku: string;
+  parentSku?: string;
+  productTypeHint?: string;
   name: string;
   description: string;
   priceAmount: number;
@@ -178,6 +192,15 @@ function getValue(row: RawWorkbookRow, aliases: readonly string[]): string {
     if (value) return value;
   }
   return "";
+}
+
+function isAssortmentRow(row: RawWorkbookRow): boolean {
+  const headers = row.headers.map(normalizeHeader);
+  return (
+    headers.includes("артикул варианта") &&
+    headers.includes("название") &&
+    headers.includes("фото")
+  );
 }
 
 function parseMoney(value: string): number | null {
@@ -367,7 +390,9 @@ async function readWorkbookRows(bytes: Buffer): Promise<{
   const workbook = new ExcelJS.Workbook();
   // ExcelJS's Buffer declaration targets a newer Node type than this repo's
   // pinned @types/node. Runtime accepts the same Uint8Array-backed Buffer.
-  await workbook.xlsx.load(bytes as unknown as Parameters<typeof workbook.xlsx.load>[0]);
+  await workbook.xlsx.load(
+    bytes as unknown as Parameters<typeof workbook.xlsx.load>[0],
+  );
   const sheets: SheetSummary[] = [];
   const rawRows: RawWorkbookRow[] = [];
 
@@ -434,12 +459,35 @@ export function normalizeRows(rawRows: RawWorkbookRow[]): {
   const seenSignatures = new Set<string>();
 
   for (const rawRow of rawRows) {
-    const sku = getValue(rawRow, BASE_HEADERS.sku);
+    const assortment = isAssortmentRow(rawRow);
+    const parentSku = assortment
+      ? getValue(rawRow, ASSORTMENT_HEADERS.parentSku)
+      : "";
+    const sku = assortment
+      ? getValue(rawRow, ASSORTMENT_HEADERS.variantSku) || parentSku
+      : getValue(rawRow, BASE_HEADERS.sku);
     const name = getValue(rawRow, BASE_HEADERS.name);
     const sourcePrice = getValue(rawRow, BASE_HEADERS.price);
-    const priceAmount = parseMoney(sourcePrice);
+    const parsedRegularPrice = parseMoney(sourcePrice);
+    // Zero in this export is a placeholder for an unapproved price, not a
+    // promise that the item is free. Such variants cannot enter checkout.
+    const regularPrice =
+      assortment && parsedRegularPrice === 0 ? null : parsedRegularPrice;
+    const sourceSalePrice = assortment
+      ? getValue(rawRow, ASSORTMENT_HEADERS.salePrice)
+      : "";
+    const parsedSalePrice = parseMoney(sourceSalePrice);
+    const salePrice =
+      assortment && parsedSalePrice === 0 ? null : parsedSalePrice;
+    const priceAmount = salePrice ?? regularPrice;
 
-    if (!sku || !name || (sourcePrice && priceAmount === null)) {
+    if (
+      !sku ||
+      !name ||
+      (sourcePrice && parsedRegularPrice === null) ||
+      (sourceSalePrice && parsedSalePrice === null) ||
+      (regularPrice !== null && salePrice !== null && salePrice > regularPrice)
+    ) {
       rejectedRows.push({
         sheet: rawRow.sheet,
         row: rawRow.rowNumber,
@@ -447,7 +495,13 @@ export function normalizeRows(rawRows: RawWorkbookRow[]): {
         reason: [
           !sku ? "missing SKU" : "",
           !name ? "missing name" : "",
-          priceAmount === null ? "missing/invalid price" : "",
+          (sourcePrice && parsedRegularPrice === null) ||
+          (sourceSalePrice && parsedSalePrice === null) ||
+          (regularPrice !== null &&
+            salePrice !== null &&
+            salePrice > regularPrice)
+            ? "invalid price or sale price"
+            : "",
         ]
           .filter(Boolean)
           .join(", "),
@@ -483,7 +537,9 @@ export function normalizeRows(rawRows: RawWorkbookRow[]): {
     seenSkus.set(normalizedSku, { sheet: rawRow.sheet, row: rawRow.rowNumber });
 
     const genderResult = inferGender(
-      getValue(rawRow, BASE_HEADERS.gender),
+      assortment
+        ? getValue(rawRow, ASSORTMENT_HEADERS.category)
+        : getValue(rawRow, BASE_HEADERS.gender),
       name,
       rawRow.sheet,
     );
@@ -494,20 +550,37 @@ export function normalizeRows(rawRows: RawWorkbookRow[]): {
       sheet: rawRow.sheet,
       rowNumber: rawRow.rowNumber,
       sku,
+      ...(assortment
+        ? {
+            parentSku,
+            productTypeHint:
+              getValue(rawRow, ASSORTMENT_HEADERS.subcategory) ||
+              getValue(rawRow, ASSORTMENT_HEADERS.category),
+          }
+        : {}),
       name: normalizeWhitespace(name),
       description: normalizeDescription(
         getValue(rawRow, BASE_HEADERS.description),
       ),
       priceAmount: priceAmount ?? 0,
       priceStatus: priceAmount === null ? "unknown" : "known",
-      discountAmount:
-        parseMoney(getValue(rawRow, BASE_HEADERS.discount)) ?? undefined,
+      discountAmount: assortment
+        ? regularPrice !== null &&
+          salePrice !== null &&
+          salePrice < regularPrice
+          ? regularPrice - salePrice
+          : undefined
+        : (parseMoney(getValue(rawRow, BASE_HEADERS.discount)) ?? undefined),
       imageUrls: parseImageUrls(
         getValue(rawRow, BASE_HEADERS.images),
         rawRow,
         invalidLinks,
       ),
-      groupSkus: splitList(getValue(rawRow, BASE_HEADERS.group)),
+      groupSkus: assortment
+        ? parentSku
+          ? [parentSku]
+          : []
+        : splitList(getValue(rawRow, BASE_HEADERS.group)),
       isMain: /^(да|yes|true|1)$/i.test(getValue(rawRow, BASE_HEADERS.main)),
       size: getValue(rawRow, BASE_HEADERS.size),
       color: getValue(rawRow, BASE_HEADERS.color),
@@ -566,8 +639,11 @@ export function buildCandidates(
     const primary = groupRows.find((row) => row.isMain) ?? groupRows[0];
     if (!primary) throw new Error(`Empty product group: ${key}`);
 
-    const canonicalSku = primary.sku;
-    const productType = productTypeFromSheet(primary.sheet, primary.name);
+    const canonicalSku = primary.parentSku ?? primary.sku;
+    const productType = productTypeFromSheet(
+      primary.productTypeHint ?? primary.sheet,
+      primary.name,
+    );
     const name =
       mostFrequent(groupRows.map(normalizedProductName)) || primary.name;
     const description =
@@ -717,7 +793,9 @@ export function selectCandidates(candidates: ProductCandidate[]): {
   const selected = [...eligible];
 
   if (selected.length === 0) {
-    throw new Error("No valid product groups were found.");
+    throw new Error(
+      "В таблице не найдены товары для загрузки. Проверьте названия столбцов и артикулы.",
+    );
   }
 
   const selectedKeys = new Set(selected.map((candidate) => candidate.key));
@@ -768,7 +846,9 @@ export async function inspectUploadedWorkbook(bytes: Buffer, filename: string) {
     products.flatMap((item) => item.variants.map((variant) => variant.id)),
   ]) {
     if (new Set(values).size !== values.length)
-      throw new Error("В таблице совпадают идентификаторы товаров или вариантов.");
+      throw new Error(
+        "В таблице совпадают идентификаторы товаров или вариантов.",
+      );
   }
   return {
     source: {
@@ -776,10 +856,16 @@ export async function inspectUploadedWorkbook(bytes: Buffer, filename: string) {
       sha256: analysis.sourceSha256,
       generatedAt: new Date().toISOString(),
       worksheetCount: analysis.sheets.length,
-      productWorksheetCount: analysis.sheets.filter((sheet) => sheet.name !== "metadata").length,
+      productWorksheetCount: analysis.sheets.filter(
+        (sheet) => sheet.name !== "metadata",
+      ).length,
     },
     products,
     variantCount: analysis.rows.length,
-    imageUrls: [...new Set(products.flatMap((product) => product.images.map((image) => image.url)))],
+    imageUrls: [
+      ...new Set(
+        products.flatMap((product) => product.images.map((image) => image.url)),
+      ),
+    ],
   };
 }

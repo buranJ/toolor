@@ -587,6 +587,7 @@
     "variants": "Variants",
     "photos": "Photos",
     "prepared": "Prepared",
+    "unavailablePhotos": "Unavailable photos will be skipped",
     "prepare": "Prepare photos",
     "preparing": "Preparing photos…",
     "publish": "Publish catalog",

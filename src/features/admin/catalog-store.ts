@@ -15,6 +15,8 @@ export const prioritiesSchema = z.object({
   collectionIds: z.array(z.string()).max(200),
 });
 
+export const missingCatalogImage = "missing" as const;
+
 const imageIdSchema = z.string().regex(/^[a-f0-9]{64}$/);
 export const categoryMosaicImagesSchema = z.object({
   hats: imageIdSchema.optional(),
@@ -34,7 +36,13 @@ const draftSchema = z.object({
   createdAt: z.iso.datetime(),
   catalog: generatedProductFileSchema,
   imageUrls: z.array(z.url()).max(2000),
-  prepared: z.record(z.string(), z.string().regex(/^[a-f0-9]{64}$/)),
+  prepared: z.record(
+    z.string(),
+    z.union([
+      z.string().regex(/^[a-f0-9]{64}$/),
+      z.literal(missingCatalogImage),
+    ]),
+  ),
 });
 
 export type DraftCatalog = z.infer<typeof draftSchema>;

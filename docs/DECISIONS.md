@@ -77,3 +77,8 @@ ORM, general customer authentication or payment system is introduced. The
 preexisting bundled catalog remains a fallback until an owner publishes an
 import. Source photo URLs remain private and are localized before publication.
 The initial release has one admin password, not per-person accounts or roles.
+On 2026-11-27 the owner requested support for the `Ассортимент` workbook and
+explicitly chose to import rows marked `Активен: Нет` as well as `Да`. Parent
+articles group variants; zero source prices remain unknown and cannot enter
+checkout. HTTP 404/410 source photos are counted and omitted at publication,
+while other photo errors still stop preparation.

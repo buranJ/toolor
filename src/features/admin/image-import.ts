@@ -7,6 +7,12 @@ const HOSTS = new Set([
 ]);
 const MAX_BYTES = 32 * 1024 * 1024;
 
+export class MissingCatalogImageError extends Error {
+  constructor() {
+    super("Фото по ссылке больше недоступно (HTTP 404/410).");
+  }
+}
+
 export function validateImageUrl(value: string) {
   const url = new URL(value);
   if (
@@ -32,11 +38,19 @@ export async function prepareCatalogImage(value: string) {
     if ([301, 302, 303, 307, 308].includes(response.status)) {
       await response.body?.cancel();
       const location = response.headers.get("location");
-      if (!location) throw new Error("Ссылка на фото перенаправляет без адреса.");
+      if (!location)
+        throw new Error("Ссылка на фото перенаправляет без адреса.");
       url = validateImageUrl(new URL(location, url).href);
       continue;
     }
-    if (!response.ok || !response.headers.get("content-type")?.startsWith("image/")) {
+    if (response.status === 404 || response.status === 410) {
+      await response.body?.cancel();
+      throw new MissingCatalogImageError();
+    }
+    if (
+      !response.ok ||
+      !response.headers.get("content-type")?.startsWith("image/")
+    ) {
       await response.body?.cancel();
       throw new Error(`Фото недоступно: HTTP ${response.status}.`);
     }
@@ -62,7 +76,12 @@ export async function prepareCatalogImage(value: string) {
     return new Uint8Array(
       await sharp(original)
         .rotate()
-        .resize({ width: 2400, height: 2400, fit: "inside", withoutEnlargement: true })
+        .resize({
+          width: 2400,
+          height: 2400,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
         .webp({ quality: 92, effort: 4 })
         .toBuffer(),
     );
